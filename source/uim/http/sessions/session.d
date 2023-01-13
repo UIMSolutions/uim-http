@@ -5,7 +5,7 @@
 
 
  * @since         0.10.0
-  */module uim.cake.Http;
+  */module uim.http;
 
 import uim.cake.core.App;
 import uim.cake.utilities.Hash;
@@ -75,7 +75,7 @@ class Session
      *
      * @param array $sessionConfig Session config.
      * @return static
-     * @see uim.cake.http.Session::__construct()
+     * @see uim.http.Session::__construct()
      */
     static function create(array $sessionConfig = null) {
         if (isset($sessionConfig["defaults"])) {

@@ -1,4 +1,4 @@
-module uim.cake.http.sessions;
+module uim.http.sessions;
 
-import uim.cake.http.sessions.cache;
-import uim.cake.http.sessions.database;
+import uim.http.sessions.cache;
+import uim.http.sessions.database;

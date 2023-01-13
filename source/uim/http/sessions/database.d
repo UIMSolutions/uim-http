@@ -13,6 +13,6 @@
 
 
  * @since         2.0.0
-  */module uim.cake.http.Session;
+  */module uim.http.Session;
 
 import uim.cake.orm.locators.LocatorAwareTrait;

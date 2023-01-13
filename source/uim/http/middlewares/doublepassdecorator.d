@@ -1,4 +1,4 @@
-module uim.cake.https\Middleware;
+module uim.https\Middleware;
 
 @safe:
 import uim.cake;
