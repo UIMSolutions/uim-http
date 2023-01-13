@@ -5,7 +5,7 @@
 
 
  * @since         4.1.0
-  */module uim.cake.http.exceptions;
+  */module uim.http.exceptions;
 
 /**
  * An exception subclass used by routing and application code to

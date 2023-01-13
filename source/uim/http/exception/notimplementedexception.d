@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions;
+module uim.http.exceptions;
 
 /**
  * Not Implemented Exception - used when an API method is not implemented

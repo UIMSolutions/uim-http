@@ -1,4 +1,4 @@
-module uim.cake.https\Exception;
+module uim.https\Exception;
 
 @safe:
 import uim.cake;

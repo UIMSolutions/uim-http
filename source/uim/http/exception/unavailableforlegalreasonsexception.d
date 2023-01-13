@@ -9,7 +9,7 @@
  *
 
  * @since         3.2.12
-  */module uim.cake.http.exceptions;
+  */module uim.http.exceptions;
 
 use Throwable;
 

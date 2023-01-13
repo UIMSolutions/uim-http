@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions;
+module uim.http.exceptions;
 
 use Throwable;
 

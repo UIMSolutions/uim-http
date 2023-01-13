@@ -1,4 +1,4 @@
-module uim.cake.http.clients\Exception;
+module uim.http.clients\Exception;
 
 @safe:
 import uim.cake;

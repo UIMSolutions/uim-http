@@ -1,4 +1,4 @@
-module uim.cake.http.clients\Auth;
+module uim.http.clients\Auth;
 
 @safe:
 import uim.cake;
@@ -13,7 +13,7 @@ use RuntimeException;
  * provider. It only handles make client requests *after* you have obtained the Oauth
  * tokens.
  *
- * Generally not directly constructed, but instead used by {@link uim.cake.Http\Client}
+ * Generally not directly constructed, but instead used by {@link uim.http\Client}
  * when $options["auth"]["type"] is "oauth"
  */
 class Oauth
@@ -21,7 +21,7 @@ class Oauth
     /**
      * Add headers for Oauth authorization.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
      * returns DHTPRequest The updated request.
      * @throws uim.cake.Core\exceptions.UIMException On invalid signature types.
@@ -83,7 +83,7 @@ class Oauth
      * You should only ever use PLAINTEXT when dealing with SSL
      * services.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
      * @return string Authorization header.
      */
@@ -111,7 +111,7 @@ class Oauth
      *
      * This method is suitable for plain HTTP or HTTPS.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
      */
     protected string _hmacSha1(Request $request, array $credentials) {
@@ -150,7 +150,7 @@ class Oauth
      *
      * This method is suitable for plain HTTP or HTTPS.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
      * @return string
      * @throws \RuntimeException
@@ -225,7 +225,7 @@ class Oauth
      * - The request URL (without querystring) is normalized.
      * - The HTTP method, URL and request parameters are concatenated and returned.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $oauthValues Oauth values.
      */
     string baseString(Request $request, array $oauthValues) {
@@ -263,7 +263,7 @@ class Oauth
      * - URL encode keys + values.
      * - Sort keys & values by byte value.
      *
-     * @param uim.cake.http.Client\Request $request The request object.
+     * @param uim.http.Client\Request $request The request object.
      * @param array $oauthValues Oauth values.
      * @return string sorted and normalized values
      */
