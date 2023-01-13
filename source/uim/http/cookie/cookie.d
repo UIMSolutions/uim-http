@@ -314,25 +314,25 @@ class Cookie : CookieInterface
         }
         $headerValue = null;
         /** @psalm-suppress PossiblyInvalidArgument */
-        $headerValue[] = sprintf("%s=%s", this.name, rawurlencode($value));
+        $headerValue ~= sprintf("%s=%s", this.name, rawurlencode($value));
 
         if (this.expiresAt) {
-            $headerValue[] = sprintf("expires=%s", this.getFormattedExpires());
+            $headerValue ~= sprintf("expires=%s", this.getFormattedExpires());
         }
         if (this.path != "") {
-            $headerValue[] = sprintf("path=%s", this.path);
+            $headerValue ~= sprintf("path=%s", this.path);
         }
         if (this.domain != "") {
-            $headerValue[] = sprintf("domain=%s", this.domain);
+            $headerValue ~= sprintf("domain=%s", this.domain);
         }
         if (this.sameSite) {
-            $headerValue[] = sprintf("samesite=%s", this.sameSite);
+            $headerValue ~= sprintf("samesite=%s", this.sameSite);
         }
         if (this.secure) {
-            $headerValue[] = "secure";
+            $headerValue ~= "secure";
         }
         if (this.httpOnly) {
-            $headerValue[] = "httponly";
+            $headerValue ~= "httponly";
         }
 
         return implode("; ", $headerValue);

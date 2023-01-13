@@ -143,7 +143,7 @@ class EncryptedCookieMiddleware : IMiddleware
                 $value = _encrypt($cookie.getValue(), this.cipherType);
                 $cookie = $cookie.withValue($value);
             }
-            $header[] = $cookie.toHeaderValue();
+            $header ~= $cookie.toHeaderValue();
         }
 
         return $response.withHeader("Set-Cookie", $header);

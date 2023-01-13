@@ -81,7 +81,7 @@ class Stream : AdapterInterface
         $indexes = $responses = null;
         foreach ($headers as $i: $header) {
             if (strtoupper(substr($header, 0, 5)) == "HTTP/") {
-                $indexes[] = $i;
+                $indexes ~= $i;
             }
         }
         $last = count($indexes) - 1;
@@ -91,7 +91,7 @@ class Stream : AdapterInterface
             /** @psalm-suppress PossiblyInvalidArgument */
             $headerSlice = array_slice($headers, $start, $end);
             $body = $i == $last ? $content : "";
-            $responses[] = _buildResponse($headerSlice, $body);
+            $responses ~= _buildResponse($headerSlice, $body);
         }
 
         return $responses;
@@ -130,7 +130,7 @@ class Stream : AdapterInterface
     protected void _buildHeaders(RequestInterface $request, STRINGAA someOptions) {
         $headers = null;
         foreach ($request.getHeaders() as $name: $values) {
-            $headers[] = sprintf("%s: %s", $name, implode(", ", $values));
+            $headers ~= sprintf("%s: %s", $name, implode(", ", $values));
         }
         _contextOptions["header"] = implode("\r\n", $headers);
     }
@@ -281,7 +281,7 @@ class Stream : AdapterInterface
         }
 
         set_error_handler(bool ($code, $message) {
-            _connectionErrors[] = $message;
+            _connectionErrors ~= $message;
 
             return true;
         });

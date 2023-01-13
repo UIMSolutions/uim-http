@@ -71,7 +71,7 @@ class ContentTypeNegotiation
                 $accept[$prefValue] = null;
             }
             if ($prefValue) {
-                $accept[$prefValue][] = $value;
+                $accept[$prefValue] ~= $value;
             }
         }
         krsort($accept);

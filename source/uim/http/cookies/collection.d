@@ -40,7 +40,7 @@ class CookieCollection : IteratorAggregate, Countable {
         $cookies = null;
         foreach ($header as myValue) {
             try {
-                $cookies[] = Cookie::createFromHeaderString(myValue, $defaults);
+                $cookies ~= Cookie::createFromHeaderString(myValue, $defaults);
             } catch (Exception $e) {
                 // Don"t blow up on invalid cookies
             }
@@ -59,7 +59,7 @@ class CookieCollection : IteratorAggregate, Countable {
         myData = myRequest.getCookieParams();
         $cookies = null;
         foreach (myData as myName: myValue) {
-            $cookies[] = new Cookie(myName, myValue);
+            $cookies ~= new Cookie(myName, myValue);
         }
 
         return new static($cookies);
@@ -211,7 +211,7 @@ class CookieCollection : IteratorAggregate, Countable {
                     myKey
                 ));
             }
-            $cookiePairs[] = $cookie;
+            $cookiePairs ~= $cookie;
         }
 
         if (empty($cookiePairs)) {

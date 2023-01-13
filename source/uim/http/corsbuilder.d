@@ -114,7 +114,7 @@ class CorsBuilder
         $result = null;
         foreach ($domains as $domain) {
             if ($domain == "*") {
-                $result[] = ["preg": "@.@", "original": "*"];
+                $result ~= ["preg": "@.@", "original": "*"];
                 continue;
             }
 
@@ -123,7 +123,7 @@ class CorsBuilder
                 $preg = (_isSsl ? "https://" : "http://") . $domain;
             }
             $preg = "@^" ~ replace("\*", ".*", preg_quote($preg, "@")) ~ "$@";
-            $result[] = compact("original", "preg");
+            $result ~= compact("original", "preg");
         }
 
         return $result;

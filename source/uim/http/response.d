@@ -1107,7 +1107,7 @@ class Response : IResponse
     function withAddedLink(string $url, STRINGAA someOptions = null) {
         $params = null;
         foreach ($options as $key: $option) {
-            $params[] = $key ~ "="" ~ $option ~ """;
+            $params ~= $key ~ "="" ~ $option ~ """;
         }
 
         $param = "";

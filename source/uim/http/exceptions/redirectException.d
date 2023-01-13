@@ -41,7 +41,7 @@ class RedirectException : HttpException {
         deprecationWarning("RedirectException::addHeaders() is deprecated, use setHeaders() instead.");
 
         foreach ($headers as myKey: myValue) {
-            this.headers[myKey][] = myValue;
+            this.headers[myKey] ~= myValue;
         }
 
         return this;

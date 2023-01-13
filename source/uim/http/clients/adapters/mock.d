@@ -42,7 +42,7 @@ class Mock : AdapterInterface
             $type = getTypeName($options["match"]);
             throw new InvalidArgumentException("The `match` option must be a `Closure`. Got `{$type}`.");
         }
-        this.responses[] = [
+        this.responses ~= [
             "request": $request,
             "response": $response,
             "options": $options,
@@ -85,7 +85,7 @@ class Mock : AdapterInterface
             // matches for a URL the next match is used on subsequent requests.
             $mock = this.responses[$found];
             unset(this.responses[$found]);
-            this.responses[] = $mock;
+            this.responses ~= $mock;
 
             return [$mock["response"]];
         }

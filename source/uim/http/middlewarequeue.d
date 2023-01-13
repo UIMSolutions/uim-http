@@ -94,7 +94,7 @@ class MiddlewareQueue : Countable, SeekableIterator
 
             return this;
         }
-        this.queue[] = $middleware;
+        this.queue ~= $middleware;
 
         return this;
     }

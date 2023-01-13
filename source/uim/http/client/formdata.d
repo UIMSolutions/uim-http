@@ -85,11 +85,11 @@ class FormData : Countable
             } elseif (is_resource($value) || $value instanceof UploadedFileInterface) {
                 this.addFile($name, $value);
             } else {
-                _parts[] = this.newPart($name, (string)$value);
+                _parts ~= this.newPart($name, (string)$value);
             }
         } else {
             _hasComplexPart = true;
-            _parts[] = $name;
+            _parts ~= $name;
         }
 
         return this;

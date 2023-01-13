@@ -177,7 +177,7 @@ class Response : Message : IResponse
             $normalized = strtolower($name);
 
             if (isset(this.headers[$name])) {
-                this.headers[$name][] = $value;
+                this.headers[$name] ~= $value;
             } else {
                 this.headers[$name] = (array)$value;
                 this.headerNames[$normalized] = $name;

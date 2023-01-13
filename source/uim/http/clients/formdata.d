@@ -82,11 +82,11 @@ class FormData : Countable {
             } elseif (is_resource(myValue)) {
                 this.addFile(myName, myValue);
             } else {
-                _parts[] = this.newPart(myName, (string)myValue);
+                _parts ~= this.newPart(myName, (string)myValue);
             }
         } else {
             _hasComplexPart = true;
-            _parts[] = myName;
+            _parts ~= myName;
         }
 
         return this;

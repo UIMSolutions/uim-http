@@ -280,7 +280,7 @@ class Oauth
         $pairs = _normalizeData($args);
         $data = null;
         foreach ($pairs as $pair) {
-            $data[] = implode("=", $pair);
+            $data ~= implode("=", $pair);
         }
         sort($data, SORT_STRING);
 
@@ -311,7 +311,7 @@ class Oauth
                 uksort($value, "strcmp");
                 $data = array_merge($data, _normalizeData($value, $key));
             } else {
-                $data[] = [$key, $value];
+                $data ~= [$key, $value];
             }
         }
 
@@ -327,7 +327,7 @@ class Oauth
         $out = "OAuth ";
         $params = null;
         foreach ($data as $key: $value) {
-            $params[] = $key ~ "="" ~ _encode((string)$value) ~ """;
+            $params ~= $key ~ "="" ~ _encode((string)$value) ~ """;
         }
         $out ~= implode(",", $params);
 
