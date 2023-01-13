@@ -1,4 +1,4 @@
-module uim.cake.https;
+module uim.https;
 
 @safe:
 import uim.cake;
@@ -33,7 +33,7 @@ import uim.cake;
  *
  * You can use the "cookieJar" constructor option to provide a custom
  * cookie jar instance you"ve restored from cache/disk. By default,
- * an empty instance of {@link uim.cake.Http\Client\CookieCollection} will be created.
+ * an empty instance of {@link uim.http\Client\CookieCollection} will be created.
  *
  * ### Sending request bodies
  *
@@ -141,8 +141,8 @@ class Client : ClientInterface
      *   Defaults to true.
      * - redirect - Number of redirects to follow. Defaults to false.
      * - adapter - The adapter class name or instance. Defaults to
-     *   uim.cake.Http\Client\Adapter\Curl if `curl` extension is loaded else
-     *   uim.cake.Http\Client\Adapter\Stream.
+     *   uim.http\Client\Adapter\Curl if `curl` extension is loaded else
+     *   uim.http\Client\Adapter\Stream.
      * - protocolVersion - The HTTP protocol version to use. Defaults to 1.1
      *
      * @param array<string, mixed> myConfig Config options for scoped clients.
@@ -213,7 +213,7 @@ class Client : ClientInterface
     /**
      * Get the cookies stored in the Client.
      *
-     * @return uim.cake.http.Cookie\CookieCollection
+     * @return uim.http.Cookie\CookieCollection
      */
     CookieCollection cookies() {
         return _cookies;
@@ -222,7 +222,7 @@ class Client : ClientInterface
     /**
      * Adds a cookie to the Client collection.
      *
-     * @param uim.cake.http.Cookie\ICookie $cookie Cookie object.
+     * @param uim.http.Cookie\ICookie $cookie Cookie object.
      * @return this
      * @throws \InvalidArgumentException
      */
@@ -473,7 +473,7 @@ class Client : ClientInterface
      *
      * @param string method The HTTP method being mocked.
      * @param string myUrl The URL being matched. See above for examples.
-     * @param uim.cake.http.Client\Response $response The response that matches the request.
+     * @param uim.http.Client\Response $response The response that matches the request.
      * @param array<string, mixed> myOptions See above.
      */
     static void addMockResponse(string method, string myUrl, Response $response, array myOptions = null) {
@@ -627,7 +627,7 @@ class Client : ClientInterface
      * Uses the authentication type to choose the correct strategy
      * and use its methods to add headers.
      *
-     * @param uim.cake.http.Client\Request myRequest The request to modify.
+     * @param uim.http.Client\Request myRequest The request to modify.
      * @param array<string, mixed> myOptions Array of options containing the "auth" key.
      * returns DHTPRequest The updated request object.
      */
@@ -645,7 +645,7 @@ class Client : ClientInterface
      * Uses the authentication type to choose the correct strategy
      * and use its methods to add headers.
      *
-     * @param uim.cake.http.Client\Request myRequest The request to modify.
+     * @param uim.http.Client\Request myRequest The request to modify.
      * @param array<string, mixed> myOptions Array of options containing the "proxy" key.
      * returns DHTPRequest The updated request object.
      */

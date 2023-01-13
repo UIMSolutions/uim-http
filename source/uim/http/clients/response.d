@@ -268,7 +268,7 @@ class Response : Message : IResponse
      * This method exposes the response"s CookieCollection
      * instance allowing you to interact with cookie objects directly.
      *
-     * @return uim.cake.http.Cookie\CookieCollection
+     * @return uim.http.Cookie\CookieCollection
      */
     CookieCollection getCookieCollection() {
         this.buildCookieCollection();
@@ -328,7 +328,7 @@ class Response : Message : IResponse
         this.buildCookieCollection();
 
         $out = null;
-        /** @var array<uim.cake.Http\Cookie\Cookie> $cookies */
+        /** @var array<uim.http\Cookie\Cookie> $cookies */
         $cookies = this.cookies;
         foreach ($cookies as $cookie) {
             $out[$cookie.getName()] = $cookie.toArray();

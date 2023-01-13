@@ -3,9 +3,9 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.http.Client;
+module uim.http.Client;
 
-import uim.cake.http.Cookie\CookieCollection;
+import uim.http.Cookie\CookieCollection;
 use Laminas\Diactoros\MessageTrait;
 use Laminas\Diactoros\Stream;
 use Psr\Http\messages.IResponse;
@@ -280,7 +280,7 @@ class Response : Message : IResponse
      * This method exposes the response"s CookieCollection
      * instance allowing you to interact with cookie objects directly.
      *
-     * @return uim.cake.http.Cookie\CookieCollection
+     * @return uim.http.Cookie\CookieCollection
      */
     function getCookieCollection(): CookieCollection
     {
@@ -341,7 +341,7 @@ class Response : Message : IResponse
         this.buildCookieCollection();
 
         $out = null;
-        /** @var array<uim.cake.Http\Cookie\Cookie> $cookies */
+        /** @var array<uim.http\Cookie\Cookie> $cookies */
         $cookies = this.cookies;
         foreach ($cookies as $cookie) {
             $out[$cookie.getName()] = $cookie.toArray();

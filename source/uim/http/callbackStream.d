@@ -1,4 +1,4 @@
-module uim.cake.https;
+module uim.https;
 
 @safe:
 import uim.cake;

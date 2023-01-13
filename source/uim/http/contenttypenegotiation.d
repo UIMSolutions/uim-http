@@ -1,5 +1,5 @@
 
-module uim.cake.Http;
+module uim.http;
 
 use Psr\Http\messages.RequestInterface;
 

@@ -3,7 +3,7 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.http.clients.adapters;
+module uim.http.clients.adapters;
 
 @safe:
 import uim.cake;
@@ -75,7 +75,7 @@ class Stream : AdapterInterface
      *
      * @param array $headers The list of headers from the request(s)
      * @param string $content The response content.
-     * @return array<uim.cake.Http\Client\Response> The list of responses from the request(s)
+     * @return array<uim.http\Client\Response> The list of responses from the request(s)
      */
     array createResponses(array $headers, string $content) {
         $indexes = $responses = null;
@@ -139,7 +139,7 @@ class Stream : AdapterInterface
      * Builds the request content based on the request object.
      *
      * If the $request.body() is a string, it will be used as is.
-     * Array data will be processed with {@link uim.cake.Http\Client\FormData}
+     * Array data will be processed with {@link uim.http\Client\FormData}
      *
      * @param \Psr\Http\messages.RequestInterface $request The request being sent.
      * @param array<string, mixed> $options Array of options to use.

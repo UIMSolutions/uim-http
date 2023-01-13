@@ -3,11 +3,11 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.Http;
+module uim.http;
 
 import uim.cake.core.App;
-import uim.cake.http.Middleware\ClosureDecoratorMiddleware;
-import uim.cake.http.Middleware\DoublePassDecoratorMiddleware;
+import uim.http.Middleware\ClosureDecoratorMiddleware;
+import uim.http.Middleware\DoublePassDecoratorMiddleware;
 use Closure;
 use Countable;
 use LogicException;
@@ -19,7 +19,7 @@ use SeekableIterator;
 
 /**
  * Provides methods for creating and manipulating a "queue" of middlewares.
- * This queue is used to process a request and generate response via uim.cake.Http\Runner.
+ * This queue is used to process a request and generate response via uim.http\Runner.
  *
  * @template-implements \SeekableIterator<int, \Psr\Http\servers.IMiddleware>
  */

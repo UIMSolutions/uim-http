@@ -5,7 +5,7 @@
 
 
  * @since         3.3.0
-  */module uim.cake.Http;
+  */module uim.http;
 
 import uim.cake.core.IHttpApplication;
 import uim.cake.core.IPluginApplication;
@@ -39,7 +39,7 @@ class Server : IEventDispatcher
      * Constructor
      *
      * @param uim.cake.Core\IHttpApplication $app The application to use.
-     * @param uim.cake.http.Runner|null $runner Application runner.
+     * @param uim.http.Runner|null $runner Application runner.
      */
     this(IHttpApplication $app, ?Runner $runner = null) {
         this.app = $app;
@@ -58,7 +58,7 @@ class Server : IEventDispatcher
      * - Run the middleware queue including the application.
      *
      * @param \Psr\Http\messages.IServerRequest|null $request The request to use or null.
-     * @param uim.cake.http.MiddlewareQueue|null $middlewareQueue MiddlewareQueue or null.
+     * @param uim.http.MiddlewareQueue|null $middlewareQueue MiddlewareQueue or null.
      * @return \Psr\Http\messages.IResponse
      * @throws \RuntimeException When the application does not make a response.
      */

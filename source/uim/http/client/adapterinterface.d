@@ -3,7 +3,7 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.http.Client;
+module uim.http.Client;
 
 use Psr\Http\messages.RequestInterface;
 
@@ -17,7 +17,7 @@ interface AdapterInterface
      *
      * @param \Psr\Http\messages.RequestInterface $request The request object to send.
      * @param array<string, mixed> $options Array of options for the stream.
-     * @return array<uim.cake.Http\Client\Response> Array of populated Response objects
+     * @return array<uim.http\Client\Response> Array of populated Response objects
      */
     array send(RequestInterface $request, STRINGAA someOptions);
 }

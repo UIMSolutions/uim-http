@@ -5,7 +5,7 @@
 
 
  * @since         4.4.0
-  */module uim.cake.Http;
+  */module uim.http;
 
 use Psr\Http\messages.UriInterface;
 use UnexpectedValueException;

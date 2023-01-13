@@ -3,7 +3,7 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.http.clients.adapters;
+module uim.http.clients.adapters;
 
 @safe:
 import uim.cake;
@@ -14,7 +14,7 @@ use Psr\Http\messages.RequestInterface;
 /**
  * : sending Cake\Http\Client\Request via ext/curl.
  *
- * In addition to the standard options documented in {@link uim.cake.Http\Client},
+ * In addition to the standard options documented in {@link uim.http\Client},
  * this adapter supports all available curl options. Additional curl options
  * can be set via the `curl` option key when making requests or configuring
  * a client.
@@ -172,7 +172,7 @@ class Curl : AdapterInterface
      *
      * @param resource|\CurlHandle $handle Curl handle
      * @param string $responseData string The response data from curl_exec
-     * @return array<uim.cake.Http\Client\Response>
+     * @return array<uim.http\Client\Response>
      * @psalm-suppress UndefinedDocblockClass
      */
     protected array createResponse($handle, $responseData) {

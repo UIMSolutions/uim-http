@@ -1,4 +1,4 @@
-module uim.cake.http.clients;
+module uim.http.clients;
 
 @safe:
 import uim.cake;
@@ -33,7 +33,7 @@ class FormData : Countable {
     /**
      * The parts in the form data.
      *
-     * @var array<uim.cake.Http\Client\FormDataPart>
+     * @var array<uim.http\Client\FormDataPart>
      */
     protected _parts = null;
 
@@ -70,7 +70,7 @@ class FormData : Countable {
      * If the myValue is an array, multiple parts will be added.
      * Files will be read from their current position and saved in memory.
      *
-     * @param uim.cake.http.Client\FormDataPart|string myName The name of the part to add,
+     * @param uim.http.Client\FormDataPart|string myName The name of the part to add,
      *   or the part data object.
      * @param mixed myValue The value for the part.
      * @return this

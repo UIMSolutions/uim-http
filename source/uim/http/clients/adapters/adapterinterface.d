@@ -3,7 +3,7 @@
 	License: Subject to the terms of the Apache 2.0 license, as written in the included LICENSE.txt file.  
 	Authors: Ozan Nurettin Süel (Sicherheitsschmiede)                                                      
 **********************************************************************************************************/
-module uim.cake.http.clients;
+module uim.http.clients;
 
 @safe:
 import uim.cake;
@@ -15,7 +15,7 @@ interface IAdapter {
      *
      * @param \Psr\Http\messages.IRequest myRequest The request object to send.
      * @param array<string, mixed> myOptions Array of options for the stream.
-     * @return array<uim.cake.Http\Client\Response> Array of populated Response objects
+     * @return array<uim.http\Client\Response> Array of populated Response objects
      */
     array send(IRequest myRequest, array myOptions);
 }

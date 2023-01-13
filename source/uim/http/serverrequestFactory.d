@@ -1,4 +1,4 @@
-module uim.cake.https;
+module uim.https;
 
 @safe:
 import uim.cake;
@@ -27,7 +27,7 @@ abstract class ServerRequestFactory : ServerRequestFactoryInterface
      * @param array|null $parsedBody _POST superglobal
      * @param array|null $cookies _COOKIE superglobal
      * @param array|null myfiles _FILES superglobal
-     * @return uim.cake.http.ServerRequest
+     * @return uim.http.ServerRequest
      * @throws \InvalidArgumentException for invalid file values
      */
     static function fromGlobals(
@@ -85,8 +85,8 @@ abstract class ServerRequestFactory : ServerRequestFactoryInterface
      * into array for PUT/PATCH/DELETE requests.
      *
      * @param array $parsedBody Parsed body.
-     * @param uim.cake.http.ServerRequest myRequest Request instance.
-     * @return uim.cake.http.ServerRequest
+     * @param uim.http.ServerRequest myRequest Request instance.
+     * @return uim.http.ServerRequest
      */
     protected static function marshalBodyAndRequestMethod(array $parsedBody, ServerRequest myRequest): ServerRequest
     {
@@ -126,8 +126,8 @@ abstract class ServerRequestFactory : ServerRequestFactoryInterface
      * Process uploaded files and move things onto the parsed body.
      *
      * @param array myfiles Files array for normalization and merging in parsed body.
-     * @param uim.cake.http.ServerRequest myRequest Request instance.
-     * @return uim.cake.http.ServerRequest
+     * @param uim.http.ServerRequest myRequest Request instance.
+     * @return uim.http.ServerRequest
      */
     protected static function marshalFiles(array myfiles, ServerRequest myRequest): ServerRequest
     {

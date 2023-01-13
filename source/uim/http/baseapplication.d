@@ -6,7 +6,7 @@
 
  * @since         3.3.0
   */
-module uim.cake.Http;
+module uim.http;
 
 import uim.cake.consoles.CommandCollection;
 import uim.cake.controllers.ControllerFactory;
