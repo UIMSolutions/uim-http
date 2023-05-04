@@ -108,14 +108,14 @@ class Client : ClientInterface
     /**
      * Mock adapter for stubbing requests in tests.
      *
-     * var DHTP.Client\Adapter\Mock|null
+     * var DHTPClient\Adapter\Mock|null
      */
     protected static _mockAdapter;
 
     /**
      * Adapter for sending requests.
      *
-     * var DHTP.Client\IAdapter
+     * var DHTPClient\IAdapter
      */
     protected _adapter;
 
@@ -575,10 +575,10 @@ class Client : ClientInterface
         }
 
         myRequest = new Request(myUrl, $method, $headers, myData);
-        /** var DHTP.Client\Request myRequest */
+        /** var DHTPClient\Request myRequest */
         myRequest = myRequest.withProtocolVersion(this.getConfig("protocolVersion"));
         $cookies = myOptions["cookies"] ?? [];
-        /** var DHTP.Client\Request myRequest */
+        /** var DHTPClient\Request myRequest */
         myRequest = _cookies.addToRequest(myRequest, $cookies);
         if (isset(myOptions["auth"])) {
             myRequest = _addAuthentication(myRequest, myOptions);
@@ -627,13 +627,13 @@ class Client : ClientInterface
      * Uses the authentication type to choose the correct strategy
      * and use its methods to add headers.
      *
-     * @param uim.http.Client\Request myRequest The request to modify.
+     * @param DHTPRequest myRequest The request to modify.
      * @param array<string, mixed> myOptions Array of options containing the "auth" key.
      * returns DHTPRequest The updated request object.
      */
     protected Request _addAuthentication(Request myRequest, array myOptions) {
         $auth = myOptions["auth"];
-        /** var DHTP.Client\Auth\Basic $adapter */
+        /** var DHTPClient\Auth\Basic $adapter */
         $adapter = _createAuth($auth, myOptions);
 
         return $adapter.authentication(myRequest, myOptions["auth"]);
@@ -645,13 +645,13 @@ class Client : ClientInterface
      * Uses the authentication type to choose the correct strategy
      * and use its methods to add headers.
      *
-     * @param uim.http.Client\Request myRequest The request to modify.
+     * @param DHTPRequest myRequest The request to modify.
      * @param array<string, mixed> myOptions Array of options containing the "proxy" key.
      * returns DHTPRequest The updated request object.
      */
     protected Request _addProxy(Request myRequest, array myOptions) {
         $auth = myOptions["proxy"];
-        /** var DHTP.Client\Auth\Basic $adapter */
+        /** var DHTPClient\Auth\Basic $adapter */
         $adapter = _createAuth($auth, myOptions);
 
         return $adapter.proxyAuthentication(myRequest, myOptions["proxy"]);

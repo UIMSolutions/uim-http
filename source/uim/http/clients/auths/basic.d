@@ -14,16 +14,16 @@ class Basic
     /**
      * Add Authorization header to the request.
      *
-     * @param uim.http.Client\Request $request Request instance.
+     * @param DHTPRequest $request Request instance.
      * @param array $credentials Credentials.
      * returns DHTPRequest The updated request.
      * @see https://www.ietf.org/rfc/rfc2617.txt
      */
-    function authentication(Request $request, array $credentials): Request
+    function authentication(DHTPRequest aRequest, array $credentials): Request
     {
         if (isset($credentials["username"], $credentials["password"])) {
             $value = _generateHeader($credentials["username"], $credentials["password"]);
-            /** var DHTP.Client\Request $request */
+            /** var DHTPClient\Request $request */
             $request = $request.withHeader("Authorization", $value);
         }
 
@@ -33,16 +33,16 @@ class Basic
     /**
      * Proxy Authentication
      *
-     * @param uim.http.Client\Request $request Request instance.
+     * @param DHTPRequest $request Request instance.
      * @param array $credentials Credentials.
      * returns DHTPRequest The updated request.
      * @see https://www.ietf.org/rfc/rfc2617.txt
      */
-    function proxyAuthentication(Request $request, array $credentials): Request
+    function proxyAuthentication(DHTPRequest aRequest, array $credentials): Request
     {
         if (isset($credentials["username"], $credentials["password"])) {
             $value = _generateHeader($credentials["username"], $credentials["password"]);
-            /** var DHTP.Client\Request $request */
+            /** var DHTPClient\Request $request */
             $request = $request.withHeader("Proxy-Authorization", $value);
         }
 

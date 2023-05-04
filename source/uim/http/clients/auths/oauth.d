@@ -21,12 +21,12 @@ class Oauth
     /**
      * Add headers for Oauth authorization.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $credentials Authentication credentials.
      * returns DHTPRequest The updated request.
      * @throws uim.cake.Core\exceptions.UIMException On invalid signature types.
      */
-    function authentication(Request $request, array $credentials): Request
+    function authentication(DHTPRequest aRequest, array $credentials): Request
     {
         if (!isset($credentials["consumerKey"])) {
             return $request;
@@ -83,11 +83,11 @@ class Oauth
      * You should only ever use PLAINTEXT when dealing with SSL
      * services.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $credentials Authentication credentials.
      * @return string Authorization header.
      */
-    protected string _plaintext(Request $request, array $credentials) {
+    protected string _plaintext(DHTPRequest aRequest, array $credentials) {
         $values = [
             "oauth_version": "1.0",
             "oauth_nonce": uniqid(),
@@ -111,10 +111,10 @@ class Oauth
      *
      * This method is suitable for plain HTTP or HTTPS.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $credentials Authentication credentials.
      */
-    protected string _hmacSha1(Request $request, array $credentials) {
+    protected string _hmacSha1(DHTPRequest aRequest, array $credentials) {
         $nonce = $credentials["nonce"] ?? uniqid();
         $timestamp = $credentials["timestamp"] ?? time();
         $values = [
@@ -150,12 +150,12 @@ class Oauth
      *
      * This method is suitable for plain HTTP or HTTPS.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $credentials Authentication credentials.
      * @return string
      * @throws \RuntimeException
      */
-    protected string _rsaSha1(Request $request, array $credentials) {
+    protected string _rsaSha1(DHTPRequest aRequest, array $credentials) {
         if (!function_exists("openssl_pkey_get_private")) {
             throw new RuntimeException("RSA-SHA1 signature method requires the OpenSSL extension.");
         }
@@ -225,10 +225,10 @@ class Oauth
      * - The request URL (without querystring) is normalized.
      * - The HTTP method, URL and request parameters are concatenated and returned.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $oauthValues Oauth values.
      */
-    string baseString(Request $request, array $oauthValues) {
+    string baseString(DHTPRequest aRequest, array $oauthValues) {
         $parts = [
             $request.getMethod(),
             _normalizedUrl($request.getUri()),
@@ -263,11 +263,11 @@ class Oauth
      * - URL encode keys + values.
      * - Sort keys & values by byte value.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array $oauthValues Oauth values.
      * @return string sorted and normalized values
      */
-    protected string _normalizedParams(Request $request, array $oauthValues) {
+    protected string _normalizedParams(DHTPRequest aRequest, array $oauthValues) {
         $query = parse_url((string)$request.getUri(), PHP_URL_QUERY);
         parse_str((string)$query, $queryArgs);
 

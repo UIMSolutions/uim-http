@@ -9,14 +9,9 @@ import uim.cake;
  * Generally not directly constructed, but instead used by {@link uim.http\Client}
  * when $options["auth"]["type"] is "digest"
  */
-class Digest
-{
-    /**
-     * Instance of Cake\Http\Client
-     *
-     * var DHTP.Client
-     */
-    protected _client;
+class Digest {
+    // Instance of Cake\Http\Client
+    protected DHTPClient _client;
 
     /**
      * Constructor
@@ -31,13 +26,12 @@ class Digest
     /**
      * Add Authorization header to the request.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array<string, mixed> $credentials Authentication credentials.
-     * returns DHTPRequest The updated request.
+     * returns The updated request.
      * @see https://www.ietf.org/rfc/rfc2617.txt
      */
-    function authentication(Request $request, array $credentials): Request
-    {
+    DHTPRequest authentication(DHTPRequest aRequest, array $credentials) {
         if (!isset($credentials["username"], $credentials["password"])) {
             return $request;
         }
@@ -59,11 +53,11 @@ class Digest
      * another request without authentication to get authentication
      * challenge.
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param  $request The request object.
      * @param array $credentials Authentication credentials.
      * @return array modified credentials.
      */
-    protected array _getServerInfo(Request $request, array $credentials) {
+    protected array _getServerInfo(DHTPRequest aRequest, array $credentials) {
         $response = _client.get(
             (string)$request.getUri(),
             [],
@@ -92,10 +86,10 @@ class Digest
     /**
      * Generate the header Authorization
      *
-     * @param uim.http.Client\Request $request The request object.
+     * @param DHTPRequest $request The request object.
      * @param array<string, mixed> $credentials Authentication credentials.
      */
-    protected string _generateHeader(Request $request, array $credentials) {
+    protected string _generateHeader(DHTPRequest aRequest, array $credentials) {
         $path = $request.getUri().getPath();
         $a1 = md5($credentials["username"] ~ ":" ~ $credentials["realm"] ~ ":" ~ $credentials["password"]);
         $a2 = md5($request.getMethod() ~ ":" ~ $path);

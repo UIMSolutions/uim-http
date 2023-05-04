@@ -16,33 +16,20 @@ use Psr\Http\messages.UploadedFileInterface;
  * Used by Http\Client to upload POST/PUT data
  * and files.
  */
-class FormData : Countable
-{
-    /**
-     * Boundary marker.
-     */
+class FormData : Countable {
+    // Boundary marker.
     protected string _boundary;
 
-    /**
-     * Whether this formdata object has attached files.
-     */
+    // Whether this formdata object has attached files.
     protected bool _hasFile = false;
 
-    /**
-     * Whether this formdata object has a complex part.
-     */
+    // Whether this formdata object has a complex part.
     protected bool _hasComplexPart = false;
 
-    /**
-     * The parts in the form data.
-     *
-     * @var array<uim.http\Client\FormDataPart>
-     */
-    protected _parts = null;
+    // The parts in the form data.
+    protected DHTPFormDataPart[] _parts = null;
 
-    /**
-     * Get the boundary marker
-     */
+    // Get the boundary marker
     string boundary() {
         if (_boundary) {
             return _boundary;
@@ -55,12 +42,11 @@ class FormData : Countable
     /**
      * Method for creating new instances of Part
      *
-     * @param string aName The name of the part.
+     * aName - The name of the part.
      * @param string aValue The value to add.
      * returns DHTPFormDataPart
      */
-    function newPart(string aName, string aValue): DHTPFormDataPart
-    {
+    DHTPFormDataPart newPart(string aName, string aValue) {
         return new FormDataPart($name, $value);
     }
 

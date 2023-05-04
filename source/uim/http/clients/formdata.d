@@ -33,7 +33,7 @@ class FormData : Countable {
     /**
      * The parts in the form data.
      *
-     * @var array<uim.http\Client\FormDataPart>
+     * @var array<DHTPFormDataPart>
      */
     protected _parts = null;
 
