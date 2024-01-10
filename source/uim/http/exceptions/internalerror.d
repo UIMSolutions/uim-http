@@ -15,6 +15,9 @@ class InternalErrorException : HttpException {
      * @param int statusCode Status code, defaults to 500
      * @param \Throwable|null previousException The previous exception.
      */
+
+    protected int _defaultCode = 500;
+    
     this(string amessage = null, int statusCode = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Internal Server Error";

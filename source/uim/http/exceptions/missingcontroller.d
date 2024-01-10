@@ -4,10 +4,7 @@ import uim.cake;
 
 @safe:
 
-/**
- * Missing Controller exception - used when a controller
- * cannot be found.
- */
+// Exception used when a controller cannot be found.
 class MissingControllerException : UimException {
  
     protected int _defaultCode = 404;

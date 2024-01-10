@@ -15,8 +15,6 @@ class ServiceUnavailableException : HttpException {
      * Constructor
      * Params:
      * string|null aMessage If no message is given `service Unavailable' will be the message
-     * @param int statusCode Status code, defaults to 503
-     * @param \Throwable|null previousException The previous exception.
      */
     this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
