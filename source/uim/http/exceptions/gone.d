@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.gone;
+module uim.http.exceptions.gone;
 
 import uim.cake;
 

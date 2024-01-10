@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.unauthorized;
+module uim.http.exceptions.unauthorized;
 
 import uim.cake;
 

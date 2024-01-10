@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.badrequest;
+module uim.http.exceptions.badrequest;
 
 import uim.cake;
 

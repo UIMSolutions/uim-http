@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.invalidcsrftoken;
+module uim.http.exceptions.invalidcsrftoken;
 
 import uim.cake;
 

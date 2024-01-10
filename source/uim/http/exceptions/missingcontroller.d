@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.missingcontroller;
+module uim.http.exceptions.missingcontroller;
 
 import uim.cake;
 

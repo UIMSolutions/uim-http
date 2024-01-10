@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.unavailableforlegalreasons;
+module uim.http.exceptions.unavailableforlegalreasons;
 
 import uim.cake;
 

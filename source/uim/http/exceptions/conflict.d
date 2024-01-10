@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.conflict;
+module uim.http.exceptions.conflict;
 
 import uim.cake;
 

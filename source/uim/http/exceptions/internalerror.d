@@ -1,4 +1,4 @@
-module uim.cake.http\Exception;
+module uim.http\Exception;
 
 import uim.cake;
 

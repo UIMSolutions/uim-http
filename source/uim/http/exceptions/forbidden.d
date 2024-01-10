@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.forbidden;
+module uim.http.exceptions.forbidden;
 
 import uim.cake;
 

@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.notimplemented;
+module uim.http.exceptions.notimplemented;
 
 import uim.cake;
 

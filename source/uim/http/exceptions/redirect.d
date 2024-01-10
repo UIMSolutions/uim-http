@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.redirect;
+module uim.http.exceptions.redirect;
 
 import uim.cake;
 

@@ -1,4 +1,4 @@
-module uim.cake.http.exceptions.notacceptable;
+module uim.http.exceptions.notacceptable;
 
 import uim.cake;
 
