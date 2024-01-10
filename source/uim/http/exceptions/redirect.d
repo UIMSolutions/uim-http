@@ -15,7 +15,7 @@ import uim.cake;
  * ```
  *
  * Additional headers can also be provided in the constructor, or
- * using the setHeaders() method.
+ * using the headers() method.
  */
 class RedirectException : HttpException {
     /**
@@ -28,6 +28,6 @@ class RedirectException : HttpException {
     this(string atarget, int $code = 302, array headerToSend = []) {
         super($target, $code);
 
-        headerToSend.byKeyValue.each!(kv => this.setHeader(kv.key, (array)kv.value));
+        headerToSend.byKeyValue.each!(kv => this.header(kv.key, (array)kv.value));
     }
 }

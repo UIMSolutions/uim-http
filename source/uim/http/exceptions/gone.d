@@ -16,12 +16,12 @@ class GoneException : HttpException {
      * Params:
      * string|null aMessage If no message is given 'Gone' will be the message
      * @param int $code Status code, defaults to 410
-     * @param \Throwable|null $previous The previous exception.
+     * @param \Throwable|null previousException The previous exception.
      */
     this(string aMessage = null, int $code = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Gone";
         }
-        super(aMessage, $code, $previous);
+        super(aMessage, $code, previousException);
     }
 }

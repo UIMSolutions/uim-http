@@ -16,12 +16,12 @@ class ServiceUnavailableException : HttpException {
      * Params:
      * string|null aMessage If no message is given `service Unavailable' will be the message
      * @param int $code Status code, defaults to 503
-     * @param \Throwable|null $previous The previous exception.
+     * @param \Throwable|null previousException The previous exception.
      */
     this(string aMessage = null, int $code = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Service Unavailable";
         }
-        super(aMessage, $code, $previous);
+        super(aMessage, $code, previousException);
     }
 }

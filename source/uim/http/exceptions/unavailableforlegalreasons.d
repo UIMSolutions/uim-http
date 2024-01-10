@@ -15,12 +15,12 @@ class UnavailableForLegalReasonsException : HttpException {
      * Constructor
      * Params:
      * string|null aMessage If no message is given 'Unavailable For Legal Reasons' will be the message
-     * @param \Throwable|null $previous The previous exception.
+     * @param \Throwable|null previousException The previous exception.
      */
     this(string amessage = null, int statusCode = 451, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Unavailable For Legal Reasons";
         }
-        super(aMessage, statusCode, $previous);
+        super(aMessage, statusCode, previousException);
     }
 }
