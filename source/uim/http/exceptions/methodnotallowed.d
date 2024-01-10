@@ -1,4 +1,4 @@
-module uim.http\Exception;
+module source.uim.http.exceptions.methodnotallowed;
 
 import uim.http;
 

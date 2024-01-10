@@ -26,6 +26,7 @@ class RedirectException : HttpException {
     this(string redirectUrl, int statusCode = 302, array headerToSend = []) {
         super(redirectUrl, statusCode);
 
-        headerToSend.byKeyValue.each!(kv => this.header(kv.key, (array)kv.value));
+        headerToSend.byKeyValue
+            .each!(kv => this.header(kv.key, kv.value));
     }
 }

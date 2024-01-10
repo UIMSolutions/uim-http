@@ -4,9 +4,7 @@ import uim.http;
 
 @safe:
 
-/**
- * Represents an HTTP 409 error.
- */
+// Represents an HTTP 409 error.
 class ConflictException : HttpException {
  
     protected int _defaultCode = 409;
