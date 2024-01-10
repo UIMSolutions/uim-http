@@ -1,0 +1,1 @@
+module uim.consoles.tests;
