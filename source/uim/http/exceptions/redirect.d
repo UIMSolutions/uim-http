@@ -1,6 +1,6 @@
 module uim.http.exceptions.redirect;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

@@ -1,6 +1,6 @@
 module uim.http.exceptions.invalidcsrftoken;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

@@ -1,6 +1,6 @@
 module uim.http.exceptions.missingcontroller;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

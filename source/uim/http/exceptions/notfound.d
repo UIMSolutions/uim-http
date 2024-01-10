@@ -1,6 +1,6 @@
 module uim.http.exceptions.notfound;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

@@ -1,6 +1,6 @@
 module uim.http.exceptions.conflict;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

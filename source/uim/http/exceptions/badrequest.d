@@ -1,6 +1,6 @@
 module uim.http.exceptions.badrequest;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 

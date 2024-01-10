@@ -1,6 +1,6 @@
 module uim.http\Exception;
 
-import uim.cake;
+import uim.http;
 
 @safe:
 
