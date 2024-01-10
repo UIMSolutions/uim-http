@@ -15,13 +15,13 @@ class UnauthorizedException : HttpException {
      * Constructor
      * Params:
      * string|null aMessage If no message is given 'Unauthorized' will be the message
-     * @param int $code Status code, defaults to 401
+     * @param int statusCode Status code, defaults to 401
      * @param \Throwable|null previousException The previous exception.
      */
-    this(string aMessage = null, int $code = null, Throwable previousException = null) {
+    this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Unauthorized";
         }
-        super(aMessage, $code, previousException);
+        super(aMessage, statusCode, previousException);
     }
 }

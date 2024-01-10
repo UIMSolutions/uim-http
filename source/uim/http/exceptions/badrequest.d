@@ -18,6 +18,6 @@ class BadRequestException : HttpException {
         if (aMessage.isEmpty) {
             aMessage = "Bad Request";
         }
-        super(aMessage, $code, previousException);
+        super(aMessage, statusCode, previousException);
     }
 }

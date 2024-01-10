@@ -22,11 +22,11 @@ class RedirectException : HttpException {
      * Constructor
      * Params:
      * string atarget The URL to redirect to.
-     * @param int $code The exception code that will be used as a HTTP status code
+     * @param int statusCode The exception code that will be used as a HTTP status code
      * headerToSend - The headers that should be sent in the unauthorized challenge response.
      */
-    this(string atarget, int $code = 302, array headerToSend = []) {
-        super($target, $code);
+    this(string atarget, int statusCode = 302, array headerToSend = []) {
+        super($target, statusCode);
 
         headerToSend.byKeyValue.each!(kv => this.header(kv.key, (array)kv.value));
     }

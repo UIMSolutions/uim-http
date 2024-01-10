@@ -15,13 +15,13 @@ class ConflictException : HttpException {
      * Constructor
      * Params:
      * string|null aMessage If no message is given 'Conflict' will be the message
-     * @param int $code Status code, defaults to 409
+     * @param int statusCode Status code, defaults to 409
      * @param \Throwable|null previousException The previous exception.
      */
-    this(string amessage = null, int $code = null, Throwable previousException = null) {
+    this(string amessage = null, int statusCode = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {
             aMessage = "Conflict";
         }
-        super(aMessage, $code, previousException);
+        super(aMessage, statusCode, previousException);
     }
 }
