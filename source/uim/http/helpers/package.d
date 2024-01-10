@@ -1,1 +1,1 @@
-module uim.consoles.helpers;
+module uim.http.helpers;

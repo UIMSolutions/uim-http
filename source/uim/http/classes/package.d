@@ -1,5 +1,5 @@
-module uim.consoles.classes;
+module uim.http.classes;
 
 public {
-    import uim.consoles.classes.commands;
+    import uim.http.classes.commands;
 }

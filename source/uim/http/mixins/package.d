@@ -1,1 +1,1 @@
-module uim.consoles.mixins;
+module uim.http.mixins;

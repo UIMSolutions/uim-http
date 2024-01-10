@@ -1,1 +1,1 @@
-module uim.consoles.tests;
+module uim.http.tests;

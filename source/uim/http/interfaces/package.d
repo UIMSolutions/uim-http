@@ -1,8 +1,8 @@
-module uim.consoles.interfaces;
+module uim.http.interfaces;
 
 public {
-    import uim.consoles.interfaces.command;
-    import uim.consoles.interfaces.commandcollectionaware;
-    import uim.consoles.interfaces.commandfactory;
-    import uim.consoles.interfaces.console;
+    import uim.http.interfaces.command;
+    import uim.http.interfaces.commandcollectionaware;
+    import uim.http.interfaces.commandfactory;
+    import uim.http.interfaces.console;
 }
