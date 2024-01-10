@@ -11,15 +11,10 @@ class InvalidCsrfTokenException : HttpException {
  
     protected int _defaultCode = 403;
 
-    /**
-     * Constructor
-     * Params:
-     * string|null aMessage If no message is given 'Invalid CSRF Token' will be the message
-     */
-    this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
-        if (aMessage.isEmpty) {
-            aMessage = "Invalid CSRF Token";
+    this(string exceptionMessage = null, int statusCode = null, Throwable previousException = null) {
+        if (exceptionMessage.isEmpty) {
+            exceptionMessage = "Invalid CSRF Token";
         }
-        super(aMessage, statusCode, previousException);
+        super(exceptionMessage, statusCode, previousException);
     }
 }

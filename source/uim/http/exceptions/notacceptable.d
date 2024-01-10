@@ -9,15 +9,10 @@ class NotAcceptableException : HttpException {
  
     protected int _defaultCode = 406;
 
-    /**
-     * Constructor
-     * Params:
-     * string|null aMessage If no message is given 'Not Acceptable' will be the message
-     */
-    this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
-        if (aMessage.isEmpty) {
-            aMessage = "Not Acceptable";
+    this(string exceptionMessage = null, int statusCode = null, Throwable previousException = null) {
+        if (exceptionMessage.isEmpty) {
+            exceptionMessage = "Not Acceptable";
         }
-        super(aMessage, statusCode, previousException);
+        super(exceptionMessage, statusCode, previousException);
     }
 }

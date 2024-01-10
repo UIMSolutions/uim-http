@@ -9,15 +9,10 @@ class BadRequestException : HttpException {
  
     protected int _defaultCode = 400;
 
-    /**
-     * Constructor
-     * Params:
-     * string|null aMessage If no message is given 'Bad Request' will be the message
-     */
-    this(string amessage = null, int statusCode = null, Throwable previousException = null) {
-        if (aMessage.isEmpty) {
-            aMessage = "Bad Request";
+    this(string exceptionMessage = null, int statusCode = null, Throwable previousException = null) {
+        if (exceptionMessage.isEmpty) {
+            exceptionMessage = "Bad Request";
         }
-        super(aMessage, statusCode, previousException);
+        super(exceptionMessage, statusCode, previousException);
     }
 }

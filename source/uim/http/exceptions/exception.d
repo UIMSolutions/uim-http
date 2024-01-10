@@ -16,8 +16,6 @@ class HttpException : UimException {
  
     protected int _defaultCode = 500;
 
-    protected Json[string]  aHeaders = [];
-
     // Set a single HTTP response header.
     void header(string headerName, Json headerValue = null) {
         this.headers[headerName] = headerValue;

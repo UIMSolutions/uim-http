@@ -15,7 +15,6 @@ class UnauthorizedException : HttpException {
      * Constructor
      * Params:
      * string|null aMessage If no message is given 'Unauthorized' will be the message
-     * @param int statusCode Status code, defaults to 401
      */
     this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
         if (aMessage.isEmpty) {

@@ -16,10 +16,10 @@ class ServiceUnavailableException : HttpException {
      * Params:
      * string|null aMessage If no message is given `service Unavailable' will be the message
      */
-    this(string aMessage = null, int statusCode = null, Throwable previousException = null) {
-        if (aMessage.isEmpty) {
-            aMessage = "Service Unavailable";
+    this(string exceptionMessage = null, int statusCode = null, Throwable previousException = null) {
+        if (exceptionMessage.isEmpty) {
+            exceptionMessage = "Service Unavailable";
         }
-        super(aMessage, statusCode, previousException);
+        super(exceptionMessage, statusCode, previousException);
     }
 }
