@@ -16,15 +16,9 @@ class Server : IEventDispatcher {
      */
     use EventDispatcherTrait;
 
-    /**
-     * @var \UIM\Core\IHttpApplication
-     */
-    protected IHttpApplication $app;
+    protected IHttpApplication _app;
 
-    /**
-     * @var \UIM\Http\Runner
-     */
-    protected Runner $runner;
+    protected Runner _runner;
 
     /**
      * Constructor
@@ -32,9 +26,9 @@ class Server : IEventDispatcher {
      * \UIM\Core\IHttpApplication $app The application to use.
      * @param \UIM\Http\Runner|null $runner Application runner.
      */
-    this(IHttpApplication $app, ?Runner $runner = null) {
-        this.app = $app;
-        this.runner = $runner ?? new Runner();
+    this(IHttpApplication httpApp, Runner appRunner = null) {
+        _app = httpApp;
+        _runner = appRunner ?? new Runner();
     }
     
     /**

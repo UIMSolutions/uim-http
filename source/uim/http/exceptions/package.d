@@ -1,6 +1,10 @@
 module uim.http.exceptions;
 
 public {
+    import uim.http.exceptions.clients;
+}
+
+public {
     import uim.http.exceptions.badrequest;
     import uim.http.exceptions.conflict;
     import uim.http.exceptions.exception;

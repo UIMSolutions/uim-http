@@ -17,56 +17,35 @@ use IDateTime;
  * Cookie Interface
  */
 interface ICookie {
-    /**
-     * Expires attribute format.
-     */
+    // Expires attribute format.
     const string EXPIRES_FORMAT = "D, d-M-Y H:i:s T";
 
-    /**
-     * SameSite attribute value: Lax
-     */
+    // SameSite attribute value: Lax
     const string SAMESITE_LAX = "Lax";
 
-    /**
-     * SameSite attribute value: Strict
-     */
+    // SameSite attribute value: Strict
     const string SAMESITE_STRICT = "Strict";
 
-    /**
-     * SameSite attribute value: None
-     */
+    // SameSite attribute value: None
     const string SAMESITE_NONE = "None";
 
-    /**
-     * Valid values for "SameSite" attribute.
-     *
-     * @var string[]
-     */
-    const SAMESITE_VALUES = [
+    // Valid values for "SameSite" attribute.
+    const string[] SAMESITE_VALUES = [
         self.SAMESITE_LAX,
         self.SAMESITE_STRICT,
         self.SAMESITE_NONE,
     ];
 
-    /**
-     * Sets the cookie name
-     * Params:
-     * string aName Name of the cookie
-     */
-    static withName(string aName);
+    // Sets the cookie name
+    static void withName(string aName);
 
     // Gets the cookie name
     string name();
 
-    /**
-     * Gets the cookie value
-     */
+    // Gets the cookie value
     string[] getValue();
 
-    /**
-     * Gets the cookie value as scalar.
-     * This will collapse any complex data in the cookie with json_encode()
-     */
+    / Gets the cookie value as scalar.
     string getScalarValue();
 
     /**
