@@ -230,9 +230,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param string[] mydata The query data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response get(string myurl, string[] mydata = [], Json[string] options = null) {
+  Response get(string myurl, string[] mydata = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     mybody = null;
     if (isArray(mydata) && isSet(mydata["_content"])) {
@@ -254,9 +254,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param Json mydata The post data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response post(string myurl, Json mydata = [], Json[string] options = null) {
+  Response post(string myurl, Json mydata = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     myurl = this.buildUrl(myurl, [], myoptions);
 
@@ -270,7 +270,7 @@ class Client : ClientInterface {
      * @param Json requestData The request data you want to send.
      * options = Additional options for the request.
      */
-  Response put(string myurl, Json requestData = [], Json[string] options = null) {
+  Response put(string myurl, Json requestData = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     myurl = this.buildUrl(myurl, [], myoptions);
 
@@ -282,9 +282,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param Json requestData The request data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response patch(string myurl, Json requestData = [], Json[string] options = null) {
+  Response patch(string myurl, Json requestData = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     myurl = this.buildUrl(myurl, [], myoptions);
 
@@ -298,7 +298,7 @@ class Client : ClientInterface {
      * @param Json sendData The request data you want to send.
      * options = Additional options for the request.
      */
-  Response options(string myurl, Json sendData = [], Json[string] options = null) {
+  Response options(string myurl, Json sendData = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     myurl = this.buildUrl(myurl, [], myoptions);
 
@@ -310,9 +310,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param Json sendData The request data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response trace(string myurl, Json sendData = [], Json[string] options = null) {
+  Response trace(string myurl, Json sendData = [], IData[string] options = null) {
     myoptions = _mergeOptions(myoptions);
     myurl = this.buildUrl(myurl, [], myoptions);
 
@@ -324,9 +324,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param Json sendData The request data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response delete(string myurl, Json sendData = [], Json[string] optionsForRequest = null) {
+  Response delete(string myurl, Json sendData = [], IData[string] optionsForRequest = null) {
     auto myOptionsForRequest = _mergeOptions(optionsForRequest);
     auto myurl = this.buildUrl(myurl, [], myOptionsForRequest);
 
@@ -338,9 +338,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl The url or path you want to request.
      * @param array data The query string data you want to send.
-     * @param Json[string] options Additional options for the request.
+     * @param IData[string] options Additional options for the request.
      */
-  Response head(string myurl, array data = [], Json[string] optionsForRequest = null) {
+  Response head(string myurl, array data = [], IData[string] optionsForRequest = null) {
     auto myOptionsForRequest = _mergeOptions(optionsForRequest);
     auto myurl = this.buildUrl(myurl, mydata, myOptionsForRequest);
 
@@ -353,9 +353,9 @@ class Client : ClientInterface {
      * string mymethod HTTP method.
      * @param string myurl URL to request.
      * @param Json mydata The request body.
-     * @param Json[string] options The options to use. Contains auth, proxy, etc.
+     * @param IData[string] options The options to use. Contains auth, proxy, etc.
      */
-  protected Response _doRequest(string mymethod, string myurl, Json mydata, Json[string] options = null) {
+  protected Response _doRequest(string mymethod, string myurl, Json mydata, IData[string] options = null) {
     myrequest = _createRequest(
       mymethod,
       myurl,
@@ -369,7 +369,7 @@ class Client : ClientInterface {
   /**
      * Does a recursive merge of the parameter with the scope config.
      */
-  protected array _mergeOptions(Json[string] optionsToMerge = null) {
+  protected array _mergeOptions(IData[string] optionsToMerge = null) {
     return Hash.merge(_config, optionsToMerge);
   }
 
@@ -387,9 +387,9 @@ class Client : ClientInterface {
      * handcrafted Request objects.
      * Params:
      * \Psr\Http\Message\IRequest  myrequest The request to send.
-     * @param Json[string] options Additional options to use.
+     * @param IData[string] options Additional options to use.
      */
-  Response send(IRequest myrequest, Json[string] options = null) {
+  Response send(IRequest myrequest, IData[string] options = null) {
     auto myredirects = 0;
     if (isSet(myoptions["redirect"])) {
       myredirects = (int) myoptions["redirect"];
@@ -442,9 +442,9 @@ class Client : ClientInterface {
      * string mymethod The HTTP method being mocked.
      * @param string myurl The URL being matched. See above for examples.
      * @param \UIM\Http\Client\Response  myresponse The response that matches the request.
-     * @param Json[string] options See above.
+     * @param IData[string] options See above.
      */
-  static void addMockResponse(string mymethod, string myurl, Response myresponse, Json[string] options = null) {
+  static void addMockResponse(string mymethod, string myurl, Response myresponse, IData[string] options = null) {
     if (!my_mockAdapter) {
       my_mockAdapter = new MockAdapter();
     }
@@ -456,9 +456,9 @@ class Client : ClientInterface {
      * Send a request without redirection.
      * Params:
      * \Psr\Http\Message\IRequest  myrequest The request to send.
-     * @param Json[string] options Additional options to use.
+     * @param IData[string] options Additional options to use.
      */
-  protected Response _sendRequest(IRequest myrequest, Json[string] options = null) {
+  protected Response _sendRequest(IRequest myrequest, IData[string] options = null) {
     if (my_mockAdapter) {
       myresponses = my_mockAdapter.send(myrequest, myoptions);
     }
@@ -476,9 +476,9 @@ class Client : ClientInterface {
      * Params:
      * string myurl Either a full URL or just the path.
      * @param string[] myquery The query data for the URL.
-     * @param Json[string] options The config options stored with Client.config()
+     * @param IData[string] options The config options stored with Client.config()
      */
-  string buildUrl(string myurl, string[] myquery = [], Json[string] options = null) {
+  string buildUrl(string myurl, string[] myquery = [], IData[string] options = null) {
     if (isEmpty(myoptions) && empty(myquery)) {
       return myurl;
     }
@@ -526,9 +526,9 @@ class Client : ClientInterface {
      * string mymethod HTTP method name.
      * @param string myurl The url including query string.
      * @param Json mydata The request body.
-     * @param Json[string] options The options to use. Contains auth, proxy, etc.
+     * @param IData[string] options The options to use. Contains auth, proxy, etc.
      */
-  protected Request _createRequest(string mymethod, string myurl, Json mydata, Json[string] options = null) {
+  protected Request _createRequest(string mymethod, string myurl, Json mydata, IData[string] options = null) {
     /** @var array<non-empty-string, non-empty-string>  myheaders */
     myheaders = (array)(myoptions["headers"] ?  ? []);
     if (isSet(myoptions["type"])) {
@@ -591,9 +591,9 @@ class Client : ClientInterface {
      * and use its methods to add headers.
      * Params:
      * \UIM\Http\Client\Request  myrequest The request to modify.
-     * @param Json[string] options Array of options containing the 'auth' key.
+     * @param IData[string] options Array of options containing the 'auth' key.
      */
-  protected Request _addAuthentication(Request myrequest, Json[string] options = null) :  {
+  protected Request _addAuthentication(Request myrequest, IData[string] options = null) :  {
     myauth = myoptions["auth"];
     /** @var \UIM\Http\Client\Auth\Basic  myadapter */
     myadapter = _createAuth(myauth, myoptions);
@@ -608,9 +608,9 @@ class Client : ClientInterface {
      * and use its methods to add headers.
      * Params:
      * \UIM\Http\Client\Request  requestToModify The request to modify.
-     * @param Json[string] options Array of options containing the 'proxy' key.
+     * @param IData[string] options Array of options containing the 'proxy' key.
      */
-  protected Request _addProxy(Request requestToModify, Json[string] options = null) {
+  protected Request _addProxy(Request requestToModify, IData[string] options = null) {
     myauth = myoptions["proxy"];
     /** @var \UIM\Http\Client\Auth\Basic  myadapter */
     myadapter = _createAuth(myauth, myoptions);
@@ -625,9 +625,9 @@ class Client : ClientInterface {
      * authentication strategy handler.
      * Params:
      * array  myauth The authentication options to use.
-     * @param Json[string] options The overall request options to use.
+     * @param IData[string] options The overall request options to use.
      */
-  protected object _createAuth(array myauth, Json[string] options = null) :  {
+  protected object _createAuth(array myauth, IData[string] options = null) :  {
     if (isEmpty(myauth["type"])) {
       myauth["type"] = "basic";
     }

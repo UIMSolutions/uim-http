@@ -40,7 +40,7 @@ class Stream : IAdapter {
      */
     protected array _connectionErrors = [];
 
-    array send(IRequest request, Json[string] options = null) {
+    array send(IRequest request, IData[string] options = null) {
        _stream = null;
        _context = null;
        _contextOptions = [];
@@ -84,9 +84,9 @@ class Stream : IAdapter {
      * Build the stream context out of the request object.
      * Params:
      * \Psr\Http\Message\IRequest request The request to build context from.
-     * @param Json[string] options Additional request options.
+     * @param IData[string] options Additional request options.
      */
-    protected void _buildContext(IRequest request, Json[string] options = null) {
+    protected void _buildContext(IRequest request, IData[string] options = null) {
        _buildContent($request, options);
        _buildHeaders($request, options);
        _buildOptions($request, options);
@@ -108,9 +108,9 @@ class Stream : IAdapter {
      * Creates cookies & headers.
      * Params:
      * \Psr\Http\Message\IRequest request The request being sent.
-     * @param Json[string] options Array of options to use.
+     * @param IData[string] options Array of options to use.
      */
-    protected void _buildHeaders(IRequest request, Json[string] options = null) {
+    protected void _buildHeaders(IRequest request, IData[string] options = null) {
          aHeaders = [];
         foreach ($request.getHeaders() as name:  someValues) {
              aHeaders ~= "%s: %s".format($name, join(", ",  someValues));
@@ -125,9 +125,9 @@ class Stream : IAdapter {
      * Array data will be processed with {@link \UIM\Http\Client\FormData}
      * Params:
      * \Psr\Http\Message\IRequest request The request being sent.
-     * @param Json[string] options Array of options to use.
+     * @param IData[string] options Array of options to use.
      */
-    protected void _buildContent(IRequest request, Json[string] options = null) {
+    protected void _buildContent(IRequest request, IData[string] options = null) {
         body = request.getBody();
         body.rewind();
        _contextOptions["content"] = body.getContents();
@@ -137,9 +137,9 @@ class Stream : IAdapter {
      * Build miscellaneous options for the request.
      * Params:
      * \Psr\Http\Message\IRequest request The request being sent.
-     * @param Json[string] options Array of options to use.
+     * @param IData[string] options Array of options to use.
      */
-    protected void _buildOptions(IRequest request, Json[string] options = null) {
+    protected void _buildOptions(IRequest request, IData[string] options = null) {
        _contextOptions["method"] = request.getMethod();
        _contextOptions["protocol_version"] = request.getProtocolVersion();
        _contextOptions["ignore_errors"] = true;
@@ -160,9 +160,9 @@ class Stream : IAdapter {
      * Build SSL options for the request.
      * Params:
      * \Psr\Http\Message\IRequest request The request being sent.
-     * @param Json[string] options Array of options to use.
+     * @param IData[string] options Array of options to use.
      */
-    protected void _buildSslContext(IRequest request, Json[string] options = null) {
+    protected void _buildSslContext(IRequest request, IData[string] options = null) {
         sslOptions = [
             "ssl_verify_peer",
             "ssl_verify_peer_name",

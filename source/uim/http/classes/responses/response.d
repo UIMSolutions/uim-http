@@ -389,7 +389,7 @@ class Response : IResponse, Stringable {
      * - charset: the charset for the response body
      * @throws \InvalidArgumentException
      */
-    this(Json[string] options = null) {
+    this(IData[string] options = null) {
        _streamTarget = $options["streamTarget"] ?? _streamTarget;
        _streamMode = $options["streamMode"] ?? _streamMode;
         if (isSet($options["stream"])) {
@@ -1004,7 +1004,7 @@ class Response : IResponse, Stringable {
      * string aurl The LinkHeader url.
      * @param Json[string] $options The LinkHeader params.
      */
-    static withAddedLink(string aurl, Json[string] options = null) {
+    static withAddedLink(string aurl, IData[string] options = null) {
         $params = [];
         foreach ($options as aKey: $option) {
             $params ~= aKey ~ "="" ~ $option ~ """;
@@ -1175,7 +1175,7 @@ class Response : IResponse, Stringable {
      * Params:
      * string aPath Absolute path to file.
      */
-    static withFile(string aPath, Json[string] options = null) {
+    static withFile(string aPath, IData[string] options = null) {
         $file = this.validateFile(somePath);
         auto myOptions = options.update([
             "name": Json(null),

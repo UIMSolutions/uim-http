@@ -127,9 +127,9 @@ class Cookie : ICookie {
      * - `samesite`: Can be one of `ICookie.SAMESITE_LAX`, `ICookie.SAMESITE_STRICT`,
      *   `ICookie.SAMESITE_NONE` or `null`. Defaults to `null`.
      * Params:
-     * Json[string] options Default options.
+     * IData[string] options Default options.
      */
-    static void setDefaults(Json[string] options = null) {
+    static void setDefaults(IData[string] options = null) {
         auto myOptions = options.copy;
 
         if (isSet($options["expires"])) {
@@ -146,9 +146,9 @@ class Cookie : ICookie {
      * Params:
      * string cookieName Cookie name
      * @param string[]|float|int|bool aValue Value of the cookie
-     * @param Json[string] options Cookies options.
+     * @param IData[string] options Cookies options.
      */
-    static static create(string cookieName, string[]|float|int|bool aValue, Json[string] options = null) {
+    static static create(string cookieName, string[]|float|int|bool aValue, IData[string] options = null) {
         auto myOptions += options.update(defaultAttributes);
         options["expires"] = dateTimeInstance($options["expires"]);
 

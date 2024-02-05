@@ -27,9 +27,9 @@ class BodyParserMiddleware : IMiddleware {
      *  handling requires more care than JSON does.
      * - `methods` The HTTP methods to parse on. Defaults to PUT, POST, PATCH DELETE.
      * Params:
-     * Json[string] options The options to use. See above.
+     * IData[string] options The options to use. See above.
      */
-    this(Json[string] options = null) {
+    this(IData[string] options = null) {
         options += ["json": true, "xml": false, "methods": null];
         if ($options["json"]) {
             this.addParser(

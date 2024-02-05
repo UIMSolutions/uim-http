@@ -179,9 +179,9 @@ class ServerRequest : IServerRequest {
      *  requests with put, patch or delete data.
      * - `session` An instance of a Session object
      * Params:
-     * Json[string] configData An array of request data to create a request with.
+     * IData[string] configData An array of request data to create a request with.
      */
-    this(Json[string] configData = null) {
+    this(IData[string] configData = null) {
         configData += [
             'params": this.params,
             'query": [],
@@ -202,9 +202,9 @@ class ServerRequest : IServerRequest {
     /**
      * Process the config/settings data into properties.
      * Params:
-     * Json[string] configData The config data to use.
+     * IData[string] configData The config data to use.
      */
-    protected void _setConfig(Json[string] configData = null) {
+    protected void _setConfig(IData[string] configData = null) {
         if (isEmpty(configData["session"])) {
             configData["session"] = new Session([
                 'cookiePath": configData["base"],
@@ -262,9 +262,9 @@ class ServerRequest : IServerRequest {
      *
      * `query` option is also updated based on URL`s querystring.
      * Params:
-     * Json[string] configData Config array.
+     * IData[string] configData Config array.
      */
-    protected Json[string] processUrlOption(Json[string] configData = null) {
+    protected Json[string] processUrlOption(IData[string] configData = null) {
         if (configData["url"][0] != "/") {
             configData["url"] = "/" ~ configData["url"];
         }

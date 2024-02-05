@@ -206,11 +206,11 @@ class Session {
      * or null if none exists.
      * Params:
      * \!SessionHandler|string  className The session handler to use
-     * @param Json[string] options the options to pass to the SessionHandler constructor
+     * @param IData[string] options the options to pass to the SessionHandler constructor
      */
     SessionHandler engine(
         !SessionHandler | string | null className = null,
-        Json[string] options = null
+        IData[string] options = null
     ) {
         if (className.isNull) {
             return _engine;
@@ -251,9 +251,9 @@ class Session {
      * session.options(["session.use_cookies": 1]);
      * ```
      * Params:
-     * Json[string] options Ini options to set.
+     * IData[string] options Ini options to set.
      */
-    void options(Json[string] options = null) {
+    void options(IData[string] options = null) {
         if (session_status() == UIM_SESSION_ACTIVE || headers_sent()) {
             return;
         }

@@ -45,10 +45,10 @@ class FlashMessage {
      * - `escape` Set to false to allow templates to print out HTML content.
      *
      * messageToBeFlashed - Message to be flashed.
-     * @param Json[string] options An array of options
+     * @param IData[string] options An array of options
      * @see FlashMessage._defaultConfigData For default values for the options.
      */
-    void set(string messageToBeFlashed, Json[string] options = null) {
+    void set(string messageToBeFlashed, IData[string] options = null) {
         auto myOptions = options.update(this.getConfig());
 
         if (isSet($options["escape"]) && !isSet(myOptions["params"]["escape"])) {
@@ -94,9 +94,9 @@ class FlashMessage {
      * ```
      * Params:
      * \Throwable exception Exception instance.
-     * @param Json[string] options An array of options.
+     * @param IData[string] options An array of options.
      */
-    void setExceptionMessage(Throwable exception, Json[string] options = null) {
+    void setExceptionMessage(Throwable exception, IData[string] options = null) {
         options["element"] ??= "error";
         options["params"]["code"] ??= exception.getCode();
 
@@ -119,10 +119,10 @@ class FlashMessage {
      * The `'element'` option will be set to  ``success'`.
      * Params:
      * string amessage Message to flash.
-     * @param Json[string] options An array of options.
+     * @param IData[string] options An array of options.
      * @see FlashMessage.set() For list of valid options
      */
-    void success(string amessage, Json[string] options = null) {
+    void success(string amessage, IData[string] options = null) {
         options["element"] = "Success";
         this.set($message, options);
     }
@@ -133,10 +133,10 @@ class FlashMessage {
      * The `'element'` option will be set to  `'error'`.
      * Params:
      * string amessage Message to flash.
-     * @param Json[string] options An array of options.
+     * @param IData[string] options An array of options.
      * @see FlashMessage.set() For list of valid options
      */
-    void error(string amessage, Json[string] options = null) {
+    void error(string amessage, IData[string] options = null) {
         options["element"] = "error";
         this.set($message, options);
     }
@@ -147,9 +147,9 @@ class FlashMessage {
      * The `'element'` option will be set to  `'warning'`.
      * Params:
      * string amessage Message to flash.
-     * @param Json[string] options An array of options.
+     * @param IData[string] options An array of options.
      */
-    void warning(string amessage, Json[string] options = null) {
+    void warning(string amessage, IData[string] options = null) {
         options["element"] = "warning";
         this.set($message, options);
     }
@@ -160,9 +160,9 @@ class FlashMessage {
      * The `'element'` option will be set to  `'info'`.
      * Params:
      * string amessage Message to flash.
-     * @param Json[string] options An array of options.
+     * @param IData[string] options An array of options.
      */
-    void info(string amessage, Json[string] options = null) {
+    void info(string amessage, IData[string] options = null) {
         options["element"] = "info";
         this.set($message, options);
     }

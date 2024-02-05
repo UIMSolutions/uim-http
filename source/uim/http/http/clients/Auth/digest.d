@@ -53,7 +53,7 @@ class Digest {
      * \UIM\Http\Client client Http client object.
      * @param array|null options Options list.
      */
-    this(Client httpClient, Json[string] options = null) {
+    this(Client httpClient, IData[string] options = null) {
        _client = httpClient;
     }
     

@@ -14,7 +14,7 @@ import uim.cake;
  */
 class Curl : IAdapter {
  
-    array send(IRequest request, Json[string] options = null) {
+    array send(IRequest request, IData[string] options = null) {
         if (!extension_loaded("curl")) {
             throw new ClientException("curl extension is not loaded.");
         }
@@ -50,9 +50,9 @@ class Curl : IAdapter {
      * Convert client options into curl options.
      * Params:
      * \Psr\Http\Message\IRequest request The request.
-     * @param Json[string] options The client options
+     * @param IData[string] options The client options
      */
-    array buildOptions(IRequest request, Json[string] options = null) {
+    array buildOptions(IRequest request, IData[string] options = null) {
         string[] aHeaders = request.getHeaders().byKeyValue
             .map!(keyValues => aKey ~ ": " ~ someValues.join(", ")).array;
 
