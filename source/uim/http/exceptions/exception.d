@@ -26,5 +26,5 @@ class HttpException : UimException {
     }
     
     // Gets/Sets HTTP response headers.
-    mixin(TProperty!("Json[string]", "headers"));
+    mixin(TProperty!("IData[string]", "headers"));
 }

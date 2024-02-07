@@ -170,12 +170,12 @@ interface ICookie {
     /**
      * Get cookie options
      */
-    Json[string] getOptions();
+    IData[string] getOptions();
 
     /**
      * Get cookie data as array.
      */
-    Json[string] toArray();
+    IData[string] toArray();
 
     /**
      * Returns the cookie as header value
