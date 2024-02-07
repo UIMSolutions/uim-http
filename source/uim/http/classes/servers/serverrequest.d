@@ -41,12 +41,12 @@ class ServerRequest : IServerRequest {
     /**
      * Array of cookie data.
      */
-    protected Json[string] $cookies = [];
+    protected IData[string] $cookies = [];
 
     /**
      * Array of environment data.
      */
-    protected Json[string] _environment = [];
+    protected IData[string] _environment = [];
 
     /**
      * Base URL path.
@@ -135,7 +135,7 @@ class ServerRequest : IServerRequest {
     /**
      * Store the additional attributes attached to the request.
      */
-    protected Json[string] $attributes = [];
+    protected IData[string] $attributes = [];
 
     /**
      * A list of properties that emulated by the PSR7 attribute methods.
@@ -264,7 +264,7 @@ class ServerRequest : IServerRequest {
      * Params:
      * IData[string] configData Config array.
      */
-    protected Json[string] processUrlOption(IData[string] configData = null) {
+    protected IData[string] processUrlOption(IData[string] configData = null) {
         if (configData["url"][0] != "/") {
             configData["url"] = "/" ~ configData["url"];
         }
@@ -1080,7 +1080,7 @@ class ServerRequest : IServerRequest {
     /**
      * Get all the cookie data from the request.
      */
-    Json[string] getCookieParams() {
+    IData[string] getCookieParams() {
         return this.cookies;
     }
     
@@ -1351,7 +1351,7 @@ class ServerRequest : IServerRequest {
      *
      * This will include the params, webroot, base, and here attributes that UIM provides.
      */
-    Json[string] getAttributes() {
+    IData[string] getAttributes() {
         $emulated = [
             "params": this.params,
             "webroot": this.webroot,

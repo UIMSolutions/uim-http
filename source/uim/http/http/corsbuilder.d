@@ -27,7 +27,7 @@ class CorsBuilder {
     protected bool _isSsl;
 
     // The headers that have been queued so far.
-    protected Json[string] _headers = [];
+    protected IData[string] _headers = [];
 
     /**
      * Constructor.

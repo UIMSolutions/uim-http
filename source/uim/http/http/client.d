@@ -75,7 +75,7 @@ import uim.cake;
 class Client : ClientInterface {
   mixin InstanceConfigTemplate();
 
-  protected Json[string] _defaultConfigData = [
+  protected IData[string] _defaultConfigData = [
     "auth": Json(null),
     "adapter": Json(null),
     "host": Json(null),
@@ -482,7 +482,7 @@ class Client : ClientInterface {
     if (isEmpty(myoptions) && empty(myquery)) {
       return myurl;
     }
-    Json[string] mydefaults = [
+    IData[string] mydefaults = [
       "host": Json(null),
       "port": Json(null,
       "scheme": Json("http"),

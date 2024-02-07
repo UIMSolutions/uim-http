@@ -12,7 +12,7 @@ class FlashMessage {
     use InstanceConfigTemplate();
 
     // Default configuration
-    protected Json[string] _defaultConfigData = [
+    protected IData[string] _defaultConfigData = [
         "key": Json("flash"),
         "element": Json("default"),
         "plugin": Json(null),

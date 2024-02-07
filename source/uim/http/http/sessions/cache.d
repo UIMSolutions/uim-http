@@ -13,7 +13,7 @@ use !SessionHandler;
  */
 class CacheSession : !SessionHandler {
     // Options for this session engine
-    protected Json[string] _options = [];
+    protected IData[string] _options = [];
 
     /**
      * Constructor.

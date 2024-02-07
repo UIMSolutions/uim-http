@@ -23,7 +23,7 @@ class HeaderUtility {
      * Params:
      * string avalue The HTTP Link header part
      */
-    protected static Json[string] parseLinkItem(string headerPart) {
+    protected static IData[string] parseLinkItem(string headerPart) {
         preg_match("/<(.*)>[; ]?[; ]?(.*)?/i", headerPart, matches);
 
         auto myUrl = matches[1];

@@ -21,12 +21,12 @@ class Stream : IAdapter {
     /**
      * Array of options/content for the HTTP stream context.
      */
-    protected Json[string] _contextOptions = [];
+    protected IData[string] _contextOptions = [];
 
     /**
      * Array of options/content for the SSL stream context.
      */
-    protected Json[string] _sslContextOptions = [];
+    protected IData[string] _sslContextOptions = [];
 
     /**
      * The stream resource.
@@ -277,7 +277,7 @@ class Stream : IAdapter {
      *
      * Useful for debugging and testing context creation.
      */
-    Json[string] contextOptions() {
+    IData[string] contextOptions() {
         return array_merge(_contextOptions, _sslContextOptions);
     }
 }

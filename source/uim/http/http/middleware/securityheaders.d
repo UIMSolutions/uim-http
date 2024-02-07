@@ -77,7 +77,7 @@ class SecurityHeadersMiddleware : IMiddleware {
     const BY_FTP_FILENAME = "by-ftp-filename";
 
     // Security related headers to set
-    protected Json[string] _headers;
+    protected IData[string] _headers;
 
     /**
      * X-Content-Type-Options

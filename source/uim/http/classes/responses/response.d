@@ -90,7 +90,7 @@ class Response : IResponse, Stringable {
     ];
 
     // Holds type key to mime type mappings for known mime types.
-    protected Json[string] _mimeTypes = [
+    protected IData[string] _mimeTypes = [
         "html": ["text/html", "*/*"],
         "json": "application/json",
         "xml": ["application/xml", "text/xml"],
@@ -354,7 +354,7 @@ class Response : IResponse, Stringable {
      * Holds all the cache directives that will be converted
      * into headers when sending the request
      */
-    protected Json[string] _cacheDirectives = [];
+    protected IData[string] _cacheDirectives = [];
 
     /**
      * Collection of cookies to send to the client
@@ -381,7 +381,7 @@ class Response : IResponse, Stringable {
     /**
      * Constructor
      * Params:
-     * Json[string] $options list of parameters to setup the response. Possible values are:
+     * IData[string] $options list of parameters to setup the response. Possible values are:
      *
      * - body: the response text that should be sent to the client
      * - status: the HTTP status code to respond with
@@ -1002,7 +1002,7 @@ class Response : IResponse, Stringable {
      * ```
      * Params:
      * string aurl The LinkHeader url.
-     * @param Json[string] $options The LinkHeader params.
+     * @param IData[string] $options The LinkHeader params.
      */
     static withAddedLink(string aurl, IData[string] options = null) {
         $params = [];
@@ -1307,7 +1307,7 @@ class Response : IResponse, Stringable {
      * Returns an array that can be used to describe the internal state of this
      * object.
      */
-    Json[string] debugInfo() {
+    IData[string] debugInfo() {
         return [
             `status": _status,
             "contentType": this.getType(),

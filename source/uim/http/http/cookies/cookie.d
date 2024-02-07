@@ -55,7 +55,7 @@ class Cookie : ICookie {
     protected SameSiteEnum sameSite = null;
 
     // Default attributes for a cookie.
-    protected static @var Json[string] defaultAttributes = [
+    protected static @var IData[string] defaultAttributes = [
         "expires": Json(null),
         "path": Json("/"),
         "domain": Json(""),
@@ -191,7 +191,7 @@ class Cookie : ICookie {
      * string acookie Cookie header string.
      * @param  defaultAttributes Default attributes.
      */
-    static static createFromHeaderString(string cookieHeader, Json[string] defaultAttributes = []) {
+    static static createFromHeaderString(string cookieHeader, IData[string] defaultAttributes = []) {
         string[] someParts;
         if (cookieHeader.has(";")) {
             cookieHeader = cookieHeader.replace("";"", "{__cookie_replace__}");

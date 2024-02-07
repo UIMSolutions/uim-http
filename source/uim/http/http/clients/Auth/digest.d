@@ -77,7 +77,7 @@ class Digest {
      * Add Authorization header to the request.
      * Params:
      * \UIM\Http\Client\Request request The request object.
-     * @param Json[string] credentials Authentication credentials.
+     * @param IData[string] credentials Authentication credentials.
      */
     Request authentication(Request request, array credentials) {
         if (!isSet($credentials["username"], credentials["password"])) {
@@ -135,7 +135,7 @@ class Digest {
      * Generate the header Authorization
      * Params:
      * \UIM\Http\Client\Request request The request object.
-     * @param Json[string] credentials Authentication credentials.
+     * @param IData[string] credentials Authentication credentials.
      */
     protected string _generateHeader(Request request, array credentials) {
         somePath = request.getRequestTarget();

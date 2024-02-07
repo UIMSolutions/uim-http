@@ -22,7 +22,7 @@ class CspMiddleware : IMiddleware {
     protected CSPBuilder csp;
 
     // Configuration options.
-    protected Json[string] _defaultConfigData = [
+    protected IData[string] _defaultConfigData = [
         "scriptNonce": false,
         "styleNonce": false,
     ];
