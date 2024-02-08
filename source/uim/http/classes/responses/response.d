@@ -1177,22 +1177,22 @@ class Response : IResponse, Stringable {
      */
     static withFile(string aPath, IData[string] options = null) {
         $file = this.validateFile(somePath);
-        auto myOptions = options.update([
+        auto options = options.update([
             "name": Json(null),
             "download": Json(null)
         ]);
 
         auto fileExtension = $file.getExtension().toLower;
         $mapped = this.getMimeType(fileExtension);
-        if ((!fileExtension || !$mapped) && myOptions["download"].isNull) {
-            myOptions["download"] = true;
+        if ((!fileExtension || !$mapped) && options["download"].isNull) {
+            options["download"] = true;
         }
         $new = clone this;
         if ($mapped) {
             $new = $new.withType(fileExtension);
         }
         $fileSize = $file.getSize();
-        if (myOptions["download"]) {
+        if (options["download"]) {
             $agent = (string)enviroment("HTTP_USER_AGENT");
 
             if ($agent && preg_match("%Opera([/ ])([0-9].[0-9]{1,2})%", $agent)) {
@@ -1203,7 +1203,7 @@ class Response : IResponse, Stringable {
             if (isSet($contentType)) {
                 $new = $new.withType($contentType);
             }
-            $name = myOptions["name"] ?: $file.getFileName();
+            $name = options["name"] ?: $file.getFileName();
             $new = $new.withDownload($name)
                 .withHeader("Content-Transfer-Encoding", "binary");
         }

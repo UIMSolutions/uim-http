@@ -233,19 +233,19 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response get(string myurl, string[] mydata = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
+    options = _mergeOptions(options);
     mybody = null;
     if (isArray(mydata) && isSet(mydata["_content"])) {
       mybody = mydata["_content"];
       unset(mydata["_content"]);
     }
-    myurl = this.buildUrl(myurl, mydata, myoptions);
+    myurl = this.buildUrl(myurl, mydata, options);
 
     return _doRequest(
       Request.METHOD_GET,
       myurl,
       mybody,
-      myoptions
+      options
     );
   }
 
@@ -257,10 +257,10 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response post(string myurl, Json mydata = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
-    myurl = this.buildUrl(myurl, [], myoptions);
+    options = _mergeOptions(options);
+    myurl = this.buildUrl(myurl, [], options);
 
-    return _doRequest(Request.METHOD_POST, myurl, mydata, myoptions);
+    return _doRequest(Request.METHOD_POST, myurl, mydata, options);
   }
 
   /**
@@ -271,10 +271,10 @@ class Client : ClientInterface {
      * options = Additional options for the request.
      */
   Response put(string myurl, Json requestData = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
-    myurl = this.buildUrl(myurl, [], myoptions);
+    options = _mergeOptions(options);
+    myurl = this.buildUrl(myurl, [], options);
 
-    return _doRequest(Request.METHOD_PUT, myurl, requestData, myoptions);
+    return _doRequest(Request.METHOD_PUT, myurl, requestData, options);
   }
 
   /**
@@ -285,10 +285,10 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response patch(string myurl, Json requestData = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
-    myurl = this.buildUrl(myurl, [], myoptions);
+    options = _mergeOptions(options);
+    myurl = this.buildUrl(myurl, [], options);
 
-    return _doRequest(Request.METHOD_PATCH, myurl, requestData, myoptions);
+    return _doRequest(Request.METHOD_PATCH, myurl, requestData, options);
   }
 
   /**
@@ -299,10 +299,10 @@ class Client : ClientInterface {
      * options = Additional options for the request.
      */
   Response options(string myurl, Json sendData = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
-    myurl = this.buildUrl(myurl, [], myoptions);
+    options = _mergeOptions(options);
+    myurl = this.buildUrl(myurl, [], options);
 
-    return _doRequest(Request.METHOD_OPTIONS, myurl, sendData, myoptions);
+    return _doRequest(Request.METHOD_OPTIONS, myurl, sendData, options);
   }
 
   /**
@@ -313,10 +313,10 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response trace(string myurl, Json sendData = [], IData[string] options = null) {
-    myoptions = _mergeOptions(myoptions);
-    myurl = this.buildUrl(myurl, [], myoptions);
+    options = _mergeOptions(options);
+    myurl = this.buildUrl(myurl, [], options);
 
-    return _doRequest(Request.METHOD_TRACE, myurl, sendData, myoptions);
+    return _doRequest(Request.METHOD_TRACE, myurl, sendData, options);
   }
 
   /**
@@ -327,10 +327,10 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response delete(string myurl, Json sendData = [], IData[string] optionsForRequest = null) {
-    auto myOptionsForRequest = _mergeOptions(optionsForRequest);
-    auto myurl = this.buildUrl(myurl, [], myOptionsForRequest);
+    auto optionsForRequest = _mergeOptions(optionsForRequest);
+    auto myurl = this.buildUrl(myurl, [], optionsForRequest);
 
-    return _doRequest(Request.METHOD_DELETE, myurl, sendData, myOptionsForRequest);
+    return _doRequest(Request.METHOD_DELETE, myurl, sendData, optionsForRequest);
   }
 
   /**
@@ -341,10 +341,10 @@ class Client : ClientInterface {
      * @param IData[string] options Additional options for the request.
      */
   Response head(string myurl, array data = [], IData[string] optionsForRequest = null) {
-    auto myOptionsForRequest = _mergeOptions(optionsForRequest);
-    auto myurl = this.buildUrl(myurl, mydata, myOptionsForRequest);
+    auto optionsForRequest = _mergeOptions(optionsForRequest);
+    auto myurl = this.buildUrl(myurl, mydata, optionsForRequest);
 
-    return _doRequest(Request.METHOD_HEAD, myurl, "", myOptionsForRequest);
+    return _doRequest(Request.METHOD_HEAD, myurl, "", optionsForRequest);
   }
 
   /**
@@ -360,10 +360,10 @@ class Client : ClientInterface {
       mymethod,
       myurl,
       mydata,
-      myoptions
+      options
     );
 
-    return this.send(myrequest, myoptions);
+    return this.send(myrequest, options);
   }
 
   /**
@@ -391,12 +391,12 @@ class Client : ClientInterface {
      */
   Response send(IRequest myrequest, IData[string] options = null) {
     auto myredirects = 0;
-    if (isSet(myoptions["redirect"])) {
-      myredirects = (int) myoptions["redirect"];
-      unset(myoptions["redirect"]);
+    if (isSet(options["redirect"])) {
+      myredirects = (int) options["redirect"];
+      unset(options["redirect"]);
     }
     do {
-      myresponse = _sendRequest(myrequest, myoptions);
+      myresponse = _sendRequest(myrequest, options);
 
       myhandleRedirect = myresponse.isRedirect() && myredirects-- > 0;
       if (myhandleRedirect) {
@@ -449,7 +449,7 @@ class Client : ClientInterface {
       my_mockAdapter = new MockAdapter();
     }
     myrequest = new Request(myurl, mymethod);
-    my_mockAdapter.addResponse(myrequest, myresponse, myoptions);
+    my_mockAdapter.addResponse(myrequest, myresponse, options);
   }
 
   /**
@@ -460,10 +460,10 @@ class Client : ClientInterface {
      */
   protected Response _sendRequest(IRequest myrequest, IData[string] options = null) {
     if (my_mockAdapter) {
-      myresponses = my_mockAdapter.send(myrequest, myoptions);
+      myresponses = my_mockAdapter.send(myrequest, options);
     }
     if (isEmpty(myresponses)) {
-      myresponses = _adapter.send(myrequest, myoptions);
+      myresponses = _adapter.send(myrequest, options);
     }
     myresponses.each!(response => _cookies = _cookies.addFromResponse(response, myrequest));
 
@@ -479,7 +479,7 @@ class Client : ClientInterface {
      * @param IData[string] options The config options stored with Client.config()
      */
   string buildUrl(string myurl, string[] myquery = [], IData[string] options = null) {
-    if (isEmpty(myoptions) && empty(myquery)) {
+    if (isEmpty(options) && empty(myquery)) {
       return myurl;
     }
     IData[string] mydefaults = [
@@ -489,15 +489,15 @@ class Client : ClientInterface {
       "basePath": Json(""),
       "protocolRelative": Json(false),
     ];
-    myoptions = myoptions.update(mydefaults);
+    options = options.update(mydefaults);
 
     if (myquery) {
       myq = myurl.has("?") ? "&' : '?";
       myurl ~= myq;
       myurl ~= isString(myquery) ? myquery : http_build_query(myquery, "", "&", UIM_QUERY_RFC3986);
     }
-    if (myoptions["protocolRelative"] && str_starts_with(myurl, "//")) {
-      myurl = myoptions["scheme"] ~ ":" ~ myurl;
+    if (options["protocolRelative"] && str_starts_with(myurl, "//")) {
+      myurl = options["scheme"] ~ ":" ~ myurl;
     }
     if (preg_match("#^https?://#", myurl)) {
       return myurl;
@@ -508,12 +508,12 @@ class Client : ClientInterface {
       "https": 443,
     ];
 
-    auto result = myoptions["scheme"] ~ "://" ~ myoptions["host"];
-    if (myoptions["port"] && (int) myoptions["port"] != mydefaultPorts[myoptions["scheme"]]) {
-      result ~= ":" ~ myoptions["port"];
+    auto result = options["scheme"] ~ "://" ~ options["host"];
+    if (options["port"] && (int) options["port"] != mydefaultPorts[options["scheme"]]) {
+      result ~= ":" ~ options["port"];
     }
-    if (!empty(myoptions["basePath"])) {
-      result ~= "/" ~ trim(myoptions["basePath"], "/");
+    if (!empty(options["basePath"])) {
+      result ~= "/" ~ trim(options["basePath"], "/");
     }
     result ~= "/" ~ ltrim(myurl, "/");
 
@@ -530,9 +530,9 @@ class Client : ClientInterface {
      */
   protected Request _createRequest(string mymethod, string myurl, Json mydata, IData[string] options = null) {
     /** @var array<non-empty-string, non-empty-string>  myheaders */
-    myheaders = (array)(myoptions["headers"] ?  ? []);
-    if (isSet(myoptions["type"])) {
-      myheaders = chain(myheaders, _typeHeaders(myoptions["type"]));
+    myheaders = (array)(options["headers"] ?  ? []);
+    if (isSet(options["type"])) {
+      myheaders = chain(myheaders, _typeHeaders(options["type"]));
     }
     if (isString(mydata) && !isSet(myheaders["Content-Type"]) && !isSet(
         myheaders["content-type"])) {
@@ -540,14 +540,14 @@ class Client : ClientInterface {
     }
     myrequest = new Request(myurl, mymethod, myheaders, mydata);
     myrequest = myrequest.withProtocolVersion(_configData.isSet("protocolVersion"));
-    mycookies = myoptions["cookies"] ?  ? [];
+    mycookies = options["cookies"] ?  ? [];
     /** @var \UIM\Http\Client\Request  myrequest */
     myrequest = _cookies.addToRequest(myrequest, mycookies);
-    if (isSet(myoptions["auth"])) {
-      myrequest = _addAuthentication(myrequest, myoptions);
+    if (isSet(options["auth"])) {
+      myrequest = _addAuthentication(myrequest, options);
     }
-    if (isSet(myoptions["proxy"])) {
-      myrequest = _addProxy(myrequest, myoptions);
+    if (isSet(options["proxy"])) {
+      myrequest = _addProxy(myrequest, options);
     }
     return myrequest;
   }
@@ -594,11 +594,11 @@ class Client : ClientInterface {
      * @param IData[string] options Array of options containing the 'auth' key.
      */
   protected Request _addAuthentication(Request myrequest, IData[string] options = null) :  {
-    myauth = myoptions["auth"];
+    myauth = options["auth"];
     /** @var \UIM\Http\Client\Auth\Basic  myadapter */
-    myadapter = _createAuth(myauth, myoptions);
+    myadapter = _createAuth(myauth, options);
 
-    return myadapter.authentication(myrequest, myoptions["auth"]);
+    return myadapter.authentication(myrequest, options["auth"]);
   }
 
   /**
@@ -611,11 +611,11 @@ class Client : ClientInterface {
      * @param IData[string] options Array of options containing the 'proxy' key.
      */
   protected Request _addProxy(Request requestToModify, IData[string] options = null) {
-    myauth = myoptions["proxy"];
+    myauth = options["proxy"];
     /** @var \UIM\Http\Client\Auth\Basic  myadapter */
-    myadapter = _createAuth(myauth, myoptions);
+    myadapter = _createAuth(myauth, options);
 
-    return myadapter.proxyAuthentication(requestToModify, myoptions["proxy"]);
+    return myadapter.proxyAuthentication(requestToModify, options["proxy"]);
   }
 
   /**
@@ -638,6 +638,6 @@ class Client : ClientInterface {
         "Invalid authentication type `%s`.".format(myname)
       );
     }
-    return new myclass(this, myoptions);
+    return new myclass(this, options);
   }
 }

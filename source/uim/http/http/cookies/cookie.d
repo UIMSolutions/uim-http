@@ -130,7 +130,7 @@ class Cookie : ICookie {
      * IData[string] options Default options.
      */
     static void setDefaults(IData[string] options = null) {
-        auto myOptions = options.copy;
+        auto options = options.copy;
 
         if (isSet($options["expires"])) {
             options["expires"] = dateTimeInstance(options["expires"]);
@@ -149,7 +149,7 @@ class Cookie : ICookie {
      * @param IData[string] options Cookies options.
      */
     static static create(string cookieName, string[]|float|int|bool aValue, IData[string] options = null) {
-        auto myOptions += options.update(defaultAttributes);
+        auto options += options.update(defaultAttributes);
         options["expires"] = dateTimeInstance($options["expires"]);
 
         return new static(

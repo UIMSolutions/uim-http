@@ -49,25 +49,25 @@ class FlashMessage {
      * @see FlashMessage._defaultConfigData For default values for the options.
      */
     void set(string messageToBeFlashed, IData[string] options = null) {
-        auto myOptions = options.update(this.getConfig());
+        auto options = options.update(this.getConfig());
 
-        if (isSet($options["escape"]) && !isSet(myOptions["params"]["escape"])) {
-            myOptions["params"]["escape"] = myOptions["escape"];
+        if (isSet($options["escape"]) && !isSet(options["params"]["escape"])) {
+            options["params"]["escape"] = options["escape"];
         }
-        [$plugin, anElement] = pluginSplit(myOptions["element"]);
-        if (myOptions["plugin"]) {
-            plugin = myOptions["plugin"];
+        [$plugin, anElement] = pluginSplit(options["element"]);
+        if (options["plugin"]) {
+            plugin = options["plugin"];
         }
 
-        myOptions["element"] = plugin 
+        options["element"] = plugin 
             ? plugin ~ ".flash/" ~ anElement
             : "flash/" ~ anElement;
 
         auto messages = [];
-        if (!myOptions["clear"]) {
-            messages = (array)this.session.read("Flash." ~ myOptions["key"]);
+        if (!options["clear"]) {
+            messages = (array)this.session.read("Flash." ~ options["key"]);
         }
-        if (!myOptions["duplicate"]) {
+        if (!options["duplicate"]) {
             foreach (existingMessage; messages) {
                 if (existingMessage["message"] == messageToBeFlashed) {
                     return;
@@ -76,9 +76,9 @@ class FlashMessage {
         }
         messages ~= [
             "message": messageToBeFlashed,
-            "key": myOptions["key"],
-            "element": myOptions["element"],
-            "params": myOptions["params"],
+            "key": options["key"],
+            "element": options["element"],
+            "params": options["params"],
         ];
 
         this.session.write("Flash." ~ options["key"], messages);
