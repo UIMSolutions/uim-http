@@ -36,7 +36,7 @@ class UriFactory : IUriFactory {
         somePathInfo = serverData["PATH_INFO"] ?? null;
         anUri = somePathInfo
             ? anUri.withPath(somePathInfo)
-            : updatePath($base, anUri);
+            : updatePath(base, anUri);
         }
         if (!anUri.getHost()) {
             anUri = anUri.withHost("localhost");
@@ -52,7 +52,7 @@ class UriFactory : IUriFactory {
      */
     protected static IUri updatePath(string abase, IUri anUri) {
         somePath = anUri.getPath();
-        if ($base != "" && str_starts_with(somePath, base)) {
+        if (base != "" && str_starts_with(somePath, base)) {
             somePath = substr(somePath, base.length);
         }
         if (somePath == "/index.d" && anUri.getQuery()) {
@@ -65,7 +65,7 @@ class UriFactory : IUriFactory {
         endsWithLength = endsWithIndex.length;
         if (
             somePath.length >= endsWithLength &&
-            substr(somePath, -$endsWithLength) == endsWithIndex
+            substr(somePath, -endsWithLength) == endsWithIndex
         ) {
             somePath = "/";
         }
@@ -88,44 +88,44 @@ class UriFactory : IUriFactory {
         baseUrl = configData("baseUrl"];
         webroot = to!string(configData("webroot"]);
 
-        if ($base != false && base !isNull) {
+        if (base != false && base !isNull) {
             return ["base": base, "webroot": base ~ "/"];
         }
-        if (!$baseUrl) {
+        if (!baseUrl) {
             phpSelf = serverData["UIM_SELF"] ?? null;
-            if ($phpSelf.isNull) {
+            if (phpSelf.isNull) {
                 return ["base": "", "webroot": "/"];
             }
             base = dirname(serverData["UIM_SELF"] ?? DIRECTORY_SEPARATOR);
             // Clean up additional / which cause following code to fail..
             base = (string)preg_replace("#/+#", "/", base);
 
-             anIndexPos = strpos($base, "/" ~ webroot ~ "/index.d");
+             anIndexPos = strpos(base, "/" ~ webroot ~ "/index.d");
             if (anIndexPos != false) {
-                base = substr($base, 0,  anIndexPos) ~ "/" ~ webroot;
+                base = substr(base, 0,  anIndexPos) ~ "/" ~ webroot;
             }
-            if ($webroot == basename($base)) {
-                base = dirname($base);
+            if (webroot == basename(base)) {
+                base = dirname(base);
             }
-            if ($base == DIRECTORY_SEPARATOR || base == ".") {
+            if (base == DIRECTORY_SEPARATOR || base == ".") {
                 base = "";
             }
             base = join("/", array_map("rawurlencode", split("/", base)));
 
             return ["base": base, "webroot": base ~ "/"];
         }
-        file = "/" ~ basename($baseUrl);
-        base = dirname($baseUrl);
+        file = "/" ~ basename(baseUrl);
+        base = dirname(baseUrl);
 
-        if ($base == DIRECTORY_SEPARATOR || base == ".") {
+        if (base == DIRECTORY_SEPARATOR || base == ".") {
             base = "";
         }
         webrootDir = base ~ "/";
 
         docRoot = serverData["DOCUMENT_ROOT"] ?? null;
         if (
-            (!empty($base) || !$docRoot.has($webroot))
-            && !$webrootDir.has("/" ~ webroot ~ "/")
+            (!empty(base) || !docRoot.has(webroot))
+            && !webrootDir.has("/" ~ webroot ~ "/")
         ) {
             webrootDir ~= webroot ~ "/";
         }

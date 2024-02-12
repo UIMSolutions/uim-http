@@ -62,35 +62,35 @@ class Session {
      * Params:
      * array sessionConfig Session config.
      */
-    static static create(array$sessionConfig = []) {
-        if (isSet($sessionConfig["defaults"])) {
-            defaults = _defaultConfigData($sessionConfig["defaults"]);
-            if ($defaults) {
-                sessionConfig = Hash.merge($defaults, sessionConfig);
+    static static create(arraysessionConfig = []) {
+        if (isSet(sessionConfig["defaults"])) {
+            defaults = _defaultConfigData(sessionConfig["defaults"]);
+            if (defaults) {
+                sessionConfig = Hash.merge(defaults, sessionConfig);
             }
         }
         if (
-            !isSet($sessionConfig["ini"]["session.cookie_secure"])
+            !isSet(sessionConfig["ini"]["session.cookie_secure"])
             && enviroment("HTTPS")
             && ini_get("session.cookie_secure") != 1
             ) {
             sessionConfig["ini"]["session.cookie_secure"] = 1;
         }
         if (
-            !isSet($sessionConfig["ini"]["session.name"])
-            && isSet($sessionConfig["cookie"])
+            !isSet(sessionConfig["ini"]["session.name"])
+            && isSet(sessionConfig["cookie"])
             ) {
             sessionConfig["ini"]["session.name"] = sessionConfig["cookie"];
         }
-        if (!isSet($sessionConfig["ini"]["session.use_strict_mode"]) && ini_get(
+        if (!isSet(sessionConfig["ini"]["session.use_strict_mode"]) && ini_get(
                 "session.use_strict_mode") != 1) {
             sessionConfig["ini"]["session.use_strict_mode"] = 1;
         }
-        if (!isSet($sessionConfig["ini"]["session.cookie_httponly"]) && ini_get(
+        if (!isSet(sessionConfig["ini"]["session.cookie_httponly"]) && ini_get(
                 "session.cookie_httponly") != 1) {
             sessionConfig["ini"]["session.cookie_httponly"] = 1;
         }
-        return new static($sessionConfig);
+        return new static(sessionConfig);
     }
 
     /**
@@ -101,7 +101,7 @@ class Session {
      */
     protected static array | false _defaultConfigData(string aName) {
         tmp = defined("TMP") ? TMP : sys_get_temp_dir() ~ DIRECTORY_SEPARATOR;
-        IData[string]$defaults = [
+        IData[string]defaults = [
             "php": [
                 "ini": [
                     "session.use_trans_sid": 0,
@@ -138,11 +138,11 @@ class Session {
             ],
         ];
 
-        if (isSet($defaults[$name])) {
-            if ($name != "php" || empty(ini_get("session.cookie_samesite"))) {
+        if (isSet(defaults[name])) {
+            if (name != "php" || empty(ini_get("session.cookie_samesite"))) {
                 defaults["php"]["ini"]["session.cookie_samesite"] = "Lax";
             }
-            return defaults[$name];
+            return defaults[name];
         }
         return false;
     }
@@ -226,7 +226,7 @@ class Session {
                     .format(className)
             );
         }
-        return this.setEngine(new className($options));
+        return this.setEngine(new className(options));
     }
 
     /**
@@ -234,15 +234,15 @@ class Session {
      * Params:
      * \!SessionHandler handler The handler to set
      */
-    protected SessionHandler setEngine(!SessionHandler$handler) : ! {
+    protected SessionHandler setEngine(!SessionHandlerhandler) : ! {
         if (!headers_sent() && session_status() != UIM_SESSION_ACTIVE) {
-            session_set_save_handler($handler, false);
+            session_set_save_handler(handler, false);
         }
         return _engine = handler;
     }
 
     /**
-     * Calls ini_set for each of the keys in `$options` and set them
+     * Calls ini_set for each of the keys in `options` and set them
      * to the respective value in the passed array.
      *
      * ### Example:
@@ -257,10 +257,10 @@ class Session {
         if (session_status() == UIM_SESSION_ACTIVE || headers_sent()) {
             return;
         }
-        foreach ($setting : aValue; options) {
-            if (ini_set($setting, to!string(aValue)) == false) {
+        foreach (setting : aValue; options) {
+            if (ini_set(setting, to!string(aValue)) == false) {
                 throw new UimException(
-                    "Unable to configure the session, setting %s failed.".format($setting)
+                    "Unable to configure the session, setting %s failed.".format(setting)
                 );
             }
         }
@@ -283,7 +283,7 @@ class Session {
             throw new UimException("Session was already started");
         }
         filename = line = null;
-        if (ini_get("session.use_cookies") && headers_sent($filename, line)) {
+        if (ini_get("session.use_cookies") && headers_sent(filename, line)) {
             this.headerSentInfo = ["filename": filename, "line": line];
 
             return false;
@@ -340,7 +340,7 @@ class Session {
         if (!isSet(_SESSION)) {
             return false;
         }
-        if ($name.isNull) {
+        if (name.isNull) {
             return (bool) _SESSION;
         }
         return Hash.get(_SESSION, name) !isNull;
@@ -359,7 +359,7 @@ class Session {
         if (!isSet(_SESSION)) {
             return default;
         }
-        if ($name.isNull) {
+        if (name.isNull) {
             return _SESSION ? _SESSION : [];
         }
         return Hash.get(_SESSION, name, default);
@@ -381,10 +381,10 @@ class Session {
      * string aName The key to read and remove (or a path as sent to Hash.extract).
      */
     Json consume(string aName) {
-        if (isEmpty($name)) {
+        if (isEmpty(name)) {
             return null;
         }
-        aValue = this.read($name);
+        aValue = this.read(name);
         if (aValue!isNull) {
             /** @psalm-suppress InvalidScalarArgument */
             _overwrite(_SESSION, Hash.remove(_SESSION, name));
@@ -400,7 +400,7 @@ class Session {
      */
     void write(string[] aName, Json aValue = null) {
         started = this.started() || this.start();
-        if (!$started) {
+        if (!started) {
             message = "Could not start the session";
             if (this.headerSentInfo!isNull) {
                 message ~=
@@ -409,10 +409,10 @@ class Session {
                         this.headerSentInfo["line"]
                     );
             }
-            throw new UimException($message);
+            throw new UimException(message);
         }
-        if (!isArray($name)) {
-            name = [$name: aValue];
+        if (!isArray(name)) {
+            name = [name: aValue];
         }
         someData = _SESSION ?  ? [];
         name.byKeyValue
@@ -447,7 +447,7 @@ class Session {
      * string aName Session variable to remove
      */
     void delete(string aName) {
-        if (this.check($name)) {
+        if (this.check(name)) {
             /** @psalm-suppress InvalidScalarArgument */
             _overwrite(_SESSION, Hash.remove(_SESSION, name));
         }
@@ -459,11 +459,11 @@ class Session {
      * array old Set of old variables: values
      * @param array new New set of variable: value
      */
-    protected void _overwrite(array & old, array$new) {
+    protected void _overwrite(array & old, arraynew) {
         ) {
-            foreach ($old as aKey : var) {
-                if (!isSet($new[aKey])) {
-                    unset($old[aKey]);
+            foreach (old as aKey : var) {
+                if (!isSet(new[aKey])) {
+                    unset(old[aKey]);
                 }
             }
             new.byKeyValue
@@ -489,9 +489,9 @@ class Session {
      * Params:
      * bool renew If session should be renewed, as well. Defaults to false.
      */
-        void clear(bool$renew = false) {
+        void clear(boolrenew = false) {
             _SESSION = [];
-            if ($renew) {
+            if (renew) {
                 this.renew();
             }
         }
@@ -537,7 +537,7 @@ class Session {
             result = false;
 
             checkTime = time!isNull && _lifetime > 0;
-            if ($checkTime && (time() - (int)$time > _lifetime)) {
+            if (checkTime && (time() - (int)time > _lifetime)) {
                 result = true;
             }
             this.write("Config.time", time());

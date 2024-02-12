@@ -51,10 +51,10 @@ class FlashMessage {
     void set(string messageToBeFlashed, IData[string] options = null) {
         auto options = options.update(this.getConfig());
 
-        if (isSet($options["escape"]) && !isSet(options["params"]["escape"])) {
+        if (isSet(options["escape"]) && !isSet(options["params"]["escape"])) {
             options["params"]["escape"] = options["escape"];
         }
-        [$plugin, anElement] = pluginSplit(options["element"]);
+        [plugin, anElement] = pluginSplit(options["element"]);
         if (options["plugin"]) {
             plugin = options["plugin"];
         }
@@ -101,7 +101,7 @@ class FlashMessage {
         options["params"]["code"] ??= exception.getCode();
 
         message = exception.getMessage();
-        this.set($message, options);
+        this.set(message, options);
     }
     
     /**
@@ -124,7 +124,7 @@ class FlashMessage {
      */
     void success(string amessage, IData[string] options = null) {
         options["element"] = "Success";
-        this.set($message, options);
+        this.set(message, options);
     }
     
     /**
@@ -138,7 +138,7 @@ class FlashMessage {
      */
     void error(string amessage, IData[string] options = null) {
         options["element"] = "error";
-        this.set($message, options);
+        this.set(message, options);
     }
     
     /**
@@ -151,7 +151,7 @@ class FlashMessage {
      */
     void warning(string amessage, IData[string] options = null) {
         options["element"] = "warning";
-        this.set($message, options);
+        this.set(message, options);
     }
     
     /**
@@ -164,6 +164,6 @@ class FlashMessage {
      */
     void info(string amessage, IData[string] options = null) {
         options["element"] = "info";
-        this.set($message, options);
+        this.set(message, options);
     }
 }

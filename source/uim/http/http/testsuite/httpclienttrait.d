@@ -26,7 +26,7 @@ template HttpClientTemplate {
      *  \UIM\Http\Client\Response
      */
     Response newClientResponse(int code = 200, array  aHeaders = [], string abody= null) {
-         aHeaders = chain(["HTTP/1.1 {$code}"],  aHeaders);
+         aHeaders = chain(["HTTP/1.1 {code}"],  aHeaders);
 
         return new Response( aHeaders, body);
     }

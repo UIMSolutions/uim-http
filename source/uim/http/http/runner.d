@@ -39,12 +39,12 @@ class Runner : IRequestHandler {
         this.fallbackHandler = fallbackHandler;
 
         if (
-            cast(IRoutingApplication)$fallbackHandler  &&
-            cast(ServerRequest)$request
+            cast(IRoutingApplication)fallbackHandler  &&
+            cast(ServerRequest)request
         ) {
-            Router.setRequest($request);
+            Router.setRequest(request);
         }
-        return this.handle($request);
+        return this.handle(request);
     }
     
     /**
@@ -57,10 +57,10 @@ class Runner : IRequestHandler {
             middleware = this.queue.current();
             this.queue.next();
 
-            return middleware.process($request, this);
+            return middleware.process(request, this);
         }
         if (this.fallbackHandler) {
-            return this.fallbackHandler.handle($request);
+            return this.fallbackHandler.handle(request);
         }
         return new Response([
             'body": 'Middleware queue was exhausted without returning a response '

@@ -31,9 +31,9 @@ class UploadedFileFactory : UploadedFileFactoryInterface {
         string aclientFilename = null,
         string aclientMediaType = null
     ): IUploadedFile {
-        if ($size.isNull) {
+        if (size.isNull) {
             size = stream.getSize() ?? 0;
         }
-        return new UploadedFile($stream, size, error, clientFilename, clientMediaType);
+        return new UploadedFile(stream, size, error, clientFilename, clientMediaType);
     }
 }

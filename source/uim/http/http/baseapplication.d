@@ -78,18 +78,18 @@ abstract class BaseApplication :
     auto pluginMiddleware(MiddlewareQueue middleware): MiddlewareQueue
     {
         foreach (this.plugins.with("middleware") as plugin) {
-            middleware = plugin.middleware($middleware);
+            middleware = plugin.middleware(middleware);
         }
         return middleware;
     }
  
-    void addPlugin($name, IConfigData[string] configData = null) {
-        if (isString($name)) {
-            plugin = this.plugins.create($name, configData);
+    void addPlugin(name, IConfigData[string] configData = null) {
+        if (isString(name)) {
+            plugin = this.plugins.create(name, configData);
         } else {
             plugin = name;
         }
-        this.plugins.add($plugin);
+        this.plugins.add(plugin);
     }
     
     /**
@@ -102,7 +102,7 @@ abstract class BaseApplication :
      */
     void addOptionalPlugin(IPlugin|string aName, IConfigData[string] configData = null) {
         try {
-            this.addPlugin($name, configData);
+            this.addPlugin(name, configData);
         } catch (MissingPluginException) {
             // Do not halt if the plugin is missing
         }
@@ -118,8 +118,8 @@ abstract class BaseApplication :
 
         // phpcs:ignore
         plugins = @include this.configDir ~ "plugins.d";
-        if (isArray($plugins)) {
-            this.plugins.addFromConfig($plugins);
+        if (isArray(plugins)) {
+            this.plugins.addFromConfig(plugins);
         }
     }
  
@@ -138,7 +138,7 @@ abstract class BaseApplication :
         if (!Router.routes()) {
             result = require this.configDir ~ "routes.d";
             if (cast(Closure)result) {
-                result($routes);
+                result(routes);
             }
         }
     }
@@ -146,7 +146,7 @@ abstract class BaseApplication :
     auto pluginRoutes(RouteBuilder routes): RouteBuilder
     {
         foreach (this.plugins.with("routes") as plugin) {
-            plugin.routes($routes);
+            plugin.routes(routes);
         }
         return routes;
     }
@@ -160,13 +160,13 @@ abstract class BaseApplication :
      * \UIM\Console\CommandCollection commands The CommandCollection to add commands into.
      */
     CommandCollection console(CommandCollection commands) {
-        return commands.addMany($commands.autoDiscover());
+        return commands.addMany(commands.autoDiscover());
     }
  
     auto pluginConsole(CommandCollection commands): CommandCollection
     {
         foreach (this.plugins.with("console") as plugin) {
-            commands = plugin.console($commands);
+            commands = plugin.console(commands);
         }
         return commands;
     }
@@ -189,12 +189,12 @@ abstract class BaseApplication :
      */
     protected IContainer buildContainer() {
         container = new Container();
-        this.services($container);
+        this.services(container);
         this.plugins.with("services")
-            .each!(plugin => plugin.services($container));
+            .each!(plugin => plugin.services(container));
 
         event = this.dispatchEvent("Application.buildContainer", ["container": container]);
-        if (cast(IContainer)$event.getResult()) {
+        if (cast(IContainer)event.getResult()) {
             return event.getResult();
         }
         return container;
@@ -224,14 +224,14 @@ abstract class BaseApplication :
         container.add(ServerRequest.classname, request);
         container.add(IContainer.classname, container);
 
-        this.controllerFactory ??= new ControllerFactory($container);
+        this.controllerFactory ??= new ControllerFactory(container);
 
         if (Router.getRequest() != request) {
-            assert(cast(ServerRequest)$request);
-            Router.setRequest($request);
+            assert(cast(ServerRequest)request);
+            Router.setRequest(request);
         }
-        controller = this.controllerFactory.create($request);
+        controller = this.controllerFactory.create(request);
 
-        return this.controllerFactory.invoke($controller);
+        return this.controllerFactory.invoke(controller);
     }
 }

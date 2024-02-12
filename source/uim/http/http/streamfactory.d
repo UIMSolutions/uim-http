@@ -30,7 +30,7 @@ class StreamFactory : IStreamFactory {
      * The file MUST be opened using the given mode, which may be any mode
      * supported by the `fopen` function.
      *
-     * The `$filename` MAY be any string supported by `fopen()`.
+     * The `filename` MAY be any string supported by `fopen()`.
      * Params:
      * string afilename The filename or stream URI to use as basis of stream.
      * @param string amode The mode with which to open the underlying filename/stream.
@@ -38,10 +38,10 @@ class StreamFactory : IStreamFactory {
      * @throws \InvalidArgumentException If the mode is invalid.
      */
     IStream createStreamFromFile(string afilename, string amode = "r") {
-        if (!isReadable($filename)) {
-            throw new RuntimeException("Cannot read file `%s`".format($filename));
+        if (!isReadable(filename)) {
+            throw new RuntimeException("Cannot read file `%s`".format(filename));
         }
-        return new Stream($filename, mode);
+        return new Stream(filename, mode);
     }
     
     /**
@@ -51,7 +51,7 @@ class StreamFactory : IStreamFactory {
      * Params:
      * resource resource The PHP resource to use as the basis for the stream.
      */
-    IStream createStreamFromResource($resource) {
-        return new Stream($resource);
+    IStream createStreamFromResource(resource) {
+        return new Stream(resource);
     }
 }

@@ -30,21 +30,21 @@ class HeaderUtility {
         auto myParsedParams = ["link": myUrl];
 
         auto params = matches[2];
-        if ($params) {
+        if (params) {
             params.split(";").each!((param) {
                 auto explodedParam = param.split("=");
-                auto trimedKey = trim($explodedParam[0]);
-                auto trimedValue = trim($explodedParam[1], "'");
-                if ($trimedKey == "title*") {
+                auto trimedKey = trim(explodedParam[0]);
+                auto trimedValue = trim(explodedParam[1], "'");
+                if (trimedKey == "title*") {
                     // See https://www.rfc-editor.org/rfc/rfc8187#section-3.2.3
                     preg_match("/(.*)\'(.*)\'(.*)/i", trimedValue, matches);
                     trimedValue = [
                         "language": matches[2],
                         "encoding": matches[1],
-                        "value": urldecode($matches[3]),
+                        "value": urldecode(matches[3]),
                     ];
                 }
-                myParsedParams[$trimedKey] = trimedValue;
+                myParsedParams[trimedKey] = trimedValue;
             });
         }
         return myParsedParams;
@@ -66,24 +66,24 @@ class HeaderUtility {
             aValue = trim(aValue);
 
             semiPos = strpos(aValue, ";");
-            if ($semiPos != false) {
+            if (semiPos != false) {
                 string[] params = split(";", aValue);
-                aValue = trim($params[0]);
-                foreach ($params as param) {
-                    qPos = strpos($param, "q=");
-                    if ($qPos != false) {
-                        prefValue = substr($param, qPos + 2);
+                aValue = trim(params[0]);
+                foreach (params as param) {
+                    qPos = strpos(param, "q=");
+                    if (qPos != false) {
+                        prefValue = substr(param, qPos + 2);
                     }
                 }
             }
-            if (!isSet($accept[$prefValue])) {
-                accept[$prefValue] = [];
+            if (!isSet(accept[prefValue])) {
+                accept[prefValue] = [];
             }
-            if ($prefValue) {
-                accept[$prefValue] ~= aValue;
+            if (prefValue) {
+                accept[prefValue] ~= aValue;
             }
         }
-        krsort($accept);
+        krsort(accept);
 
         return accept;
     }
@@ -93,7 +93,7 @@ class HeaderUtility {
      */
     static array parseWwwAuthenticate(string authenticateHeader) {
         preg_match_all(
-            "@(\w+)=(?:(?:')([^"]+)"|([^\s,$]+))@",
+            "@(\w+)=(?:(?:')([^"]+)"|([^\s,]+))@",
             authenticateHeader,
             matches,
             PREG_SET_ORDER

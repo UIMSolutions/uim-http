@@ -69,9 +69,9 @@ class CorsBuilder {
      * string[]|string adomains The allowed domains
      */
     void allowOrigin(string[] adomains) {
-        auto allowedDomains = _normalizeDomains((array)$domains);
-        foreach ($domain; allowedDomains) {
-            if (!preg_match($domain["preg"], _origin)) {
+        auto allowedDomains = _normalizeDomains((array)domains);
+        foreach (domain; allowedDomains) {
+            if (!preg_match(domain["preg"], _origin)) {
                 continue;
             }
             aValue = domain["original"] == "*" ? "*" : _origin;
@@ -88,7 +88,7 @@ class CorsBuilder {
     protected array _normalizeDomains(string[] someDomains) {
         auto result;
         foreach (domain; someDomains) {
-            if ($domain == "*") {
+            if (domain == "*") {
                 result ~= ["preg": "@.@", "original": "*"];
                 continue;
             }
@@ -103,7 +103,7 @@ protected string normalizeDomain(string aDomain) {
     if (!aDomain.has("://")) {
         preg = (_isSsl ? "https://' : 'http://") ~ aDomain;
     }
-    preg = "@^" ~ preg_quote($preg, "@").replace("\*", ".*") ~ "$@";
+    preg = "@^" ~ preg_quote(preg, "@").replace("\*", ".*") ~ "@";
     return compact("original", "preg");
 
 }

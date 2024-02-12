@@ -84,16 +84,16 @@ class ContentTypeNegotiation {
      * \Psr\Http\Message\IRequest request The request to read headers from.
      */
     string[] acceptedLanguages(IRequest request) {
-        auto raw = this.parseAcceptLanguage($request);
+        auto raw = this.parseAcceptLanguage(request);
         auto accept = [];
-        foreach ($languages; raw) {
-            foreach ($languages as &$lang) {
-                if ($lang.has("_")) {
+        foreach (languages; raw) {
+            foreach (languages as &lang) {
+                if (lang.has("_")) {
                     lang = lang.replace("_", "-");
                 }
                 lang = lang.toLower;
             }
-            accept = chain($accept, languages);
+            accept = chain(accept, languages);
         }
         return accept;
     }
@@ -108,8 +108,8 @@ class ContentTypeNegotiation {
      * @param string alang The language code to check.
      */
     bool acceptLanguage(IRequest request, string alang) {
-        accept = this.acceptedLanguages($request);
+        accept = this.acceptedLanguages(request);
 
-        return in_array($lang.toLower, accept, true);
+        return in_array(lang.toLower, accept, true);
     }
 }

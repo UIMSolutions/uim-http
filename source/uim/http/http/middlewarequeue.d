@@ -37,24 +37,24 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * @throws \InvalidArgumentException If Middleware not found.
      */
     protected IMiddleware resolve(IMiddleware|Closure|string amiddleware) {
-        if (isString($middleware)) {
-            if (this.container && this.container.has($middleware)) {
-                middleware = this.container.get($middleware);
+        if (isString(middleware)) {
+            if (this.container && this.container.has(middleware)) {
+                middleware = this.container.get(middleware);
             } else {
-                string className = App.className($middleware, "Middleware", "Middleware");
+                string className = App.className(middleware, "Middleware", "Middleware");
                 if (className.isNull) {
                     throw new InvalidArgumentException(
                         "Middleware `%s` was not found."
-                        .format($middleware
+                        .format(middleware
                     ));
                 }
                 IMiddleware middleware = new className();
             }
         }
-        if (cast(IMiddleware)$middleware) {
+        if (cast(IMiddleware)middleware) {
             return middleware;
         }
-        return new ClosureDecoratorMiddleware($middleware);
+        return new ClosureDecoratorMiddleware(middleware);
     }
     
     /**
@@ -63,7 +63,7 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * \Psr\Http\Server\IMiddleware|\Closure|string[] amiddleware The middleware(s) to append.
      */
     void add(IMiddleware|Closure|string[] amiddleware) {
-        if (isArray($middleware)) {
+        if (isArray(middleware)) {
             this.queue = chain(this.queue, middleware);
 
             return;
@@ -77,7 +77,7 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * \Psr\Http\Server\IMiddleware|\Closure|string[] amiddleware The middleware(s) to append.
      */
     MiddlewareQueue push(IMiddleware|Closure|string[] amiddleware) {
-        return this.add($middleware);
+        return this.add(middleware);
     }
     
     /**
@@ -86,8 +86,8 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * \Psr\Http\Server\IMiddleware|\Closure|string[] amiddleware The middleware(s) to prepend.
      */
     auto prepend(IMiddleware|Closure|string[] amiddleware) {
-        if (isArray($middleware)) {
-            this.queue = chain($middleware, this.queue);
+        if (isArray(middleware)) {
+            this.queue = chain(middleware, this.queue);
 
             return this;
         }
@@ -106,7 +106,7 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * @param \Psr\Http\Server\IMiddleware|\Closure|string amiddleware The middleware to insert.
      */
     auto insertAt(int  anIndex, IMiddleware|Closure|string amiddleware) {
-        array_splice(this.queue,  anIndex, 0, [$middleware]);
+        array_splice(this.queue,  anIndex, 0, [middleware]);
 
         return this;
     }
@@ -127,10 +127,10 @@ class MiddlewareQueue : Countable, SeekableIterator {
         foreach (anI: object; this.queue) {
             if (
                 (
-                    isString($object)
+                    isString(object)
                     && object == className
                 )
-                || isA($object,  className)
+                || isA(object,  className)
             ) {
                 isFound = true;
                 break;
@@ -159,19 +159,19 @@ class MiddlewareQueue : Countable, SeekableIterator {
             /** @psalm-suppress ArgumentTypeCoercion */
             if (
                 (
-                    isString($object)
+                    isString(object)
                     && object == className
                 )
-                || isA($object,  className)
+                || isA(object,  className)
             ) {
                 found = true;
                 break;
             }
         }
-        if ($found) {
+        if (found) {
             return this.insertAt(anI + 1, middleware);
         }
-        return this.add($middleware);
+        return this.add(middleware);
     }
     
     /**
@@ -189,9 +189,9 @@ class MiddlewareQueue : Countable, SeekableIterator {
      * int position The position to seek to.
      */
     void seek(int position) {
-        if (!isSet(this.queue[$position])) {
+        if (!isSet(this.queue[position])) {
             throw new OutOfBoundsException("Invalid seek position (%s)."
-                .format($position));
+                .format(position));
         }
         this.position = position;
     }

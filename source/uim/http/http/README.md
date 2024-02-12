@@ -14,16 +14,16 @@ Sending requests is straight forward. Doing a GET request looks like:
 ```php
 use UIM\Http\Client;
 
-$http = new Client();
+http = new Client();
 
 // Simple get
-$response = $http.get("http://example.com/test.html");
+response = http.get("http://example.com/test.html");
 
 // Simple get with querystring
-$response = $http.get("http://example.com/search", ["q": 'widget"]);
+response = http.get("http://example.com/search", ["q": 'widget"]);
 
 // Simple get with querystring & additional headers
-$response = $http.get("http://example.com/search", ["q": 'widget"], [
+response = http.get("http://example.com/search", ["q": 'widget"], [
   'headers": ["X-Requested-With": 'XMLHttpRequest"],
 ]);
 ```
@@ -58,22 +58,22 @@ class Application : HttpApplicationInterface {
     /**
      * Define the HTTP middleware layers for an application.
      * Params:
-     * \UIM\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
+     * \UIM\Http\MiddlewareQueue middlewareQueue The middleware queue to set in your App Class
      * @return \UIM\Http\MiddlewareQueue
      */
-    auto middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    auto middleware(MiddlewareQueue middlewareQueue): MiddlewareQueue
     {
         // Add middleware for your application.
-        return $middlewareQueue;
+        return middlewareQueue;
     }
 
     /**
      * Handle incoming server request and return a response.
      * Params:
-     * \Psr\Http\Message\ServerRequestInterface $request The request
+     * \Psr\Http\Message\ServerRequestInterface request The request
      * @return \Psr\Http\Message\ResponseInterface
      */
-    auto handle(ServerRequestInterface $request): ResponseInterface
+    auto handle(ServerRequestInterface request): ResponseInterface
     {
         return new Response(["body'=>'Hello World!"]);
     }
@@ -93,10 +93,10 @@ use App\Application;
 use UIM\Http\Server;
 
 // Bind your application to the server.
-$server = new Server(new Application());
+server = new Server(new Application());
 
 // Run the request/response through the application and emit the response.
-$server.emit($server.run());
+server.emit(server.run());
 ```
 
 You can then run your application using PHP`s built in webserver:
