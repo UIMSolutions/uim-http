@@ -23,32 +23,32 @@ class Oauth
      * @param array credentials Authentication credentials.
      */
     Request authentication(Request request, array credentials) {
-        if (!isSet($credentials["consumerKey"])) {
+        if (!isSet(credentials["consumerKey"])) {
             return request;
         }
-        if (isEmpty($credentials["method"])) {
+        if (isEmpty(credentials["method"])) {
             credentials["method"] = "hmac-sha1";
         }
-        credentials["method"] = strtoupper($credentials["method"]);
+        credentials["method"] = strtoupper(credentials["method"]);
 
-        switch ($credentials["method"]) {
+        switch (credentials["method"]) {
             case "HMAC-SHA1":
                 hasKeys = isSet(
                     credentials["consumerSecret"],
                     credentials["token"],
                     credentials["tokenSecret"]
                 );
-                if (!$hasKeys) {
+                if (!hasKeys) {
                     return request;
                 }
-                aValue = _hmacSha1($request, credentials);
+                aValue = _hmacSha1(request, credentials);
                 break;
 
             case "RSA-SHA1":
-                if (!isSet($credentials["privateKey"])) {
+                if (!isSet(credentials["privateKey"])) {
                     return request;
                 }
-                aValue = _rsaSha1($request, credentials);
+                aValue = _rsaSha1(request, credentials);
                 break;
 
             case "PLAINTEXT":
@@ -57,14 +57,14 @@ class Oauth
                     credentials["token"],
                     credentials["tokenSecret"]
                 );
-                if (!$hasKeys) {
+                if (!hasKeys) {
                     return request;
                 }
-                aValue = _plaintext($request, credentials);
+                aValue = _plaintext(request, credentials);
                 break;
 
             default:
-                throw new UimException("Unknown Oauth signature method `%s`.".format($credentials["method"]));
+                throw new UimException("Unknown Oauth signature method `%s`.".format(credentials["method"]));
         }
         return request.withHeader("Authorization", aValue);
     }
@@ -116,18 +116,18 @@ class Oauth
             'oauth_timestamp": timestamp,
             'oauth_signature_method": 'HMAC-SHA1",
             'oauth_token": credentials["token"],
-            'oauth_consumer_key": _encode($credentials["consumerKey"]),
+            'oauth_consumer_key": _encode(credentials["consumerKey"]),
         ];
-        baseString = this.baseString($request,  someValues);
+        baseString = this.baseString(request,  someValues);
 
         // Consumer key should only be encoded for base string calculation as
         // auth header generation already encodes independently
          someValues["oauth_consumer_key"] = credentials["consumerKey"];
 
-        if (isSet($credentials["realm"])) {
+        if (isSet(credentials["realm"])) {
              someValues["oauth_realm"] = credentials["realm"];
         }
-        aKey = [$credentials["consumerSecret"], credentials["tokenSecret"]];
+        aKey = [credentials["consumerSecret"], credentials["tokenSecret"]];
         aKey = array_map(_encode(...), aKey);
         aKey = join("&", aKey);
 
@@ -159,44 +159,44 @@ class Oauth
             "oauth_signature_method": "RSA-SHA1",
             "oauth_consumer_key": credentials["consumerKey"],
         ];
-        if (isSet($credentials["consumerSecret"])) {
+        if (isSet(credentials["consumerSecret"])) {
              someValues["oauth_consumer_secret"] = credentials["consumerSecret"];
         }
-        if (isSet($credentials["token"])) {
+        if (isSet(credentials["token"])) {
              someValues["oauth_token"] = credentials["token"];
         }
-        if (isSet($credentials["tokenSecret"])) {
+        if (isSet(credentials["tokenSecret"])) {
              someValues["oauth_token_secret"] = credentials["tokenSecret"];
         }
-        baseString = this.baseString($request,  someValues);
+        baseString = this.baseString(request,  someValues);
 
-        if (isSet($credentials["realm"])) {
+        if (isSet(credentials["realm"])) {
              someValues["oauth_realm"] = credentials["realm"];
         }
-        if (isResource($credentials["privateKey"])) {
+        if (isResource(credentials["privateKey"])) {
             resource = credentials["privateKey"];
-            privateKey = stream_get_contents($resource);
-            rewind($resource);
+            privateKey = stream_get_contents(resource);
+            rewind(resource);
             credentials["privateKey"] = privateKey;
         }
         credentials += [
             'privateKeyPassphrase": "",
         ];
-        if (isResource($credentials["privateKeyPassphrase"])) {
+        if (isResource(credentials["privateKeyPassphrase"])) {
             resource = credentials["privateKeyPassphrase"];
-            passphrase = stream_get_line($resource, 0, D_EOL);
-            rewind($resource);
+            passphrase = stream_get_line(resource, 0, D_EOL);
+            rewind(resource);
             credentials["privateKeyPassphrase"] = passphrase;
         }
         /** @var \OpenSSLAsymmetricKey|\OpenSSLCertificate|string[] aprivateKey */
-        privateKey = openssl_pkey_get_private($credentials["privateKey"], credentials["privateKeyPassphrase"]);
+        privateKey = openssl_pkey_get_private(credentials["privateKey"], credentials["privateKeyPassphrase"]);
         this.checkSslError();
 
         signature = "";
-        openssl_sign($baseString, signature, privateKey);
+        openssl_sign(baseString, signature, privateKey);
         this.checkSslError();
 
-         someValues["oauth_signature"] = base64_encode($signature);
+         someValues["oauth_signature"] = base64_encode(signature);
 
         return _buildAuth(someValues);
     }
@@ -216,8 +216,8 @@ class Oauth
     string baseString(Request request, array oauthValues) {
         someParts = [
             request.getMethod(),
-           _normalizedUrl($request.getUri()),
-           _normalizedParams($request, oauthValues),
+           _normalizedUrl(request.getUri()),
+           _normalizedParams(request, oauthValues),
         ];
         someParts = array_map(_encode(...), someParts);
 
@@ -252,18 +252,18 @@ class Oauth
      * @param array oauthValues Oauth values.
      */
     protected string _normalizedParams(Request request, array oauthValues) {
-        aQuery = parse_url((string)$request.getUri(), UIM_URL_QUERY);
+        aQuery = parse_url((string)request.getUri(), UIM_URL_QUERY);
         parse_str((string)aQuery, aQueryArgs);
 
         post = [];
         string contentType = request.getHeaderLine("Content-Type");
-        if ($contentType.isEmpty || contentType == "application/x-www-form-urlencoded") {
-            parse_str(to!string($request.getBody()), post);
+        if (contentType.isEmpty || contentType == "application/x-www-form-urlencoded") {
+            parse_str(to!string(request.getBody()), post);
         }
         someArguments = chain(aQueryArgs, oauthValues, post);
         pairs = _normalizeData(someArguments);
         someData = [];
-        foreach ($pairs as pair) {
+        foreach (pairs as pair) {
             someData ~= join("=", pair);
         }
         sort(someData, SORT_STRING);
@@ -322,10 +322,10 @@ class Oauth
      */
     protected void checkSslError() {
         error = "";
-        while ($text = openssl_error_string()) {
+        while (text = openssl_error_string()) {
             error ~= text;
         }
-        if ($error.length > 0) {
+        if (error.length > 0) {
             throw new UimException("openssl error: " ~ error);
         }
     }

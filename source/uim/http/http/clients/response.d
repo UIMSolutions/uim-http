@@ -105,10 +105,10 @@ class Response : Message : IResponse {
     this(string[] unparsedHeaders = [], string abody= null) {
        _parseHeaders(unparsedHeaders);
         if (this.getHeaderLine("Content-Encoding") == "gzip") {
-            body = _decodeGzipBody($body);
+            body = _decodeGzipBody(body);
         }
         stream = new Stream("php://memory", "wb+");
-        stream.write($body);
+        stream.write(body);
         stream.rewind();
         this.stream = stream;
     }
@@ -151,25 +151,25 @@ class Response : Message : IResponse {
             if (str_starts_with(aValue, "HTTP/")) {
                 preg_match("/HTTP\/([\d.]+) ([0-9]+)(.*)/i", aValue, matches);
                 this.protocol = matches[1];
-                this.code = to!int($matches[2]);
-                this.reasonPhrase = trim($matches[3]);
+                this.code = to!int(matches[2]);
+                this.reasonPhrase = trim(matches[3]);
                 continue;
             }
             if (!aValue.has(":")) {
                 continue;
             }
-            [$name, aValue] = split(":", aValue, 2);
+            [name, aValue] = split(":", aValue, 2);
             aValue = trim(aValue);
             /** @phpstan-var non-empty-string aName */
-            name = trim($name);
+            name = trim(name);
 
             normalized = name.toLower;
 
-            if (isSet(this.headers[$name])) {
-                this.headers[$name] ~= aValue;
+            if (isSet(this.headers[name])) {
+                this.headers[name] ~= aValue;
             } else {
-                this.headers[$name] = (array)aValue;
-                this.headerNames[$normalized] = name;
+                this.headers[name] = (array)aValue;
+                this.headerNames[normalized] = name;
             }
         }
     }
@@ -230,11 +230,11 @@ class Response : Message : IResponse {
      */
     string getEncoding() {
         content = this.getHeaderLine("content-type");
-        if (!$content) {
+        if (!content) {
             return null;
         }
         preg_match("/charset\s?=\s?[\']?([a-z0-9-_]+)[\']?/i", content, matches);
-        if (isEmpty($matches[1])) {
+        if (isEmpty(matches[1])) {
             return null;
         }
         return matches[1];
@@ -267,10 +267,10 @@ class Response : Message : IResponse {
     string[] getCookie(string aName) {
         cookies = this.buildCookieCollection();
 
-        if (!$cookies.has($name)) {
+        if (!cookies.has(name)) {
             return null;
         }
-        return cookies.get($name).getValue();
+        return cookies.get(name).getValue();
     }
     
     /**
@@ -281,7 +281,7 @@ class Response : Message : IResponse {
     array getCookieData(string valueName) {
         cookies = this.buildCookieCollection();
 
-        if (!$cookies.has(valueName)) {
+        if (!cookies.has(valueName)) {
             return null;
         }
         return cookies.get(valueName).toArray();

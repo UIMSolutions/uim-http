@@ -71,11 +71,11 @@ class DatabaseSession : SessionHandler {
      */
     string read(string aid) {
         pkField = _table.getPrimaryKey();
-        assert(isString($pkField));
+        assert(isString(pkField));
         result = _table
             .find("all")
             .select(["data"])
-            .where([$pkField:  anId])
+            .where([pkField:  anId])
             .disableHydration()
             .first();
 
@@ -87,7 +87,7 @@ class DatabaseSession : SessionHandler {
         }
         session = stream_get_contents(result["data"]);
 
-        if ($session == false) {
+        if (session == false) {
             return "";
         }
         return session;
@@ -105,9 +105,9 @@ class DatabaseSession : SessionHandler {
             pkField:  anId,
             'data": someData,
             'expires": time() + _timeout,
-        ], ["accessibleFields": [$pkField: true]]);
+        ], ["accessibleFields": [pkField: true]]);
 
-        return (bool)_table.save($session);
+        return (bool)_table.save(session);
     }
     
     /**
@@ -116,7 +116,7 @@ class DatabaseSession : SessionHandler {
      * string aid ID that uniquely identifies session in database.
      */
     bool destroy(string aid) {
-        /** @var string apk) {  _table.deleteAll([$pkField:  anId]);
+        /** @var string apk) {  _table.deleteAll([pkField:  anId]);
 
         return true;) {
 

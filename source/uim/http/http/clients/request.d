@@ -30,8 +30,8 @@ class Request : Message, IRequest {
         array  aHeaders = [],
         string[]|null someData = null
     ) {
-        this.setMethod($method);
-        this.uri = this.createUri($url);
+        this.setMethod(method);
+        this.uri = this.createUri(url);
          aHeaders += [
             "Connection": "close",
             "User-Agent": ini_get("user_agent") ?: "UIM",
@@ -69,13 +69,13 @@ class Request : Message, IRequest {
      * string[] requestBody The body for the request.
      */
     protected void setContent(string[] requestBody) {
-        if (isArray($content)) {
+        if (isArray(content)) {
             formData = new FormData();
             formData.addMany(requestBody);
             /** @phpstan-var array<non-empty-string, non-empty-string>  aHeaders */
              aHeaders = ["Content-Type": formData.contentType()];
             this.addHeaders( aHeaders);
-            auto myFormData = (string)$formData;
+            auto myFormData = (string)formData;
         }
         stream = new Stream("php://memory", "rw");
         stream.write(myFormData);

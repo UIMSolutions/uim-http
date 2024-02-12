@@ -91,7 +91,7 @@ class Cookie : ICookie {
         ?bool isHttpOnly = null,
         SameSiteEnum|string sameSite = null
     ) {
-        this.validateName($name);
+        this.validateName(name);
         this.name = name;
 
        _setValue(aValue);
@@ -100,10 +100,10 @@ class Cookie : ICookie {
         this.httpOnly = isHttpOnly ?? defaultAttributes["httponly"];
         this.path = somePath ?? defaultAttributes["path"];
         this.secure = secure ?? defaultAttributes["secure"];
-        this.sameSite = resolveSameSiteEnum($sameSite ?? defaultAttributes["samesite"]);
+        this.sameSite = resolveSameSiteEnum(sameSite ?? defaultAttributes["samesite"]);
 
-        if ($expiresAt) {
-            if (cast(DateTime)$expiresAt) {
+        if (expiresAt) {
+            if (cast(DateTime)expiresAt) {
                 expiresAt = clone expiresAt;
             }
             /** @var \DateTimeImmutable|\DateTime expiresAt */
@@ -132,10 +132,10 @@ class Cookie : ICookie {
     static void setDefaults(IData[string] options = null) {
         auto options = options.copy;
 
-        if (isSet($options["expires"])) {
+        if (isSet(options["expires"])) {
             options["expires"] = dateTimeInstance(options["expires"]);
         }
-        if (isSet($options["samesite"])) {
+        if (isSet(options["samesite"])) {
             options["samesite"] = resolveSameSiteEnum(options["samesite"]);
         }
         defaultAttributes = options.update(defaultAttributes);
@@ -150,7 +150,7 @@ class Cookie : ICookie {
      */
     static static create(string cookieName, string[]|float|int|bool aValue, IData[string] options = null) {
         auto options += options.update(defaultAttributes);
-        options["expires"] = dateTimeInstance($options["expires"]);
+        options["expires"] = dateTimeInstance(options["expires"]);
 
         return new static(
             name,
@@ -170,17 +170,17 @@ class Cookie : ICookie {
      * \IDateTime|string|int expires Expiry value.
      */
     protected static IDateTime dateTimeInstance(IDateTime|string|int expires) {
-        if ($expires.isNull) {
+        if (expires.isNull) {
             return null;
         }
-        if (cast8IDateTime)$expires) {
+        if (cast8IDateTime)expires) {
             return expires.setTimezone(new DateTimeZone("GMT"));
         }
-        if (!isNumeric($expires)) {
-            expires = strtotime($expires) ?: null;
+        if (!isNumeric(expires)) {
+            expires = strtotime(expires) ?: null;
         }
-        if ($expires !isNull) {
-            expires = new DateTimeImmutable("@" ~ (string)$expires);
+        if (expires !isNull) {
+            expires = new DateTimeImmutable("@" ~ (string)expires);
         }
         return expires;
     }
@@ -200,11 +200,11 @@ class Cookie : ICookie {
             someParts = preg_split("/\;[\t]*/", cookieHeader) ?: [];
         }
         nameValue = split("=", (string)array_shift(someParts), 2);
-        name = array_shift($nameValue);
-        aValue = array_shift($nameValue) ?? "";
+        name = array_shift(nameValue);
+        aValue = array_shift(nameValue) ?? "";
 
         someData = [
-                "name": urldecode($name),
+                "name": urldecode(name),
                 "value": urldecode(aValue),
             ] + defaultAttributes;
 
@@ -233,7 +233,7 @@ class Cookie : ICookie {
         }
         name = someData["name"];
         aValue = someData["value"];
-        assert(isString($name) && isString(aValue));
+        assert(isString(name) && isString(aValue));
         unset(someData["name"], someData["value"]);
 
         return Cookie.create(
@@ -278,7 +278,7 @@ class Cookie : ICookie {
     }
  
     static withName(string aName) {
-        this.validateName($name);
+        this.validateName(name);
         new = clone this;
         new.name = name;
 
@@ -301,10 +301,10 @@ class Cookie : ICookie {
     protected void validateName(string cookieName) {
         if (preg_match("/[=,;\t\r\n\013\014]/", name)) {
             throw new InvalidArgumentException(
-                "The cookie name `%s` contains invalid characters.".format($name)
+                "The cookie name `%s` contains invalid characters.".format(name)
             );
         }
-        if (isEmpty($name)) {
+        if (isEmpty(name)) {
             throw new InvalidArgumentException("The cookie name cannot be empty.");
         }
     }
@@ -392,7 +392,7 @@ class Cookie : ICookie {
  
     auto withExpiry(IDateTime dateTime): static
     {
-        if (cast(DateTime)$dateTime) {
+        if (cast(DateTime)dateTime) {
             dateTime = clone dateTime;
         }
         new = clone this;
@@ -422,7 +422,7 @@ class Cookie : ICookie {
  
     bool isExpired(?IDateTime time = null) {
         time = time ?: new DateTimeImmutable("now", new DateTimeZone("UTC"));
-        if (cast(DateTime)$time) {
+        if (cast(DateTime)time) {
             time = clone time;
         }
         if (!this.expiresAt) {
@@ -453,7 +453,7 @@ class Cookie : ICookie {
  
     static withSameSite(SameSiteEnum|string sameSite) {
         new = clone this;
-        new.sameSite = resolveSameSiteEnum($sameSite);
+        new.sameSite = resolveSameSiteEnum(sameSite);
 
         return new;
     }
@@ -467,7 +467,7 @@ class Cookie : ICookie {
         return match (true) {
             sameSite.isNull: sameSite,
             sameSite instanceof SameSiteEnum: sameSite,
-            default: SameSiteEnum.from(ucfirst($sameSite).toLower),
+            default: SameSiteEnum.from(ucfirst(sameSite).toLower),
         };
     }
     
@@ -494,12 +494,12 @@ class Cookie : ICookie {
      */
     static withAddedValue(string pathToWrite, Json aValue) {
         new = clone this;
-        if ($new.isExpanded == false) {
-            assert(isString($new.value), "aValue is not a string");
-            new.value = new._expand($new.value);
+        if (new.isExpanded == false) {
+            assert(isString(new.value), "aValue is not a string");
+            new.value = new._expand(new.value);
         }
-        assert(isArray($new.value), "aValue is not an array");
-        new.value = Hash.insert($new.value, pathToWrite, aValue);
+        assert(isArray(new.value), "aValue is not an array");
+        new.value = Hash.insert(new.value, pathToWrite, aValue);
 
         return new;
     }
@@ -511,13 +511,13 @@ class Cookie : ICookie {
      */
     static withoutAddedValue(string aPath) {
         new = clone this;
-        if ($new.isExpanded == false) {
-            assert(isString($new.value), "aValue is not a string");
-            new.value = new._expand($new.value);
+        if (new.isExpanded == false) {
+            assert(isString(new.value), "aValue is not a string");
+            new.value = new._expand(new.value);
         }
-        assert(isArray($new.value), "aValue is not an array");
+        assert(isArray(new.value), "aValue is not an array");
 
-        new.value = Hash.remove($new.value, somePath);
+        new.value = Hash.remove(new.value, somePath);
 
         return new;
     }
@@ -576,7 +576,7 @@ class Cookie : ICookie {
      * array array Map of key and values
      */
     protected string _flatten(array array) {
-        return json_encode($array, JSON_THROW_ON_ERROR);
+        return json_encode(array, JSON_THROW_ON_ERROR);
     }
     
     /**
@@ -587,9 +587,9 @@ class Cookie : ICookie {
      */
     protected string[] _expand(string astring) {
         this.isExpanded = true;
-        first = substr($string, 0, 1);
-        if ($first == "{" || first == "[") {
-            return json_decode($string, true) ?? string;
+        first = substr(string, 0, 1);
+        if (first == "{" || first == "[") {
+            return json_decode(string, true) ?? string;
         }
         array = [];
         foreach (split(",", string) as pair) {

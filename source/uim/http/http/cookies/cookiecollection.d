@@ -26,7 +26,7 @@ class CookieCollection : IteratorAggregate, Countable {
      * array<\UIM\Http\Cookie\ICookie> cookies Array of cookie objects
      */
     this(array cookies = []) {
-        this.checkCookies($cookies);
+        this.checkCookies(cookies);
         cookies.each!(cookie => this.cookies[cookie.id] = cookie);
     }
     
@@ -44,7 +44,7 @@ class CookieCollection : IteratorAggregate, Countable {
                 // Don`t blow up on invalid cookies
             }
         });
-        return new static($cookies);
+        return new static(cookies);
     }
     
     /**
@@ -56,9 +56,9 @@ class CookieCollection : IteratorAggregate, Countable {
         someData = request.getCookieParams();
         cookies = [];
         foreach (someData as name: aValue) {
-            cookies ~= new Cookie((string)$name, aValue);
+            cookies ~= new Cookie((string)name, aValue);
         }
-        return new static($cookies);
+        return new static(cookies);
     }
     
     // Get the number of cookies in the collection.
@@ -77,7 +77,7 @@ class CookieCollection : IteratorAggregate, Countable {
      */
     static add(ICookie cookie) {
         new = clone this;
-        new.cookies[$cookie.getId()] = cookie;
+        new.cookies[cookie.getId()] = cookie;
 
         return new;
     }
@@ -88,13 +88,13 @@ class CookieCollection : IteratorAggregate, Countable {
      * string aName The name of the cookie.
      */
     ICookie get(string aName) {
-        cookie = __get($name);
+        cookie = __get(name);
 
-        if ($cookie.isNull) {
+        if (cookie.isNull) {
             throw new InvalidArgumentException(
                 
                     "Cookie `%s` not found. Use `has()` to check first for existence."
-                    .format($name
+                    .format(name
                 )
             );
         }
@@ -112,9 +112,9 @@ class CookieCollection : IteratorAggregate, Countable {
      * string aName The name of the cookie.
      */
     ICookie __get(string aName) {
-        aKey = mb_strtolower($name);
-        foreach ($cookie; this.cookies) {
-            if (mb_strtolower($cookie.name) == aKey) {
+        aKey = mb_strtolower(name);
+        foreach (cookie; this.cookies) {
+            if (mb_strtolower(cookie.name) == aKey) {
                 return cookie;
             }
         }
@@ -127,7 +127,7 @@ class CookieCollection : IteratorAggregate, Countable {
      * string aName The cookie name to check.
      */
     bool __isSet(string aName) {
-        return __get($name) !isNull;
+        return __get(name) !isNull;
     }
     
     /**
@@ -139,10 +139,10 @@ class CookieCollection : IteratorAggregate, Countable {
      */
     static remove(string aName) {
         new = clone this;
-        aKey = mb_strtolower($name);
-        foreach ($new.cookies as  anI: cookie) {
-            if (mb_strtolower($cookie.name) == aKey) {
-                unset($new.cookies[anI]);
+        aKey = mb_strtolower(name);
+        foreach (new.cookies as  anI: cookie) {
+            if (mb_strtolower(cookie.name) == aKey) {
+                unset(new.cookies[anI]);
             }
         }
         return new;
@@ -155,12 +155,12 @@ class CookieCollection : IteratorAggregate, Countable {
      */
     protected void checkCookies(array cookies) {
         foreach (anIndex: cookie; cookies) {
-            if (!cast(ICookie)!$cookie) {
+            if (!cast(ICookie)!cookie) {
                 throw new InvalidArgumentException(                    
                     "Expected `%s[]` as cookies but instead got `%s` at index %d"
                     .format(
                         class,
-                        get_debug_type($cookie),
+                        get_debug_type(cookie),
                         anIndex
                     )
                 );
@@ -195,10 +195,10 @@ class CookieCollection : IteratorAggregate, Countable {
         );
         cookies = extraCookies + cookies;
         cookiePairs = [];
-        foreach ($cookies as aKey: aValue) {
+        foreach (cookies as aKey: aValue) {
             cookie = "%s=%s".format(rawurlencode((string)aKey), rawurlencode(aValue));
             size = cookie.length;
-            if ($size > 4096) {
+            if (size > 4096) {
                 triggerWarning(
                     "The cookie `%s` exceeds the recommended maximum cookie length of 4096 bytes."
                     .format(aKey
@@ -206,7 +206,7 @@ class CookieCollection : IteratorAggregate, Countable {
             }
             cookiePairs ~= cookie;
         }
-        if (isEmpty($cookiePairs)) {
+        if (isEmpty(cookiePairs)) {
             return request;
         }
         return request.withHeader("Cookie", join("; ", cookiePairs));
@@ -223,25 +223,25 @@ class CookieCollection : IteratorAggregate, Countable {
          auto result;
         now = new DateTimeImmutable("now", new DateTimeZone("UTC"));
         foreach (this.cookies as cookie) {
-            if ($scheme == "http' && cookie.isSecure()) {
+            if (scheme == "http' && cookie.isSecure()) {
                 continue;
             }
             if (!str_starts_with(somePath, cookie.getPath())) {
                 continue;
             }
             domain = cookie.getDomain();
-            leadingDot = str_starts_with($domain, ".");
-            if ($leadingDot) {
-                domain = ltrim($domain, ".");
+            leadingDot = str_starts_with(domain, ".");
+            if (leadingDot) {
+                domain = ltrim(domain, ".");
             }
-            if ($cookie.isExpired($now)) {
+            if (cookie.isExpired(now)) {
                 continue;
             }
-             somePattern = "/" ~ preg_quote($domain, "/") ~ "$/";
+             somePattern = "/" ~ preg_quote(domain, "/") ~ "/";
             if (!preg_match(somePattern, host)) {
                 continue;
             }
-             result[$cookie.name] = cookie.getValue();
+             result[cookie.name] = cookie.getValue();
         }
         return result;
     }
@@ -262,10 +262,10 @@ class CookieCollection : IteratorAggregate, Countable {
             ["domain": host, "path": somePath]
         );
         new = clone this;
-        foreach ($cookies as cookie) {
-            new.cookies[$cookie.getId()] = cookie;
+        foreach (cookies as cookie) {
+            new.cookies[cookie.getId()] = cookie;
         }
-        new.removeExpiredCookies($host, somePath);
+        new.removeExpiredCookies(host, somePath);
 
         return new;
     }
@@ -278,14 +278,14 @@ class CookieCollection : IteratorAggregate, Countable {
      */
     protected void removeExpiredCookies(string ahost, string aPath) {
         time = new DateTimeImmutable("now", new DateTimeZone("UTC"));
-        hostPattern = "/" ~ preg_quote($host, "/") ~ "$/";
+        hostPattern = "/" ~ preg_quote(host, "/") ~ "/";
 
         foreach (this.cookies as  anI: cookie) {
-            if (!$cookie.isExpired($time)) {
+            if (!cookie.isExpired(time)) {
                 continue;
             }
             somePathMatches = str_starts_with(somePath, cookie.getPath());
-            hostMatches = preg_match($hostPattern, cookie.getDomain());
+            hostMatches = preg_match(hostPattern, cookie.getDomain());
             if (somePathMatches && hostMatches) {
                 unset(this.cookies[anI]);
             }

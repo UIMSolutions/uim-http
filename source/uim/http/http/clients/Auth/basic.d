@@ -19,8 +19,8 @@ class Basic
      * @param array credentials Credentials.
      */
     Request authentication(Request request, array credentials) {
-        if (isSet($credentials["username"], credentials["password"])) {
-            aValue = _generateHeader($credentials["username"], credentials["password"]);
+        if (isSet(credentials["username"], credentials["password"])) {
+            aValue = _generateHeader(credentials["username"], credentials["password"]);
             request = request.withHeader("Authorization", aValue);
         }
         return request;
@@ -33,8 +33,8 @@ class Basic
      * @param array credentials Credentials.
      */
     Request proxyAuthentication(Request request, array credentials) {
-        if (isSet($credentials["username"], credentials["password"])) {
-            aValue = _generateHeader($credentials["username"], credentials["password"]);
+        if (isSet(credentials["username"], credentials["password"])) {
+            aValue = _generateHeader(credentials["username"], credentials["password"]);
             request = request.withHeader("Proxy-Authorization", aValue);
         }
         return request;
@@ -47,6 +47,6 @@ class Basic
      * @param string apass Password.
      */
     protected string _generateHeader(string auser, string apass) {
-        return "Basic " ~ base64_encode($user ~ ":" ~ pass);
+        return "Basic " ~ base64_encode(user ~ ":" ~ pass);
     }
 }

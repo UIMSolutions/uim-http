@@ -64,7 +64,7 @@ class Digest {
      */
     protected void setAlgorithm(array credentials) {
         algorithm = credentials.get("algorithm", self.ALGO_MD5);
-        if (!isSet(self.HASH_ALGORITHMS[$algorithm])) {
+        if (!isSet(self.HASH_ALGORITHMS[algorithm])) {
             throw new InvalidArgumentException("Invalid Algorithm. Valid ones are: " ~
                 join(",", array_keys(self.HASH_ALGORITHMS)));
         }
@@ -80,17 +80,17 @@ class Digest {
      * @param IData[string] credentials Authentication credentials.
      */
     Request authentication(Request request, array credentials) {
-        if (!isSet($credentials["username"], credentials["password"])) {
+        if (!isSet(credentials["username"], credentials["password"])) {
             return request;
         }
-        if (!isSet($credentials["realm"])) {
-            credentials = _getServerInfo($request, credentials);
+        if (!isSet(credentials["realm"])) {
+            credentials = _getServerInfo(request, credentials);
         }
-        if (!isSet($credentials["realm"])) {
+        if (!isSet(credentials["realm"])) {
             return request;
         }
-        this.setAlgorithm($credentials);
-        aValue = _generateHeader($request, credentials);
+        this.setAlgorithm(credentials);
+        aValue = _generateHeader(request, credentials);
 
         return request.withHeader("Authorization", aValue);
     }
@@ -107,7 +107,7 @@ class Digest {
      */
     protected array _getServerInfo(Request request, array credentials) {
         response = _client.get(
-            to!string($request.getUri()),
+            to!string(request.getUri()),
             [],
             ["auth": ["type": null]]
         );
@@ -117,9 +117,9 @@ class Digest {
             return null;
         }
         matches = HeaderUtility.parseWwwAuthenticate( aHeader[0]);
-        credentials = array_merge($credentials, matches);
+        credentials = array_merge(credentials, matches);
 
-        if ((this.isSessAlgorithm || !empty($credentials["qop"])) && empty($credentials["nc"])) {
+        if ((this.isSessAlgorithm || !empty(credentials["qop"])) && empty(credentials["nc"])) {
             credentials["nc"] = 1;
         }
         return credentials;
@@ -150,20 +150,20 @@ class Digest {
         }
         ha1 = hash(this.hashType, a1);
         a2 = request.getMethod() ~ ":" ~ somePath;
-        nc = "%08x".format($credentials["nc"] ?? 1);
+        nc = "%08x".format(credentials["nc"] ?? 1);
 
-        if (isEmpty($credentials["qop"])) {
+        if (isEmpty(credentials["qop"])) {
             ha2 = hash(this.hashType, a2);
             response = hash(this.hashType, ha1 ~ ":" ~ credentials["nonce"] ~ ":" ~ ha2);
         } else {
-            if (!in_array($credentials["qop"], [self.QOP_AUTH, self.QOP_AUTH_INT])) {
+            if (!in_array(credentials["qop"], [self.QOP_AUTH, self.QOP_AUTH_INT])) {
                 throw new InvalidArgumentException("Invalid QOP parameter. Valid types are: ' .
                     join(",", [self.QOP_AUTH, self.QOP_AUTH_INT]));
             }
-            if ($credentials["qop"] == self.QOP_AUTH_INT) {
-                a2 = request.getMethod() ~ ":" ~ somePath ~ ":" ~ hash(this.hashType, (string)$request.getBody());
+            if (credentials["qop"] == self.QOP_AUTH_INT) {
+                a2 = request.getMethod() ~ ":" ~ somePath ~ ":" ~ hash(this.hashType, (string)request.getBody());
             }
-            if (isEmpty($credentials["cnonce"])) {
+            if (isEmpty(credentials["cnonce"])) {
                 credentials["cnonce"] = this.generateCnonce();
             }
             ha2 = hash(this.hashType, a2);
@@ -180,15 +180,15 @@ class Digest {
         authHeader ~= "uri="" ~ somePath ~ "", ";
         authHeader ~= "algorithm="" ~ this.algorithm ~ """;
 
-        if (!empty($credentials["qop"])) {
+        if (!empty(credentials["qop"])) {
             authHeader ~= ", qop=" ~ credentials["qop"];
         }
-        if (this.isSessAlgorithm || !empty($credentials["qop"])) {
+        if (this.isSessAlgorithm || !empty(credentials["qop"])) {
             authHeader ~= ", nc=" ~ nc ~ ", cnonce="" ~ credentials["cnonce"] ~ """;
         }
         authHeader ~= ", response="" ~ response ~ """;
 
-        if (!empty($credentials["opaque"])) {
+        if (!empty(credentials["opaque"])) {
             authHeader ~= ", opaque="" ~ credentials["opaque"] ~ """;
         }
         return authHeader;

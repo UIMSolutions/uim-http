@@ -57,7 +57,7 @@ class FormDataPart : Stringable {
      * string disposition Use null to get/string to set.
      */
     string disposition(string adisposition = null) {
-        if ($disposition.isNull) {
+        if (disposition.isNull) {
             return this.disposition;
         }
         return this.disposition = disposition;
@@ -84,7 +84,7 @@ class FormDataPart : Stringable {
      * string filename Use null to get/string to set.
      */
     string filename(string afilename = null) {
-        if ($filename.isNull) {
+        if (filename.isNull) {
             return this.filename;
         }
         return this.filename = filename;
@@ -96,7 +96,7 @@ class FormDataPart : Stringable {
      * string type Use null to get/string to set.
      */
     string type(string atype) {
-        if ($type.isNull) {
+        if (type.isNull) {
             return this.type;
         }
         return this.type = type;
@@ -110,7 +110,7 @@ class FormDataPart : Stringable {
      * string type The type of encoding the value has.
      */
     string transferEncoding(string atype) {
-        if ($type.isNull) {
+        if (type.isNull) {
             return this.transferEncoding;
         }
         return this.transferEncoding = type;
@@ -173,9 +173,9 @@ class FormDataPart : Stringable {
      */
     protected string _headerParameterToString(string aName, string avalue) {
         transliterated = Text.transliterate(aValue.replace("\"", ""));
-        result = "%s="%s"".format($name, transliterated);
+        result = "%s="%s"".format(name, transliterated);
         if (this.charset !isNull && aValue != transliterated) {
-            result ~= "; %s*=%s""%s".format($name, this.charset.toLower, rawurlencode(aValue));
+            result ~= "; %s*=%s""%s".format(name, this.charset.toLower, rawurlencode(aValue));
         }
         return result;
     }

@@ -41,7 +41,7 @@ class FormData : Countable, Stringable {
      * @param string avalue The value to add.
      */
     FormDataPart newPart(string aName, string avalue) {
-        return new FormDataPart($name, aValue);
+        return new FormDataPart(name, aValue);
     }
     
     /**
@@ -58,13 +58,13 @@ class FormData : Countable, Stringable {
      * @param Json aValue The value for the part.
      */
     void add(FormDataPart|string aName, Json aValue = null) {
-        if (isString($name)) {
+        if (isString(name)) {
             if (isArray(aValue)) {
-                this.addRecursive($name, aValue);
+                this.addRecursive(name, aValue);
             } else if (isResource(aValue) || cast(IUploadedFile)aValue) {
-                this.addFile($name, aValue);
+                this.addFile(name, aValue);
             } else {
-               _parts ~= this.newPart($name, (string)aValue);
+               _parts ~= this.newPart(name, (string)aValue);
             }
         } else {
            _hasComplexPart = true;
@@ -106,22 +106,22 @@ class FormData : Countable, Stringable {
             if (stream_is_local(aValue)) {
                 finfo = new finfo(FILEINFO_MIME);
                 metadata = stream_get_meta_data(aValue);
-                contentType = (string)$finfo.file($metadata["uri"]);
-                filename = basename($metadata["uri"]);
+                contentType = (string)finfo.file(metadata["uri"]);
+                filename = basename(metadata["uri"]);
             }
         } else {
             finfo = new finfo(FILEINFO_MIME);
             aValue = substr(aValue, 1);
             filename = basename(aValue);
             content = (string)file_get_contents(aValue);
-            contentType = (string)$finfo.file(aValue);
+            contentType = (string)finfo.file(aValue);
         }
-        part = this.newPart($name, content);
-        part.type($contentType);
-        if ($filename) {
-            part.filename($filename);
+        part = this.newPart(name, content);
+        part.type(contentType);
+        if (filename) {
+            part.filename(filename);
         }
-        this.add($part);
+        this.add(part);
 
         return part;
     }
