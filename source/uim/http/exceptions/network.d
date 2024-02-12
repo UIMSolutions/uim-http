@@ -15,18 +15,18 @@ class NetworkException : RuntimeException : INetworkException {
     /**
      * @var \Psr\Http\Message\IRequest
      */
-    protected IRequest $request;
+    protected IRequest request;
 
     /**
      * Constructor.
      * Params:
      * string amessage Exeception message.
-     * @param \Psr\Http\Message\IRequest $request Request instance.
-     * @param \Throwable|null $previous Previous Exception
+     * @param \Psr\Http\Message\IRequest request Request instance.
+     * @param \Throwable|null previous Previous Exception
      */
-    this(string amessage, IRequest $request, Throwable previousException = null) {
-        this.request = $request;
-        super($message, 0, $previous);
+    this(string amessage, IRequest request, Throwable previousException = null) {
+        this.request = request;
+        super(message, 0, previous);
     }
     
     /**

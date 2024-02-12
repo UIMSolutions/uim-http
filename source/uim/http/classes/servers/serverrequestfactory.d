@@ -18,48 +18,48 @@ class ServerRequestFactory : ServerIRequestFactory {
      * If any argument is not supplied, the corresponding superglobal value will
      * be used.
      * Params:
-     * array|null $server _SERVER superglobal
+     * array|null server _SERVER superglobal
      * @param array|null aQuery _GET superglobal
-     * @param array|null $parsedBody _POST superglobal
-     * @param array|null $cookies _COOKIE superglobal
-     * @param array|null $files _FILES superglobal
+     * @param array|null parsedBody _POST superglobal
+     * @param array|null cookies _COOKIE superglobal
+     * @param array|null files _FILES superglobal
      */
     static ServerRequest fromGlobals(
-        ?array $server = null,
+        ?array server = null,
         ?array aQuery = null,
-        ?array $parsedBody = null,
-        ?array $cookies = null,
-        ?array $files = null
+        ?array parsedBody = null,
+        ?array cookies = null,
+        ?array files = null
     ) {
-        $server = normalizeServer($server ?? _SERVER);
-        ["uri": anUri, "base": $base, "webroot": $webroot] = UriFactory.marshalUriAndBaseFromSapi($server);
+        server = normalizeServer(server ?? _SERVER);
+        ["uri": anUri, "base": base, "webroot": webroot] = UriFactory.marshalUriAndBaseFromSapi(server);
 
-        $sessionConfig = (array)Configure.read("Session") ~ [
+        sessionConfig = (array)Configure.read("Session") ~ [
             'defaults": 'php",
-            'cookiePath": $webroot,
+            'cookiePath": webroot,
         ];
-        $session = Session.create($sessionConfig);
+        session = Session.create(sessionConfig);
 
-        $request = new ServerRequest([
-            'environment": $server,
+        request = new ServerRequest([
+            'environment": server,
             'uri": anUri,
-            'cookies": $cookies ?? _COOKIE,
+            'cookies": cookies ?? _COOKIE,
             'query": aQuery ?? _GET,
-            'webroot": $webroot,
-            'base": $base,
-            `session": $session,
-            'input": $server["CAKEPHP_INPUT"] ?? null,
+            'webroot": webroot,
+            'base": base,
+            `session": session,
+            'input": server["CAKEPHP_INPUT"] ?? null,
         ]);
 
-        $request = marshalBodyAndRequestMethod($parsedBody ?? _POST, $request);
+        request = marshalBodyAndRequestMethod(parsedBody ?? _POST, request);
         // This is required as `ServerRequest.scheme()` ignores the value of
         // `HTTP_X_FORWARDED_PROTO` unless `trustProxy` is enabled, while the
         // `Uri` instance intially created always takes values of `HTTP_X_FORWARDED_PROTO`
         // into account.
-        anUri = $request.getUri().withScheme($request.scheme());
-        $request = $request.withUri(anUri, true);
+        anUri = request.getUri().withScheme(request.scheme());
+        request = request.withUri(anUri, true);
 
-        return marshalFiles($files ?? _FILES, $request);
+        return marshalFiles(files ?? _FILES, request);
     }
     
     /**
@@ -70,56 +70,56 @@ class ServerRequestFactory : ServerIRequestFactory {
      * Request body of content type "application/x-www-form-urlencoded" is parsed
      * into array for PUT/PATCH/DELETE requests.
      * Params:
-     * array $parsedBody Parsed body.
+     * array parsedBody Parsed body.
      * @param \UIM\Http\ServerRequest serverRequest Request instance.
      */
-    protected static ServerRequest marshalBodyAndRequestMethod(array $parsedBody, ServerRequest serverRequest) {
-        $method = $request.getMethod();
-        $override = false;
+    protected static ServerRequest marshalBodyAndRequestMethod(array parsedBody, ServerRequest serverRequest) {
+        method = request.getMethod();
+        override = false;
 
         if (
-            in_array($method, ["PUT", "DELETE", "PATCH"], true) &&
-            str_starts_with((string)$request.contentType(), "application/x-www-form-urlencoded")
+            in_array(method, ["PUT", "DELETE", "PATCH"], true) &&
+            str_starts_with((string)request.contentType(), "application/x-www-form-urlencoded")
         ) {
-            someData = (string)$request.getBody();
-            parse_str(someData, $parsedBody);
+            someData = (string)request.getBody();
+            parse_str(someData, parsedBody);
         }
-        if ($request.hasHeader("X-Http-Method-Override")) {
-            $parsedBody["_method"] = $request.getHeaderLine("X-Http-Method-Override");
-            $override = true;
+        if (request.hasHeader("X-Http-Method-Override")) {
+            parsedBody["_method"] = request.getHeaderLine("X-Http-Method-Override");
+            override = true;
         }
-        $request = $request.withenviroment("ORIGINAL_REQUEST_METHOD", $method);
-        if (isSet($parsedBody["_method"])) {
-            $request = $request.withenviroment("REQUEST_METHOD", $parsedBody["_method"]);
-            unset($parsedBody["_method"]);
-            $override = true;
+        request = request.withenviroment("ORIGINAL_REQUEST_METHOD", method);
+        if (isSet(parsedBody["_method"])) {
+            request = request.withenviroment("REQUEST_METHOD", parsedBody["_method"]);
+            unset(parsedBody["_method"]);
+            override = true;
         }
         if (
-            $override &&
-            !in_array($request.getMethod(), ["PUT", "POST", "DELETE", "PATCH"], true)
+            override &&
+            !in_array(request.getMethod(), ["PUT", "POST", "DELETE", "PATCH"], true)
         ) {
-            $parsedBody = [];
+            parsedBody = [];
         }
-        return $request.withParsedBody($parsedBody);
+        return request.withParsedBody(parsedBody);
     }
     
     /**
      * Process uploaded files and move things onto the parsed body.
      * Params:
-     * array $files Files array for normalization and merging in parsed body.
+     * array files Files array for normalization and merging in parsed body.
      * @param \UIM\Http\ServerRequest serverRequest Request instance.
      */
-    protected static ServerRequest marshalFiles(array $files, ServerRequest serverRequest) {
-        $files = normalizeUploadedFiles($files);
-        $request = $request.withUploadedFiles($files);
+    protected static ServerRequest marshalFiles(array files, ServerRequest serverRequest) {
+        files = normalizeUploadedFiles(files);
+        request = request.withUploadedFiles(files);
 
-        $parsedBody = $request.getParsedBody();
-        if (!isArray($parsedBody)) {
-            return $request;
+        parsedBody = request.getParsedBody();
+        if (!isArray(parsedBody)) {
+            return request;
         }
-        $parsedBody = Hash.merge($parsedBody, $files);
+        parsedBody = Hash.merge(parsedBody, files);
 
-        return $request.withParsedBody($parsedBody);
+        return request.withParsedBody(parsedBody);
     }
     
     /**
@@ -133,18 +133,18 @@ class ServerRequestFactory : ServerIRequestFactory {
      * @param \Psr\Http\Message\IUri|string auri The URI associated with the request. If
      *    the value is a string, the factory MUST create a IUri
      *    instance based on it.
-     * @param array $serverParams Array of SAPI parameters with which to seed
+     * @param array serverParams Array of SAPI parameters with which to seed
      *    the generated request instance.
      */
-    IServerRequest createServerRequest(string amethod, anUri, array $serverParams = []) {
-        $serverParams["REQUEST_METHOD"] = $method;
-        $options = ["environment": $serverParams];
+    IServerRequest createServerRequest(string amethod, anUri, array serverParams = []) {
+        serverParams["REQUEST_METHOD"] = method;
+        options = ["environment": serverParams];
 
         if (isString(anUri)) {
             anUri = (new UriFactory()).createUri(anUri);
         }
-        $options["uri"] = anUri;
+        options["uri"] = anUri;
 
-        return new ServerRequest($options);
+        return new ServerRequest(options);
     }
 }

@@ -28,11 +28,11 @@ class Mock : IAdapter {
      * @param IData[string] options See above.
      */
     void addResponse(IRequest request, Response response, IData[string] options = null) {
-        if (isSet($options["match"]) && !(cast(Closure)$options["match"])) {
-            type = get_debug_type($options["match"]);
+        if (isSet(options["match"]) && !(cast(Closure)options["match"])) {
+            type = get_debug_type(options["match"]);
             throw new InvalidArgumentException(
                 "The `match` option must be a `Closure`. Got `%s`."
-                .format($type
+                .format(type
             ));
         }
         this.responses ~= [
@@ -51,35 +51,35 @@ class Mock : IAdapter {
     Response[] send(IRequest request, IData[string] options = null) {
         found = null;
         method = request.getMethod();
-        requestUri = to!string($request.getUri());
+        requestUri = to!string(request.getUri());
 
         foreach (anIndex: mock; this.responses) {
-            if ($method != mock["request"].getMethod()) {
+            if (method != mock["request"].getMethod()) {
                 continue;
             }
-            if (!this.urlMatches($requestUri, mock["request"])) {
+            if (!this.urlMatches(requestUri, mock["request"])) {
                 continue;
             }
-            if (isSet($mock["options"]["match"])) {
-                match = mock["options"]["match"]($request);
-                if (!isBool($match)) {
+            if (isSet(mock["options"]["match"])) {
+                match = mock["options"]["match"](request);
+                if (!isBool(match)) {
                     throw new InvalidArgumentException("Match callback must return a boolean value.");
                 }
-                if (!$match) {
+                if (!match) {
                     continue;
                 }
             }
             found =  anIndex;
             break;
         }
-        if ($found !isNull) {
+        if (found !isNull) {
             // Move the current mock to the end so that when there are multiple
             // matches for a URL the next match is used on subsequent requests.
-            mock = this.responses[$found];
-            unset(this.responses[$found]);
+            mock = this.responses[found];
+            unset(this.responses[found]);
             this.responses ~= mock;
 
-            return [$mock["response"]];
+            return [mock["response"]];
         }
         throw new MissingResponseException(["method": method, "url": requestUri]);
     }
@@ -91,7 +91,7 @@ class Mock : IAdapter {
      * @param \Psr\Http\Message\IRequest mock The request being mocked.
      */
     protected bool urlMatches(string requestUri, IRequest mock) {
-        string mockUri = (string)$mock.getUri();
+        string mockUri = (string)mock.getUri();
         if (requestUri == mockUri) {
             return true;
         }

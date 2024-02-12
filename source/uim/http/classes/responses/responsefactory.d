@@ -17,6 +17,6 @@ class ResponseFactory : IResponseFactory {
      *  the defaults as suggested in the HTTP specification.
      */
     IResponse createResponse(int httpStatusCode = 200, string areasonPhrase = "") {
-        return (new Response()).withStatus(httpStatusCode, $reasonPhrase);
+        return (new Response()).withStatus(httpStatusCode, reasonPhrase);
     }
 }

@@ -17,7 +17,7 @@ class RequestException : RuntimeException, IRequestException {
 
     this(string execeptionMessage, IRequest request, Throwable previousException = null) {
         _request = request;
-        super($message, 0, previousException);
+        super(message, 0, previousException);
     }
     
     // Returns the request.

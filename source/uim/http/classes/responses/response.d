@@ -381,7 +381,7 @@ class Response : IResponse, Stringable {
     /**
      * Constructor
      * Params:
-     * IData[string] $options list of parameters to setup the response. Possible values are:
+     * IData[string] options list of parameters to setup the response. Possible values are:
      *
      * - body: the response text that should be sent to the client
      * - status: the HTTP status code to respond with
@@ -390,31 +390,31 @@ class Response : IResponse, Stringable {
      * @throws \InvalidArgumentException
      */
     this(IData[string] options = null) {
-       _streamTarget = $options["streamTarget"] ?? _streamTarget;
-       _streamMode = $options["streamMode"] ?? _streamMode;
-        if (isSet($options["stream"])) {
-            if (!cast(IStream)$options["stream"]) {
+       _streamTarget = options["streamTarget"] ?? _streamTarget;
+       _streamMode = options["streamMode"] ?? _streamMode;
+        if (isSet(options["stream"])) {
+            if (!cast(IStream)options["stream"]) {
                 throw new InvalidArgumentException("Stream option must be an object that : IStream");
             }
-            this.stream = $options["stream"];
+            this.stream = options["stream"];
         } else {
            _createStream();
         }
-        if (isSet($options["body"])) {
-            this.stream.write($options["body"]);
+        if (isSet(options["body"])) {
+            this.stream.write(options["body"]);
         }
-        if (isSet($options["status"])) {
-           _setStatus($options["status"]);
+        if (isSet(options["status"])) {
+           _setStatus(options["status"]);
         }
-        if (!isSet($options"charset"])) {
-            $options["charset"] = Configure.read("App.encoding");
+        if (!isSet(options"charset"])) {
+            options["charset"] = Configure.read("App.encoding");
         }
-       _charset = $options["charset"];
-        $type = "text/html";
-        if (isSet($options["type"])) {
-            $type = this.resolveType($options["type"]);
+       _charset = options["charset"];
+        type = "text/html";
+        if (isSet(options["type"])) {
+            type = this.resolveType(options["type"]);
         }
-       _setContentType($type);
+       _setContentType(type);
        _cookies = new CookieCollection();
     }
     
@@ -436,24 +436,24 @@ class Response : IResponse, Stringable {
 
             return;
         }
-        $allowed = [
+        allowed = [
             "application/javascript", "application/xml", "application/rss+xml",
         ];
 
-        $charset = false;
+        charset = false;
         if (
            _charset &&
             (
-                $type.startsWith("text/") ||
-                in_array($type, $allowed, true)
+                type.startsWith("text/") ||
+                in_array(type, allowed, true)
             )
         ) {
-            $charset = true;
+            charset = true;
         }
-        if ($charset && !$type.has(";")) {
-           _setHeader("Content-Type", "{$type}; charset={_charset}");
+        if (charset && !type.has(";")) {
+           _setHeader("Content-Type", "{type}; charset={_charset}");
         } else {
-           _setHeader("Content-Type", $type);
+           _setHeader("Content-Type", type);
         }
     }
     
@@ -466,11 +466,11 @@ class Response : IResponse, Stringable {
      * string aurl The location to redirect to.
      */
     static withLocation(string aurl) {
-        $new = this.withHeader("Location", $url);
-        if ($new._status == 200) {
-            $new._status = 302;
+        new = this.withHeader("Location", url);
+        if (new._status == 200) {
+            new._status = 302;
         }
-        return $new;
+        return new;
     }
     
     /**
@@ -481,8 +481,8 @@ class Response : IResponse, Stringable {
      * @param string avalue Header value.
      */
     protected void _setHeader(string aheader, string avalue) {
-        $normalized =  aHeader.toLower;
-        this.headerNames[$normalized] =  aHeader;
+        normalized =  aHeader.toLower;
+        this.headerNames[normalized] =  aHeader;
         this.headers[aHeader] = [aValue];
     }
     
@@ -493,12 +493,12 @@ class Response : IResponse, Stringable {
      * @param string aheader Header key.
      */
     protected void _clearHeader(string aheader) {
-        $normalized =  aHeader.toLower;
-        if (!isSet(this.headerNames[$normalized])) {
+        normalized =  aHeader.toLower;
+        if (!isSet(this.headerNames[normalized])) {
             return;
         }
-        $original = this.headerNames[$normalized];
-        unset(this.headerNames[$normalized], this.headers[$original]);
+        original = this.headerNames[normalized];
+        unset(this.headerNames[normalized], this.headers[original]);
     }
     
     /**
@@ -533,41 +533,41 @@ class Response : IResponse, Stringable {
      *
      * @link https://tools.ietf.org/html/rfc7231#section-6
      * @link https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @param int $code The 3-digit integer status code to set.
+     * @param int code The 3-digit integer status code to set.
      * @param string areasonPhrase The reason phrase to use with the
      *    provided status code; if none is provided, implementations MAY
      *    use the defaults as suggested in the HTTP specification.
      * @return static
      * @throws \InvalidArgumentException For invalid status code arguments.
      */
-    static withStatus(int $code, string areasonPhrase = "") {
-        $new = clone this;
-        $new._setStatus($code, $reasonPhrase);
+    static withStatus(int code, string areasonPhrase = "") {
+        new = clone this;
+        new._setStatus(code, reasonPhrase);
 
-        return $new;
+        return new;
     }
     
     /**
      * Modifier for response status
      * Params:
-     * int $code The status code to set.
+     * int code The status code to set.
      * @param string areasonPhrase The response reason phrase.
      */
-    protected auto _setStatus(int $code, string areasonPhrase = "") {
-        if ($code < STATUS_CODE_MIN || $code > STATUS_CODE_MAX) {
+    protected auto _setStatus(int code, string areasonPhrase = "") {
+        if (code < STATUS_CODE_MIN || code > STATUS_CODE_MAX) {
             throw new InvalidArgumentException(
                 "Invalid status code: %s. Use a valid HTTP status code in range 1xx - 5xx."
-                .format($code)
+                .format(code)
             );
         }
-       _status = $code;
-        if ($reasonPhrase == "" && isSet(_statusCodes[$code])) {
-            $reasonPhrase = _statusCodes[$code];
+       _status = code;
+        if (reasonPhrase == "" && isSet(_statusCodes[code])) {
+            reasonPhrase = _statusCodes[code];
         }
-       _reasonPhrase = $reasonPhrase;
+       _reasonPhrase = reasonPhrase;
 
         // These status codes don`t have bodies and can`t have content-types.
-        if (in_array($code, [304, 204], true)) {
+        if (in_array(code, [304, 204], true)) {
            _clearHeader("Content-Type");
         }
     }
@@ -599,7 +599,7 @@ class Response : IResponse, Stringable {
      * @param string[]|string amimeType Definition of the mime type.
      */
     void setTypeMap(string atype, string[] amimeType) {
-       _mimeTypes[$type] = $mimeType;
+       _mimeTypes[type] = mimeType;
     }
     
     // Returns the current content type.
@@ -621,11 +621,11 @@ class Response : IResponse, Stringable {
      * @return static
      */
     static withType(string acontentType) {
-        $mappedType = this.resolveType($contentType);
-        $new = clone this;
-        $new._setContentType($mappedType);
+        mappedType = this.resolveType(contentType);
+        new = clone this;
+        new._setContentType(mappedType);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -634,14 +634,14 @@ class Response : IResponse, Stringable {
      * string acontentType The content-type or type alias.
      */
     protected string resolveType(string acontentType) {
-        $mapped = this.getMimeType($contentType);
-        if ($mapped) {
-            return isArray($mapped) ? current($mapped): $mapped;
+        mapped = this.getMimeType(contentType);
+        if (mapped) {
+            return isArray(mapped) ? current(mapped): mapped;
         }
-        if (!$contentType.has("/")) {
-            throw new InvalidArgumentException("`%s` is an invalid content type.".format($contentType));
+        if (!contentType.has("/")) {
+            throw new InvalidArgumentException("`%s` is an invalid content type.".format(contentType));
         }
-        return $contentType;
+        return contentType;
     }
     
     /**
@@ -652,7 +652,7 @@ class Response : IResponse, Stringable {
      * string aalias the content type alias to map
      */
     string[] getMimeType(string aalias) {
-        return _mimeTypes[$alias] ?? false;
+        return _mimeTypes[alias] ?? false;
     }
     
     /**
@@ -663,12 +663,12 @@ class Response : IResponse, Stringable {
      * string[] actype Either a string content type to map, or an array of types.
      */
     string[] mapType(string[] actype) {
-        if (isArray($ctype)) {
-            return array_map(this.mapType(...), $ctype);
+        if (isArray(ctype)) {
+            return array_map(this.mapType(...), ctype);
         }
-        foreach (_mimeTypes as $alias: $types) {
-            if (in_array($ctype, (array)$types, true)) {
-                return $alias;
+        foreach (_mimeTypes as alias: types) {
+            if (in_array(ctype, (array)types, true)) {
+                return alias;
             }
         }
         return null;
@@ -687,11 +687,11 @@ class Response : IResponse, Stringable {
      * string acharset Character set string.
      */
     static withCharset(string acharset) {
-        $new = clone this;
-        $new._charset = $charset;
-        $new._setContentType(this.getType());
+        new = clone this;
+        new._charset = charset;
+        new._setContentType(this.getType());
 
-        return $new;
+        return new;
     }
     
     /**
@@ -706,23 +706,23 @@ class Response : IResponse, Stringable {
     /**
      * Create a new instance with the headers to enable client caching.
      * Params:
-     * string|int $since a valid time since the response text has not been modified
-     * @param string|int $time a valid time for cache expiry
+     * string|int since a valid time since the response text has not been modified
+     * @param string|int time a valid time for cache expiry
      */
-    static withCache(string|int $since, string|int $time = "+1 day") {
-        if (!isInt($time)) {
-            $time = strtotime($time);
-            if ($time == false) {
+    static withCache(string|int since, string|int time = "+1 day") {
+        if (!isInt(time)) {
+            time = strtotime(time);
+            if (time == false) {
                 throw new InvalidArgumentException(
                     "Invalid time parameter. Ensure your time value can be parsed by strtotime"
                 );
             }
         }
         return this.withHeader("Date", gmdate(DATE_RFC7231, time()))
-            .withModified($since)
-            .withExpires($time)
+            .withModified(since)
+            .withExpires(time)
             .withSharable(true)
-            .withMaxAge($time - time());
+            .withMaxAge(time - time());
     }
     
     /**
@@ -730,21 +730,21 @@ class Response : IResponse, Stringable {
      * Params:
      * bool  anIf set to true, the Cache-Control header will be set as public
      *  if set to false, the response will be set to private.
-     * @param int $time time in seconds after which the response should no longer be considered fresh.
+     * @param int time time in seconds after which the response should no longer be considered fresh.
      */
-    static withSharable(bool $public, int $time = null) {
-        $new = clone this;
-        unset($new._cacheDirectives["private"], $new._cacheDirectives["public"]);
+    static withSharable(bool public, int time = null) {
+        new = clone this;
+        unset(new._cacheDirectives["private"], new._cacheDirectives["public"]);
 
-        aKey = $? "public" : "private";
-        $new._cacheDirectives[aKey] = true;
+        aKey = ? "public" : "private";
+        new._cacheDirectives[aKey] = true;
 
-        if ($time !isNull) {
-            $new._cacheDirectives["max-age"] = $time;
+        if (time !isNull) {
+            new._cacheDirectives["max-age"] = time;
         }
-        $new._setCacheControl();
+        new._setCacheControl();
 
-        return $new;
+        return new;
     }
     
     /**
@@ -753,14 +753,14 @@ class Response : IResponse, Stringable {
      * The max-age is the number of seconds after which the response should no longer be considered
      * a good candidate to be fetched from a shared cache (like in a proxy server).
      * Params:
-     * int $seconds The number of seconds for shared max-age
+     * int seconds The number of seconds for shared max-age
      */
-    static withSharedMaxAge(int $seconds) {
-        $new = clone this;
-        $new._cacheDirectives["s-maxage"] = $seconds;
-        $new._setCacheControl();
+    static withSharedMaxAge(int seconds) {
+        new = clone this;
+        new._cacheDirectives["s-maxage"] = seconds;
+        new._setCacheControl();
 
-        return $new;
+        return new;
     }
     
     /**
@@ -769,14 +769,14 @@ class Response : IResponse, Stringable {
      * The max-age is the number of seconds after which the response should no longer be considered
      * a good candidate to be fetched from the local (client) cache.
      * Params:
-     * int $seconds The seconds a cached response can be considered valid
+     * int seconds The seconds a cached response can be considered valid
      */
-    static withMaxAge(int $seconds) {
-        $new = clone this;
-        $new._cacheDirectives["max-age"] = $seconds;
-        $new._setCacheControl();
+    static withMaxAge(int seconds) {
+        new = clone this;
+        new._cacheDirectives["max-age"] = seconds;
+        new._setCacheControl();
 
-        return $new;
+        return new;
     }
     
     /**
@@ -787,18 +787,18 @@ class Response : IResponse, Stringable {
      * stale by a cache under any circumstance without first revalidating
      * with the origin.
      * Params:
-     * bool $enable If boolean sets or unsets the directive.
+     * bool enable If boolean sets or unsets the directive.
      */
-    static withMustRevalidate(bool $enable) {
-        $new = clone this;
-        if ($enable) {
-            $new._cacheDirectives["must-revalidate"] = true;
+    static withMustRevalidate(bool enable) {
+        new = clone this;
+        if (enable) {
+            new._cacheDirectives["must-revalidate"] = true;
         } else {
-            unset($new._cacheDirectives["must-revalidate"]);
+            unset(new._cacheDirectives["must-revalidate"]);
         }
-        $new._setCacheControl();
+        new._setCacheControl();
 
-        return $new;
+        return new;
     }
     
     /**
@@ -806,13 +806,13 @@ class Response : IResponse, Stringable {
      * in other methods
      */
     protected void _setCacheControl() {
-        $control = "";
-        foreach (_cacheDirectives as aKey: $val) {
-            $control ~= $val == true ? aKey : "%s=%s".format(aKey, $val);
-            $control ~= ", ";
+        control = "";
+        foreach (_cacheDirectives as aKey: val) {
+            control ~= val == true ? aKey : "%s=%s".format(aKey, val);
+            control ~= ", ";
         }
-        $control = rtrim($control, ", ");
-       _setHeader("Cache-Control", $control);
+        control = rtrim(control, ", ");
+       _setHeader("Cache-Control", control);
     }
     
     /**
@@ -822,18 +822,18 @@ class Response : IResponse, Stringable {
      *
      * ```
      * // Will Expire the response cache now
-     * $response.withExpires("now")
+     * response.withExpires("now")
      *
      * // Will set the expiration in next 24 hours
-     * $response.withExpires(new DateTime("+1 day"))
+     * response.withExpires(new DateTime("+1 day"))
      * ```
      * Params:
-     * \IDateTime|string|int $time Valid time string or \DateTime instance.
+     * \IDateTime|string|int time Valid time string or \DateTime instance.
      */
-    static withExpires(IDateTime|string|int $time) {
-        $date = _getUTCDate($time);
+    static withExpires(IDateTime|string|int time) {
+        date = _getUTCDate(time);
 
-        return this.withHeader("Expires", $date.format(DATE_RFC7231));
+        return this.withHeader("Expires", date.format(DATE_RFC7231));
     }
     
     /**
@@ -843,18 +843,18 @@ class Response : IResponse, Stringable {
      *
      * ```
      * // Will Expire the response cache now
-     * $response.withModified("now")
+     * response.withModified("now")
      *
      * // Will set the expiration in next 24 hours
-     * $response.withModified(new DateTime("+1 day"))
+     * response.withModified(new DateTime("+1 day"))
      * ```
      * Params:
-     * \IDateTime|string|int $time Valid time string or \DateTime instance.
+     * \IDateTime|string|int time Valid time string or \DateTime instance.
      */
-    static withModified(IDateTime|string|int $time) {
-        $date = _getUTCDate($time);
+    static withModified(IDateTime|string|int time) {
+        date = _getUTCDate(time);
 
-        return this.withHeader("Last-Modified", $date.format(DATE_RFC7231));
+        return this.withHeader("Last-Modified", date.format(DATE_RFC7231));
     }
     
     /**
@@ -865,9 +865,9 @@ class Response : IResponse, Stringable {
      * a response body.
      */
     static withNotModified() {
-        $new = this.withStatus(304);
-        $new._createStream();
-        $remove = [
+        new = this.withStatus(304);
+        new._createStream();
+        remove = [
             "Allow",
             "Content-Encoding",
             "Content-Language",
@@ -876,10 +876,10 @@ class Response : IResponse, Stringable {
             "Content-Type",
             "Last-Modified",
         ];
-        foreach ($remove as  aHeader) {
-            $new = $new.withoutHeader( aHeader);
+        foreach (remove as  aHeader) {
+            new = new.withoutHeader( aHeader);
         }
-        return $new;
+        return new;
     }
     
     /**
@@ -894,7 +894,7 @@ class Response : IResponse, Stringable {
      * @return static
      */
     static withVary(string[] acacheVariances) {
-        return this.withHeader("Vary", (array)$cacheVariances);
+        return this.withHeader("Vary", (array)cacheVariances);
     }
     
     /**
@@ -914,28 +914,28 @@ class Response : IResponse, Stringable {
      * use the cached data.
      * Params:
      * string ahash The unique hash that identifies this response
-     * @param bool $weak Whether the response is semantically the same as
+     * @param bool weak Whether the response is semantically the same as
      *  other with the same hash or not. Defaults to false
      */
-    static withEtag(string ahash, bool $weak = false) {
-        $hash = "%s"%s"".format($weak ? "W/" : "", $hash);
+    static withEtag(string ahash, bool weak = false) {
+        hash = "%s"%s"".format(weak ? "W/" : "", hash);
 
-        return this.withHeader("Etag", $hash);
+        return this.withHeader("Etag", hash);
     }
     
     /**
-     * Returns a DateTime object initialized at the $time param and using UTC
+     * Returns a DateTime object initialized at the time param and using UTC
      * as timezone
      * Params:
-     * \IDateTime|string|int $time Valid time string or \IDateTime instance.
+     * \IDateTime|string|int time Valid time string or \IDateTime instance.
      */
-    protected IDateTime _getUTCDate(IDateTime|string|int $time = null) {
-        if (cast(IDateTime)$time) {
-            result = clone $time;
-        } elseif (isInt($time)) {
-            result = new DateTime(date("Y-m-d H:i:s", $time));
+    protected IDateTime _getUTCDate(IDateTime|string|int time = null) {
+        if (cast(IDateTime)time) {
+            result = clone time;
+        } elseif (isInt(time)) {
+            result = new DateTime(date("Y-m-d H:i:s", time));
         } else {
-            result = new DateTime($time ?? "now");
+            result = new DateTime(time ?? "now");
         }
         /**
          * @psalm-suppress UndefinedInterfaceMethod
@@ -970,18 +970,18 @@ class Response : IResponse, Stringable {
      * @return static
      */
     static withDownload(string afilename) {
-        return this.withHeader("Content-Disposition", "attachment; filename="" ~ $filename ~ """);
+        return this.withHeader("Content-Disposition", "attachment; filename="" ~ filename ~ """);
     }
     
     /**
      * Create a new response with the Content-Length header set.
      * Params:
-     * string|int $bytes Number of bytes
+     * string|int bytes Number of bytes
      * @return static
      */
-    auto withLength(string|int $bytes): static
+    auto withLength(string|int bytes): static
     {
-        return this.withHeader("Content-Length", (string)$bytes);
+        return this.withHeader("Content-Length", (string)bytes);
     }
     
     /**
@@ -990,7 +990,7 @@ class Response : IResponse, Stringable {
      * ### Examples
      *
      * ```
-     * $response = $response.withAddedLink("http://example.com?page=1", ["rel": "prev"])
+     * response = response.withAddedLink("http://example.com?page=1", ["rel": "prev"])
      *    .withAddedLink("http://example.com?page=3", ["rel": "next"]);
      * ```
      *
@@ -1002,18 +1002,18 @@ class Response : IResponse, Stringable {
      * ```
      * Params:
      * string aurl The LinkHeader url.
-     * @param IData[string] $options The LinkHeader params.
+     * @param IData[string] options The LinkHeader params.
      */
     static withAddedLink(string aurl, IData[string] options = null) {
-        $params = [];
-        foreach ($options as aKey: $option) {
-            $params ~= aKey ~ "="" ~ $option ~ """;
+        params = [];
+        foreach (options as aKey: option) {
+            params ~= aKey ~ "="" ~ option ~ """;
         }
-        $param = "";
-        if ($params) {
-            $param = "; " ~ join("; ", $params);
+        param = "";
+        if (params) {
+            param = "; " ~ join("; ", params);
         }
-        return this.withAddedHeader("Link", "<" ~ $url ~ ">" ~ $param);
+        return this.withAddedHeader("Link", "<" ~ url ~ ">" ~ param);
     }
     
     /**
@@ -1028,21 +1028,21 @@ class Response : IResponse, Stringable {
      * \UIM\Http\ServerRequest serverRequest Request object
      */
     bool isNotModified(ServerRequest serverRequest) {
-        $etags = preg_split("/\s*,\s*/", serverRequest.getHeaderLine("If-None-Match"), 0, PREG_SPLIT_NO_EMPTY) ?: [];
-        $responseTag = this.getHeaderLine("Etag");
-        $etagMatches = null;
-        if ($responseTag) {
-            $etagMatches = in_array("*", $etags, true) || in_array($responseTag, $etags, true);
+        etags = preg_split("/\s*,\s*/", serverRequest.getHeaderLine("If-None-Match"), 0, PREG_SPLIT_NO_EMPTY) ?: [];
+        responseTag = this.getHeaderLine("Etag");
+        etagMatches = null;
+        if (responseTag) {
+            etagMatches = in_array("*", etags, true) || in_array(responseTag, etags, true);
         }
-        $modifiedSince = serverRequest.getHeaderLine("If-Modified-Since");
-        $timeMatches = null;
-        if ($modifiedSince && this.hasHeader("Last-Modified")) {
-            $timeMatches = strtotime(this.getHeaderLine("Last-Modified")) == strtotime($modifiedSince);
+        modifiedSince = serverRequest.getHeaderLine("If-Modified-Since");
+        timeMatches = null;
+        if (modifiedSince && this.hasHeader("Last-Modified")) {
+            timeMatches = strtotime(this.getHeaderLine("Last-Modified")) == strtotime(modifiedSince);
         }
-        if ($etagMatches.isNull && $timeMatches.isNull) {
+        if (etagMatches.isNull && timeMatches.isNull) {
             return false;
         }
-        return $etagMatches != false && $timeMatches != false;
+        return etagMatches != false && timeMatches != false;
     }
     
     /**
@@ -1063,18 +1063,18 @@ class Response : IResponse, Stringable {
      *
      * ```
      * // add a cookie object
-     * $response = $response.withCookie(new Cookie("remember_me", 1));
+     * response = response.withCookie(new Cookie("remember_me", 1));
      * ```
      * Params:
-     * \UIM\Http\Cookie\ICookie $cookie cookie object
+     * \UIM\Http\Cookie\ICookie cookie cookie object
      * @return static
      */
-    auto withCookie(ICookie $cookie): static
+    auto withCookie(ICookie cookie): static
     {
-        $new = clone this;
-        $new._cookies = $new._cookies.add($cookie);
+        new = clone this;
+        new._cookies = new._cookies.add(cookie);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1084,20 +1084,20 @@ class Response : IResponse, Stringable {
      *
      * ```
      * // add a cookie object
-     * $response = $response.withExpiredCookie(new Cookie("remember_me"));
+     * response = response.withExpiredCookie(new Cookie("remember_me"));
      * ```
      * Params:
-     * \UIM\Http\Cookie\ICookie $cookie cookie object
+     * \UIM\Http\Cookie\ICookie cookie cookie object
      * @return static
      */
-    auto withExpiredCookie(ICookie $cookie): static
+    auto withExpiredCookie(ICookie cookie): static
     {
-        $cookie = $cookie.withExpired();
+        cookie = cookie.withExpired();
 
-        $new = clone this;
-        $new._cookies = $new._cookies.add($cookie);
+        new = clone this;
+        new._cookies = new._cookies.add(cookie);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1109,10 +1109,10 @@ class Response : IResponse, Stringable {
      * string aName The cookie name you want to read.
      */
     array getCookie(string aName) {
-        if (!_cookies.has($name)) {
+        if (!_cookies.has(name)) {
             return null;
         }
-        return _cookies.get($name).toArray();
+        return _cookies.get(name).toArray();
     }
     
     /**
@@ -1122,8 +1122,8 @@ class Response : IResponse, Stringable {
      */
     array<string, array> getCookies() {
          auto result;
-        foreach (_cookies as $cookie) {
-             result[$cookie.name] = $cookie.toArray();
+        foreach (_cookies as cookie) {
+             result[cookie.name] = cookie.toArray();
         }
         return result;
     }
@@ -1138,13 +1138,13 @@ class Response : IResponse, Stringable {
     /**
      * Get a new instance with provided cookie collection.
      * Params:
-     * \UIM\Http\Cookie\CookieCollection $cookieCollection Cookie collection to set.
+     * \UIM\Http\Cookie\CookieCollection cookieCollection Cookie collection to set.
      */
-    static withCookieCollection(CookieCollection $cookieCollection) {
-        $new = clone this;
-        $new._cookies = $cookieCollection;
+    static withCookieCollection(CookieCollection cookieCollection) {
+        new = clone this;
+        new._cookies = cookieCollection;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1153,10 +1153,10 @@ class Response : IResponse, Stringable {
      * \UIM\Http\ServerRequest serverRequest Request object
      */
     CorsBuilder cors(ServerRequest serverRequest) {
-        $origin = serverRequest.getHeaderLine("Origin");
-        $https = serverRequest.is("https");
+        origin = serverRequest.getHeaderLine("Origin");
+        https = serverRequest.is("https");
 
-        return new CorsBuilder(this, $origin, $https);
+        return new CorsBuilder(this, origin, https);
     }
     
     /**
@@ -1176,61 +1176,61 @@ class Response : IResponse, Stringable {
      * string aPath Absolute path to file.
      */
     static withFile(string aPath, IData[string] options = null) {
-        $file = this.validateFile(somePath);
+        file = this.validateFile(somePath);
         auto options = options.update([
             "name": Json(null),
             "download": Json(null)
         ]);
 
-        auto fileExtension = $file.getExtension().toLower;
-        $mapped = this.getMimeType(fileExtension);
-        if ((!fileExtension || !$mapped) && options["download"].isNull) {
+        auto fileExtension = file.getExtension().toLower;
+        mapped = this.getMimeType(fileExtension);
+        if ((!fileExtension || !mapped) && options["download"].isNull) {
             options["download"] = true;
         }
-        $new = clone this;
-        if ($mapped) {
-            $new = $new.withType(fileExtension);
+        new = clone this;
+        if (mapped) {
+            new = new.withType(fileExtension);
         }
-        $fileSize = $file.getSize();
+        fileSize = file.getSize();
         if (options["download"]) {
-            $agent = (string)enviroment("HTTP_USER_AGENT");
+            agent = (string)enviroment("HTTP_USER_AGENT");
 
-            if ($agent && preg_match("%Opera([/ ])([0-9].[0-9]{1,2})%", $agent)) {
-                $contentType = "application/octet-stream";
-            } elseif ($agent && preg_match("/MSIE ([0-9].[0-9]{1,2})/", $agent)) {
-                $contentType = "application/force-download";
+            if (agent && preg_match("%Opera([/ ])([0-9].[0-9]{1,2})%", agent)) {
+                contentType = "application/octet-stream";
+            } elseif (agent && preg_match("/MSIE ([0-9].[0-9]{1,2})/", agent)) {
+                contentType = "application/force-download";
             }
-            if (isSet($contentType)) {
-                $new = $new.withType($contentType);
+            if (isSet(contentType)) {
+                new = new.withType(contentType);
             }
-            $name = options["name"] ?: $file.getFileName();
-            $new = $new.withDownload($name)
+            name = options["name"] ?: file.getFileName();
+            new = new.withDownload(name)
                 .withHeader("Content-Transfer-Encoding", "binary");
         }
-        $new = $new.withHeader("Accept-Ranges", "bytes");
-        $httpRange = (string)enviroment("HTTP_RANGE");
-        if ($httpRange) {
-            $new._fileRange($file, $httpRange);
+        new = new.withHeader("Accept-Ranges", "bytes");
+        httpRange = (string)enviroment("HTTP_RANGE");
+        if (httpRange) {
+            new._fileRange(file, httpRange);
         } else {
-            $new = $new.withHeader("Content-Length", (string)$fileSize);
+            new = new.withHeader("Content-Length", (string)fileSize);
         }
-        $new._file = $file;
-        $new.stream = new Stream($file.getPathname(), "rb");
+        new._file = file;
+        new.stream = new Stream(file.getPathname(), "rb");
 
-        return $new;
+        return new;
     }
     
     /**
      * Convenience method to set a string into the response body
      * Params:
-     * string|null $string The string to be sent
+     * string|null string The string to be sent
      */
     static withStringBody(string astring) {
-        $new = clone this;
-        $new._createStream();
-        $new.stream.write((string)$string);
+        new = clone this;
+        new._createStream();
+        new.stream.write((string)string);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1243,14 +1243,14 @@ class Response : IResponse, Stringable {
         if (somePath.has("../") || somePath.has("..\\")) {
             throw new NotFoundException(__d("uim", "The requested file contains `..` and will not be read."));
         }
-        $file = new SplFileInfo(somePath);
-        if (!$file.isFile() || !$file.isReadable()) {
+        file = new SplFileInfo(somePath);
+        if (!file.isFile() || !file.isReadable()) {
             if (Configure.read("debug")) {
                 throw new NotFoundException("The requested file %s was not found or not readable".format(somePath));
             }
             throw new NotFoundException(__d("uim", "The requested file was not found"));
         }
-        return $file;
+        return file;
     }
     
     /**
@@ -1266,41 +1266,41 @@ class Response : IResponse, Stringable {
      * If an invalid range is requested a 416 Status code will be used
      * in the response.
      * Params:
-     * \SplFileInfo $file The file to set a range on.
+     * \SplFileInfo file The file to set a range on.
      * @param string ahttpRange The range to use.
      */
-    protected void _fileRange(SplFileInfo $file, string ahttpRange) {
-        $fileSize = $file.getSize();
-        $lastByte = $fileSize - 1;
-        string $start = 0;
-        string $end = $lastByte;
+    protected void _fileRange(SplFileInfo file, string ahttpRange) {
+        fileSize = file.getSize();
+        lastByte = fileSize - 1;
+        string start = 0;
+        string end = lastByte;
 
-        preg_match("/^bytes\s*=\s*(\d+)?\s*-\s*(\d+)?$/", $httpRange, $matches);
-        if ($matches) {
-            $start = $matches[1];
-            $end = $matches[2] ?? "";
+        preg_match("/^bytes\s*=\s*(\d+)?\s*-\s*(\d+)?/", httpRange, matches);
+        if (matches) {
+            start = matches[1];
+            end = matches[2] ?? "";
         }
-        if ($start.isEmpty) {
-            $start = $fileSize - (int)$end;
-            $end = $lastByte;
+        if (start.isEmpty) {
+            start = fileSize - (int)end;
+            end = lastByte;
         }
-        if ($end == "") {
-            $end = $lastByte;
+        if (end == "") {
+            end = lastByte;
         }
-        if ($start > $end || $end > $lastByte || $start > $lastByte) {
+        if (start > end || end > lastByte || start > lastByte) {
            _setStatus(416);
-           _setHeader("Content-Range", "bytes 0-" ~ $lastByte ~ "/" ~ $fileSize);
+           _setHeader("Content-Range", "bytes 0-" ~ lastByte ~ "/" ~ fileSize);
 
             return;
         }
-       _setHeader("Content-Length", (string)((int)$end - (int)$start + 1));
-       _setHeader("Content-Range", "bytes " ~ $start ~ "-" ~ $end ~ "/" ~ $fileSize);
+       _setHeader("Content-Length", (string)((int)end - (int)start + 1));
+       _setHeader("Content-Range", "bytes " ~ start ~ "-" ~ end ~ "/" ~ fileSize);
        _setStatus(206);
         /**
-         * @var int $start
-         * @var int $end
+         * @var int start
+         * @var int end
          */
-       _fileRange = [$start, $end];
+       _fileRange = [start, end];
     }
     
     /**

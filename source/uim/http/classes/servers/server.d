@@ -23,8 +23,8 @@ class Server : IEventDispatcher {
     /**
      * Constructor
      * Params:
-     * \UIM\Core\IHttpApplication $app The application to use.
-     * @param \UIM\Http\Runner|null $runner Application runner.
+     * \UIM\Core\IHttpApplication app The application to use.
+     * @param \UIM\Http\Runner|null runner Application runner.
      */
     this(IHttpApplication httpApp, Runner appRunner = null) {
         _app = httpApp;
@@ -42,36 +42,36 @@ class Server : IEventDispatcher {
      *  from event listeners.
      * - Run the middleware queue including the application.
      * Params:
-     * \Psr\Http\Message\IServerRequest|null $request The request to use or null.
-     * @param \UIM\Http\MiddlewareQueue|null $middlewareQueue MiddlewareQueue or null.
+     * \Psr\Http\Message\IServerRequest|null request The request to use or null.
+     * @param \UIM\Http\MiddlewareQueue|null middlewareQueue MiddlewareQueue or null.
      */
     IResponse run(
         ?IServerRequest serverRequest = null,
-        ?MiddlewareQueue $middlewareQueue = null
+        ?MiddlewareQueue middlewareQueue = null
     ) {
         this.bootstrap();
 
-        $request = $request ?: ServerRequestFactory.fromGlobals();
+        request = request ?: ServerRequestFactory.fromGlobals();
 
-        if ($middlewareQueue.isNull) {
+        if (middlewareQueue.isNull) {
             if (cast(IContainerApplication)this.app) {
-                $middlewareQueue = new MiddlewareQueue([], this.app.getContainer());
+                middlewareQueue = new MiddlewareQueue([], this.app.getContainer());
             } else {
-                $middlewareQueue = new MiddlewareQueue();
+                middlewareQueue = new MiddlewareQueue();
             }
         }
-        $middleware = this.app.middleware($middlewareQueue);
+        middleware = this.app.middleware(middlewareQueue);
         if (cast(IPluginApplication)this.app ) {
-            $middleware = this.app.pluginMiddleware($middleware);
+            middleware = this.app.pluginMiddleware(middleware);
         }
-        this.dispatchEvent("Server.buildMiddleware", ["middleware": $middleware]);
+        this.dispatchEvent("Server.buildMiddleware", ["middleware": middleware]);
 
-        $response = this.runner.run($middleware, $request, this.app);
+        response = this.runner.run(middleware, request, this.app);
 
-        if ($request instanceof ServerRequest) {
-            $request.getSession().close();
+        if (request instanceof ServerRequest) {
+            request.getSession().close();
         }
-        return $response;
+        return response;
     }
     
     /**
@@ -90,15 +90,15 @@ class Server : IEventDispatcher {
     /**
      * Emit the response using the PHP SAPI.
      * Params:
-     * \Psr\Http\Message\IResponse $response The response to emit
-     * @param \UIM\Http\ResponseEmitter|null $emitter The emitter to use.
+     * \Psr\Http\Message\IResponse response The response to emit
+     * @param \UIM\Http\ResponseEmitter|null emitter The emitter to use.
      *  When null, a SAPI Stream Emitter will be used.
      */
-    void emit(IResponse $response, ?ResponseEmitter $emitter = null) {
-        if (!$emitter) {
-            $emitter = new ResponseEmitter();
+    void emit(IResponse response, ?ResponseEmitter emitter = null) {
+        if (!emitter) {
+            emitter = new ResponseEmitter();
         }
-        $emitter.emit($response);
+        emitter.emit(response);
     }
     
     /**
@@ -121,11 +121,11 @@ class Server : IEventDispatcher {
      *
      * If the application does not support events, an exception will be raised.
      * Params:
-     * \UIM\Event\IEventManager $eventManager The event manager to set.
+     * \UIM\Event\IEventManager eventManager The event manager to set.
      */
-    void setEventManager(IEventManager $eventManager) {
+    void setEventManager(IEventManager eventManager) {
         if (this.app instanceof IEventDispatcher) {
-            this.app.setEventManager($eventManager);
+            this.app.setEventManager(eventManager);
 
             return;
         }

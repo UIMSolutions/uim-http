@@ -14,7 +14,7 @@ class ServerRequest : IServerRequest {
      *
      * @var array
      */
-    protected array $params = [
+    protected array params = [
         "plugin": null,
         "controller": null,
         "action": null,
@@ -41,7 +41,7 @@ class ServerRequest : IServerRequest {
     /**
      * Array of cookie data.
      */
-    protected IData[string] $cookies = [];
+    protected IData[string] cookies = [];
 
     /**
      * Array of environment data.
@@ -63,12 +63,12 @@ class ServerRequest : IServerRequest {
      * Only set to true if your application runs behind load balancers/proxies
      * that you control.
      */
-    bool $trustProxy = false;
+    bool trustProxy = false;
 
     /**
      * Trusted proxies list
      */
-    protected string[] $trustedProxies = [];
+    protected string[] trustedProxies = [];
 
     /**
      * The built in detectors used with `is()` can be modified with `addDetector()`.
@@ -109,7 +109,7 @@ class ServerRequest : IServerRequest {
      *
      * @var \Psr\Http\Message\IStream
      */
-    protected IStream $stream;
+    protected IStream stream;
 
     /**
      * Uri instance
@@ -123,31 +123,31 @@ class ServerRequest : IServerRequest {
      *
      * @var \UIM\Http\Session
      */
-    protected Session $session;
+    protected Session session;
 
     /**
      * Instance of a FlashMessage object relative to this request
      *
      * @var \UIM\Http\FlashMessage
      */
-    protected FlashMessage $flash;
+    protected FlashMessage flash;
 
     /**
      * Store the additional attributes attached to the request.
      */
-    protected IData[string] $attributes = [];
+    protected IData[string] attributes = [];
 
     /**
      * A list of properties that emulated by the PSR7 attribute methods.
      */
-    protected string[] $emulatedAttributes = ["session", "flash", "webroot", "base", "params", "here"];
+    protected string[] emulatedAttributes = ["session", "flash", "webroot", "base", "params", "here"];
 
     /**
      * Array of Psr\Http\Message\IUploadedFile objects.
      *
      * @var array
      */
-    protected array $uploadedFiles = [];
+    protected array uploadedFiles = [];
 
     /**
      * The HTTP protocol version used.
@@ -233,23 +233,23 @@ class ServerRequest : IServerRequest {
         this.webroot = configData["webroot"];
 
         if (isSet(configData["input"])) {
-            $stream = new Stream("php://memory", "rw");
-            $stream.write(configData["input"]);
-            $stream.rewind();
+            stream = new Stream("php://memory", "rw");
+            stream.write(configData["input"]);
+            stream.rewind();
         } else {
-            $stream = new Stream("php://input");
+            stream = new Stream("php://input");
         }
-        this.stream = $stream;
+        this.stream = stream;
 
-        $post = configData["post"];
-        if (!(isArray($post) || isObject($post) || $post.isNull)) {
+        post = configData["post"];
+        if (!(isArray(post) || isObject(post) || post.isNull)) {
             throw new InvalidArgumentException(
                 "`post` key must be an array, object or null. " ~ 
                 " Got `%s` instead."
-                .format(get_debug_type($post)
+                .format(get_debug_type(post)
             ));
         }
-        this.data = $post;
+        this.data = post;
         this.uploadedFiles = configData["files"];
         this.query = configData["query"];
         this.params = configData["params"];
@@ -305,18 +305,18 @@ class ServerRequest : IServerRequest {
      */
     string clientIp() {
         if (this.trustProxy && this.getEnvironmentData("HTTP_X_FORWARDED_FOR")) {
-            $addresses = array_map("trim", split(",", (string)this.getEnvironmentData("HTTP_X_FORWARDED_FOR")));
-            $trusted = (count(this.trustedProxies) > 0);
-            $n = count($addresses);
+            addresses = array_map("trim", split(",", (string)this.getEnvironmentData("HTTP_X_FORWARDED_FOR")));
+            trusted = (count(this.trustedProxies) > 0);
+            n = count(addresses);
 
-            if ($trusted) {
-                $trusted = array_diff($addresses, this.trustedProxies);
-                $trusted = (count($trusted) == 1);
+            if (trusted) {
+                trusted = array_diff(addresses, this.trustedProxies);
+                trusted = (count(trusted) == 1);
             }
-            if ($trusted) {
-                return $addresses[0];
+            if (trusted) {
+                return addresses[0];
             }
-            return $addresses[$n - 1];
+            return addresses[n - 1];
         }
         if (this.trustProxy && this.getEnvironmentData("HTTP_X_REAL_IP")) {
              anIpaddr = this.getEnvironmentData("HTTP_X_REAL_IP");
@@ -331,10 +331,10 @@ class ServerRequest : IServerRequest {
     /**
      * register trusted proxies
      * Params:
-     * string[] $proxies ips list of trusted proxies
+     * string[] proxies ips list of trusted proxies
      */
-    void setTrustedProxies(array $proxies) {
-        this.trustedProxies = $proxies;
+    void setTrustedProxies(array proxies) {
+        this.trustedProxies = proxies;
         this.trustProxy = true;
         this.uri = this.uri.withScheme(this.scheme());
     }
@@ -349,48 +349,48 @@ class ServerRequest : IServerRequest {
     /**
      * Returns the referer that referred this request.
      * Params:
-     * bool $local Attempt to return a local address.
+     * bool local Attempt to return a local address.
      *  Local addresses do not contain hostnames.
      */
-    string referer(bool $local = true) {
-        $ref = this.getEnvironmentData("HTTP_REFERER");
+    string referer(bool local = true) {
+        ref = this.getEnvironmentData("HTTP_REFERER");
 
-        $base = Configure.read("App.fullBaseUrl") ~ this.webroot;
-        if (isEmpty($ref) || empty($base)) {
+        base = Configure.read("App.fullBaseUrl") ~ this.webroot;
+        if (isEmpty(ref) || empty(base)) {
             return null;
         }
-        if ($local && str_starts_with($ref, $base)) {
-            $ref = substr($ref, $base.length);
-            if ($ref == "" || str_starts_with($ref, "//")) {
-                $ref = "/";
+        if (local && str_starts_with(ref, base)) {
+            ref = substr(ref, base.length);
+            if (ref == "" || str_starts_with(ref, "//")) {
+                ref = "/";
             }
-            if ($ref[0] != "/") {
-                $ref = "/" ~ $ref;
+            if (ref[0] != "/") {
+                ref = "/" ~ ref;
             }
-            return $ref;
+            return ref;
         }
-        if ($local) {
+        if (local) {
             return null;
         }
-        return $ref;
+        return ref;
     }
     
     /**
      * Missing method handler, handles wrapping older style isAjax() type methods
      * Params:
      * string aName The method called
-     * @param array $params Array of parameters for the method call
+     * @param array params Array of parameters for the method call
      */
-    bool __call(string aName, array $params) {
-        if (str_starts_with($name, "is")) {
-            $type = substr($name, 2).toLower;
+    bool __call(string aName, array params) {
+        if (str_starts_with(name, "is")) {
+            type = substr(name, 2).toLower;
 
-            array_unshift($params, $type);
+            array_unshift(params, type);
 
-            return this.is(...$params);
+            return this.is(...params);
         }
         throw new BadMethodCallException("Method `%s()` does not exist."
-        .format($name));
+        .format(name));
     }
     
     /**
@@ -398,30 +398,30 @@ class ServerRequest : IServerRequest {
      *
      * Uses the built-in detection rules as well as additional rules
      * defined with {@link \UIM\Http\ServerRequest.addDetector()}. Any detector can be called
-     * as `is($type)` or `is$Type()`.
+     * as `is(type)` or `isType()`.
      * Params:
      * string[]|string atype The type of request you want to check. If an array
      *  this method will return true if the request matches any type.
      * @param Json ...someArguments List of arguments
      */
     bool is(string[] atype, Json ...someArguments) {
-        if (isArray($type)) {
-            foreach ($type as _type) {
+        if (isArray(type)) {
+            foreach (type as _type) {
                 if (this.is(_type)) {
                     return true;
                 }
             }
             return false;
         }
-        $type = $type.toLower;
-        if (!_detectors.isSet($type)) {
+        type = type.toLower;
+        if (!_detectors.isSet(type)) {
             throw new InvalidArgumentException("No detector set for type `%s`."
-            .format($type));
+            .format(type));
         }
         if (someArguments) {
-            return _is($type, someArguments);
+            return _is(type, someArguments);
         }
-        return _detectorCache[$type] = _detectorCache[$type] ?? _is($type, someArguments);
+        return _detectorCache[type] = _detectorCache[type] ?? _is(type, someArguments);
     }
     
     // Clears the instance detector cache, used by the is() function
@@ -436,22 +436,22 @@ class ServerRequest : IServerRequest {
      * @param array someArguments Array of custom detector arguments.
      */
     protected bool _is(string atype, array someArguments) {
-        auto $detect = _detectors[$type];
-        if (cast(Closure)$detect) {
+        auto detect = _detectors[type];
+        if (cast(Closure)detect) {
             array_unshift(someArguments, this);
 
-            return $detect(...someArguments);
+            return detect(...someArguments);
         }
-        if (isSet($detect["env"]) && _environmentDetector($detect)) {
+        if (isSet(detect["env"]) && _environmentDetector(detect)) {
             return true;
         }
-        if (isSet($detect["header"]) && _headerDetector($detect)) {
+        if (isSet(detect["header"]) && _headerDetector(detect)) {
             return true;
         }
-        if (isSet($detect["accept"]) && _acceptHeaderDetector($detect)) {
+        if (isSet(detect["accept"]) && _acceptHeaderDetector(detect)) {
             return true;
         }
-        if (isSet($detect["param"]) && _paramDetector($detect)) {
+        if (isSet(detect["param"]) && _paramDetector(detect)) {
             return true;
         }
         return false;
@@ -460,24 +460,24 @@ class ServerRequest : IServerRequest {
     /**
      * Detects if a specific accept header is present.
      * Params:
-     * array $detect Detector options array.
+     * array detect Detector options array.
      */
-    protected bool _acceptHeaderDetector(array $detect) {
-        $content = new ContentTypeNegotiation();
-        $options = $detect["accept"];
+    protected bool _acceptHeaderDetector(array detect) {
+        content = new ContentTypeNegotiation();
+        options = detect["accept"];
 
         // Some detectors overlap with the default browser Accept header
         // For these types we use an exclude list to refine our content type
         // detection.
-        $exclude = $detect["exclude"] ?? null;
-        if ($exclude) {
-            $options = array_merge($options, $exclude);
+        exclude = detect["exclude"] ?? null;
+        if (exclude) {
+            options = array_merge(options, exclude);
         }
-        $accepted = $content.preferredType(this, $options);
-        if ($accepted.isNull) {
+        accepted = content.preferredType(this, options);
+        if (accepted.isNull) {
             return false;
         }
-        if ($exclude && in_array($accepted, $exclude, true)) {
+        if (exclude && in_array(accepted, exclude, true)) {
             return false;
         }
         return true;
@@ -486,10 +486,10 @@ class ServerRequest : IServerRequest {
     /**
      * Detects if a specific header is present.
      * Params:
-     * array $detect Detector options array.
+     * array detect Detector options array.
      */
-    protected bool _headerDetector(array $detect) {
-        foreach ($detect["header"] as  aHeader: aValue) {
+    protected bool _headerDetector(array detect) {
+        foreach (detect["header"] as  aHeader: aValue) {
              aHeader = this.getEnvironmentData("http_" ~  aHeader);
             if ( aHeader !isNull) {
                 if (cast(Closure)aValue) {
@@ -504,17 +504,17 @@ class ServerRequest : IServerRequest {
     /**
      * Detects if a specific request parameter is present.
      * Params:
-     * array $detect Detector options array.
+     * array detect Detector options array.
      */
-    protected bool _paramDetector(array $detect) {
-        aKey = $detect["param"];
-        if (isSet($detect["value"])) {
-            aValue = $detect["value"];
+    protected bool _paramDetector(array detect) {
+        aKey = detect["param"];
+        if (isSet(detect["value"])) {
+            aValue = detect["value"];
 
             return isSet(this.params[aKey]) ? this.params[aKey] == aValue : false;
         }
-        if (isSet($detect["options"])) {
-            return isSet(this.params[aKey]) ? in_array(this.params[aKey], $detect["options"]): false;
+        if (isSet(detect["options"])) {
+            return isSet(this.params[aKey]) ? in_array(this.params[aKey], detect["options"]): false;
         }
         return false;
     }
@@ -522,20 +522,20 @@ class ServerRequest : IServerRequest {
     /**
      * Detects if a specific environment variable is present.
      * Params:
-     * array $detect Detector options array.
+     * array detect Detector options array.
      */
-    protected bool _environmentDetector(array $detect) {
-        if (isSet($detect["env"])) {
-            if (isSet($detect["value"])) {
-                return this.getEnvironmentData($detect["env"]) == $detect["value"];
+    protected bool _environmentDetector(array detect) {
+        if (isSet(detect["env"])) {
+            if (isSet(detect["value"])) {
+                return this.getEnvironmentData(detect["env"]) == detect["value"];
             }
-            if (isSet($detect["pattern"])) {
-                return (bool)preg_match($detect["pattern"], (string)this.getEnvironmentData($detect["env"]));
+            if (isSet(detect["pattern"])) {
+                return (bool)preg_match(detect["pattern"], (string)this.getEnvironmentData(detect["env"]));
             }
-            if (isSet($detect["options"])) {
-                 somePattern = "/" ~ join("|", $detect["options"]) ~ "/i";
+            if (isSet(detect["options"])) {
+                 somePattern = "/" ~ join("|", detect["options"]) ~ "/i";
 
-                return (bool)preg_match(somePattern, (string)this.getEnvironmentData($detect["env"]));
+                return (bool)preg_match(somePattern, (string)this.getEnvironmentData(detect["env"]));
             }
         }
         return false;
@@ -548,11 +548,11 @@ class ServerRequest : IServerRequest {
      * See Request.is() for how to add additional types and the
      * built-in types.
      * Params:
-     * string[] $types The types to check.
+     * string[] types The types to check.
      */
-    bool isAll(array $types) {
-        foreach ($types as $type) {
-            if (!this.is($type)) {
+    bool isAll(array types) {
+        foreach (types as type) {
+            if (!this.is(type)) {
                 return false;
             }
         }
@@ -569,7 +569,7 @@ class ServerRequest : IServerRequest {
      * The closure will receive the request object as its only parameter.
      *
      * ```
-     * addDetector("custom", auto ($request) { //Return a boolean });
+     * addDetector("custom", auto (request) { //Return a boolean });
      * ```
      *
      * ### Environment value comparison
@@ -632,21 +632,21 @@ class ServerRequest : IServerRequest {
      * `addDetector("extension", ["param": '_ext", "options": ["pdf", "csv"]]`
      * Params:
      * string aName The name of the detector.
-     * @param \Closure|array $detector A Closure or options array for the detector definition.
+     * @param \Closure|array detector A Closure or options array for the detector definition.
      */
-    static void addDetector(string aName, Closure|array $detector) {
-        $name = $name.toLower;
-        if (cast(Closure)$detector) {
-            _detectors[$name] = $detector;
+    static void addDetector(string aName, Closure|array detector) {
+        name = name.toLower;
+        if (cast(Closure)detector) {
+            _detectors[name] = detector;
 
             return;
         }
-        if (isSet(_detectors[$name], $detector["options"])) {
+        if (isSet(_detectors[name], detector["options"])) {
             /** @var array data */
-            someData = _detectors[$name];
-            $detector = Hash.merge(someData, $detector);
+            someData = _detectors[name];
+            detector = Hash.merge(someData, detector);
         }
-        _detectors[$name] = $detector;
+        _detectors[name] = detector;
     }
     
     /**
@@ -655,11 +655,11 @@ class ServerRequest : IServerRequest {
      * string aName The header name.
      */
     protected string normalizeHeaderName(string aName) {
-        $name = strtoupper($name).replace("-", "_");
-        if (!in_array($name, ["CONTENT_LENGTH", "CONTENT_TYPE"], true)) {
-            $name = "HTTP_" ~ $name;
+        name = strtoupper(name).replace("-", "_");
+        if (!in_array(name, ["CONTENT_LENGTH", "CONTENT_TYPE"], true)) {
+            name = "HTTP_" ~ name;
         }
-        return $name;
+        return name;
     }
     
     /**
@@ -674,17 +674,17 @@ class ServerRequest : IServerRequest {
     STRINGAA getHeaders() {
          aHeaders = [];
         foreach (_environment as aKey: aValue) {
-            $name = null;
+            name = null;
             if (str_starts_with(aKey, "HTTP_")) {
-                $name = substr(aKey, 5);
+                name = substr(aKey, 5);
             }
             if (str_starts_with(aKey, "CONTENT_")) {
-                $name = aKey;
+                name = aKey;
             }
-            if ($name !isNull) {
-                $name = $name.toLower.replace("_", " ");
-                $name = ucwords($name).replace(" ", "-");
-                 aHeaders[$name] = (array)aValue;
+            if (name !isNull) {
+                name = name.toLower.replace("_", " ");
+                name = ucwords(name).replace(" ", "-");
+                 aHeaders[name] = (array)aValue;
             }
         }
         return aHeaders;
@@ -696,9 +696,9 @@ class ServerRequest : IServerRequest {
      * string aName The header you want to get (case-insensitive)
      */
     bool hasHeader(string aName) {
-        $name = this.normalizeHeaderName($name);
+        name = this.normalizeHeaderName(name);
 
-        return isSet(_environment[$name]);
+        return isSet(_environment[name]);
     }
     
     /**
@@ -710,9 +710,9 @@ class ServerRequest : IServerRequest {
      * string aName The header you want to get (case-insensitive)
      */
     string[] getHeader(string aName) {
-        $name = this.normalizeHeaderName($name);
-        if (isSet(_environment[$name])) {
-            return (array)_environment[$name];
+        name = this.normalizeHeaderName(name);
+        if (isSet(_environment[name])) {
+            return (array)_environment[name];
         }
         return null;
     }
@@ -723,7 +723,7 @@ class ServerRequest : IServerRequest {
      * string aName The header you want to get (case-insensitive)
      */
     string getHeaderLine(string aName) {
-        aValue = this.getHeader($name);
+        aValue = this.getHeader(name);
 
         return join(", ", aValue);
     }
@@ -734,11 +734,11 @@ class ServerRequest : IServerRequest {
      * string aName The header name.
      */
     static withHeader(string aName, string[] headerValue) {
-        $new = clone this;
-        $name = this.normalizeHeaderName($name);
-        $new._environment[$name] = aValue;
+        new = clone this;
+        name = this.normalizeHeaderName(name);
+        new._environment[name] = aValue;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -755,16 +755,16 @@ class ServerRequest : IServerRequest {
      */
     auto withAddedHeader(string aName, aValue): static
     {
-        $new = clone this;
-        $name = this.normalizeHeaderName($name);
-        $existing = [];
-        if (isSet($new._environment[$name])) {
-            $existing = (array)$new._environment[$name];
+        new = clone this;
+        name = this.normalizeHeaderName(name);
+        existing = [];
+        if (isSet(new._environment[name])) {
+            existing = (array)new._environment[name];
         }
-        $existing = array_merge($existing, (array)aValue);
-        $new._environment[$name] = $existing;
+        existing = array_merge(existing, (array)aValue);
+        new._environment[name] = existing;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -776,11 +776,11 @@ class ServerRequest : IServerRequest {
      */
     auto withoutHeader(string aName): static
     {
-        $new = clone this;
-        $name = this.normalizeHeaderName($name);
-        unset($new._environment[$name]);
+        new = clone this;
+        name = this.normalizeHeaderName(name);
+        unset(new._environment[name]);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -806,17 +806,17 @@ class ServerRequest : IServerRequest {
      * @link https://www.d-fig.org/psr/psr-7/ This method is part of the PSR-7 server request interface.
      */
     static withMethod(string amethod) {
-        $new = clone this;
+        new = clone this;
 
-        if (!preg_match("/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i", $method)) {
+        if (!preg_match("/^[!#%&\'*+.^_`\|~0-9a-z-]+/i", method)) {
             throw new InvalidArgumentException(
                 "Unsupported HTTP method `%s` provided."
-                .format($method
+                .format(method
             ));
         }
-        $new._environment["REQUEST_METHOD"] = $method;
+        new._environment["REQUEST_METHOD"] = method;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -843,10 +843,10 @@ class ServerRequest : IServerRequest {
      * array aQuery The query string data to use
      */
     static withQueryParams(array aQuery) {
-        $new = clone this;
-        $new.query = aQuery;
+        new = clone this;
+        new.query = aQuery;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -882,37 +882,37 @@ class ServerRequest : IServerRequest {
     }
     
     /**
-     * Get the domain name and include $tldLength segments of the tld.
+     * Get the domain name and include tldLength segments of the tld.
      * Params:
-     * int $tldLength Number of segments your tld contains. For example: `example.com` contains 1 tld.
+     * int tldLength Number of segments your tld contains. For example: `example.com` contains 1 tld.
      *  While `example.co.uk` contains 2.
      */
-    string domain(int $tldLength = 1) {
-        $host = this.host();
-        if (isEmpty($host)) {
+    string domain(int tldLength = 1) {
+        host = this.host();
+        if (isEmpty(host)) {
             return "";
         }
         
-        string[] $segments = split(".", $host);
-        $domain = array_slice($segments, -1 * ($tldLength + 1));
+        string[] segments = split(".", host);
+        domain = array_slice(segments, -1 * (tldLength + 1));
 
-        return join(".", $domain);
+        return join(".", domain);
     }
     
     /**
      * Get the subdomains for a host.
      * Params:
-     * int $tldLength Number of segments your tld contains. For example: `example.com` contains 1 tld.
+     * int tldLength Number of segments your tld contains. For example: `example.com` contains 1 tld.
      *  While `example.co.uk` contains 2.
      */
-    string[] subdomains(int $tldLength = 1) {
-        $host = this.host();
-        if (isEmpty($host)) {
+    string[] subdomains(int tldLength = 1) {
+        host = this.host();
+        if (isEmpty(host)) {
             return null;
         }
         
-        string[] $segments = split(".", $host);
-        return array_slice($segments, 0, -1 * ($tldLength + 1));
+        string[] segments = split(".", host);
+        return array_slice(segments, 0, -1 * (tldLength + 1));
     }
     
     /**
@@ -934,18 +934,18 @@ class ServerRequest : IServerRequest {
      * This method will order the returned content types by the preference values indicated
      * by the client.
      * Params:
-     * string|null $type The content type to check for. Leave null to get all types a client accepts.
+     * string|null type The content type to check for. Leave null to get all types a client accepts.
      */
     string[]|bool accepts(string atype = null) {
-        $content = new ContentTypeNegotiation();
-        if ($type) {
-            return $content.preferredType(this, [$type]) !isNull;
+        content = new ContentTypeNegotiation();
+        if (type) {
+            return content.preferredType(this, [type]) !isNull;
         }
-        $accept = [];
-        foreach ($content.parseAccept(this) as $types) {
-            $accept = array_merge($accept, $types);
+        accept = [];
+        foreach (content.parseAccept(this) as types) {
+            accept = array_merge(accept, types);
         }
-        return $accept;
+        return accept;
     }
     
     /**
@@ -953,21 +953,21 @@ class ServerRequest : IServerRequest {
      *
      * Get the list of accepted languages:
      *
-     * ```$request.acceptLanguage();```
+     * ```request.acceptLanguage();```
      *
      * Check if a specific language is accepted:
      *
-     * ```$request.acceptLanguage("es-es");```
+     * ```request.acceptLanguage("es-es");```
      * Params:
-     * string|null $language The language to test.
-     * @return array|bool If a $language is provided, a boolean. Otherwise, the array of accepted languages.
+     * string|null language The language to test.
+     * @return array|bool If a language is provided, a boolean. Otherwise, the array of accepted languages.
      */
     array|bool acceptLanguage(string alanguage = null) {
-        $content = new ContentTypeNegotiation();
-        if ($language !isNull) {
-            return $content.acceptLanguage(this, $language);
+        content = new ContentTypeNegotiation();
+        if (language !isNull) {
+            return content.acceptLanguage(this, language);
         }
-        return $content.acceptedLanguages(this);
+        return content.acceptedLanguages(this);
     }
     
     /**
@@ -979,17 +979,17 @@ class ServerRequest : IServerRequest {
      * ### PSR-7 Alternative
      *
      * ```
-     * aValue = Hash.get($request.getQueryParams(), "Post.id");
+     * aValue = Hash.get(request.getQueryParams(), "Post.id");
      * ```
      * Params:
-     * string|null $name The name or dotted path to the query param or null to read all.
-     * @param Json defaultValue The default value if the named parameter is not set, and $name is not null.
+     * string|null name The name or dotted path to the query param or null to read all.
+     * @param Json defaultValue The default value if the named parameter is not set, and name is not null.
      */
     Json getQuery(string aName = null, Json defaultValue = Json(null)) {
-        if ($name.isNull) {
+        if (name.isNull) {
             return this.query;
         }
-        return Hash.get(this.query, $name, $default);
+        return Hash.get(this.query, name, default);
     }
     
     /**
@@ -1000,13 +1000,13 @@ class ServerRequest : IServerRequest {
      *
      * ```
      * // get all data
-     * $request.getData();
+     * request.getData();
      *
      * // Read a specific field.
-     * $request.getData("Post.title");
+     * request.getData("Post.title");
      *
      * // With a default value.
-     * $request.getData("Post.not there", "default value");
+     * request.getData("Post.not there", "default value");
      * ```
      *
      * When reading values you will get `null` for keys/values that do not exist.
@@ -1017,30 +1017,30 @@ class ServerRequest : IServerRequest {
      * ### PSR-7 Alternative
      *
      * ```
-     * aValue = Hash.get($request.getParsedBody(), "Post.id");
+     * aValue = Hash.get(request.getParsedBody(), "Post.id");
      * ```
      * Params:
-     * string|null $name Dot separated name of the value to read. Or null to read all data.
+     * string|null name Dot separated name of the value to read. Or null to read all data.
      * @param Json defaultValue The default data.
      */
     Json getData(string aName = null, Json defaultValue = Json(null)) {
-        if ($name.isNull) {
+        if (name.isNull) {
             return this.data;
         }
         if (!isArray(this.data)) {
-            return $default;
+            return default;
         }
-        return Hash.get(this.data, $name, $default);
+        return Hash.get(this.data, name, default);
     }
     
     /**
      * Read cookie data from the request`s cookie data.
      * Params:
      * string aKey The key or dotted path you want to read.
-     * @param string[]|null $default The default value if the cookie is not set.
+     * @param string[]|null default The default value if the cookie is not set.
      */
-    string[] getCookie(string aKey, string[]|null $default = null) {
-        return Hash.get(this.cookies, aKey, $default);
+    string[] getCookie(string aKey, string[]|null default = null) {
+        return Hash.get(this.cookies, aKey, default);
     }
     
     /**
@@ -1064,17 +1064,17 @@ class ServerRequest : IServerRequest {
      * Replace the cookies in the request with those contained in
      * the provided CookieCollection.
      * Params:
-     * \UIM\Http\Cookie\CookieCollection $cookies The cookie collection
+     * \UIM\Http\Cookie\CookieCollection cookies The cookie collection
      */
-    static withCookieCollection(CookieCollection $cookies) {
-        $new = clone this;
+    static withCookieCollection(CookieCollection cookies) {
+        new = clone this;
          someValues = [];
-        foreach ($cookies as $cookie) {
-             someValues[$cookie.name] = $cookie.getValue();
+        foreach (cookies as cookie) {
+             someValues[cookie.name] = cookie.getValue();
         }
-        $new.cookies =  someValues;
+        new.cookies =  someValues;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1087,15 +1087,15 @@ class ServerRequest : IServerRequest {
     /**
      * Replace the cookies and get a new request instance.
      * Params:
-     * array $cookies The new cookie data to use.
+     * array cookies The new cookie data to use.
      * @return static
      */
-    auto withCookieParams(array $cookies): static
+    auto withCookieParams(array cookies): static
     {
-        $new = clone this;
-        $new.cookies = $cookies;
+        new = clone this;
+        new.cookies = cookies;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1117,10 +1117,10 @@ class ServerRequest : IServerRequest {
      *    typically be in an array or object.
      */
     static withParsedBody(someData) {
-        $new = clone this;
-        $new.data = someData;
+        new = clone this;
+        new.data = someData;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1131,12 +1131,12 @@ class ServerRequest : IServerRequest {
             return this.protocol;
         }
         // Lazily populate this data as it is generally not used.
-        preg_match("/^HTTP\/([\d.]+)$/", (string)this.getEnvironmentData("SERVER_PROTOCOL"), $match);
-        $protocol = "1.1";
-        if (isSet($match[1])) {
-            $protocol = $match[1];
+        preg_match("/^HTTP\/([\d.]+)/", (string)this.getEnvironmentData("SERVER_PROTOCOL"), match);
+        protocol = "1.1";
+        if (isSet(match[1])) {
+            protocol = match[1];
         }
-        this.protocol = $protocol;
+        this.protocol = protocol;
 
         return this.protocol;
     }
@@ -1150,21 +1150,21 @@ class ServerRequest : IServerRequest {
      * string aversion HTTP protocol version
      */
     static withProtocolVersion(string aversion) {
-        if (!preg_match("/^(1\.[01]|2)$/", $version)) {
-            throw new InvalidArgumentException("Unsupported protocol version `%s` provided.".format($version));
+        if (!preg_match("/^(1\.[01]|2)/", version)) {
+            throw new InvalidArgumentException("Unsupported protocol version `%s` provided.".format(version));
         }
-        $new = clone this;
-        $new.protocol = $version;
+        new = clone this;
+        new.protocol = version;
 
-        return $new;
+        return new;
     }
     
     /**
      * Get a value from the request`s environment data.
-     * Fallback to using enviroment() if the key is not set in the $environment property.
+     * Fallback to using enviroment() if the key is not set in the environment property.
      * Params:
      * string aKey The key you want to read from.
-     * @param string|null $default Default value when trying to retrieve an environment
+     * @param string|null default Default value when trying to retrieve an environment
      *  variable`s value that does not exist.
      */
     string getEnvironmentData(string aKey, string adefault = null) {
@@ -1172,7 +1172,7 @@ class ServerRequest : IServerRequest {
         if (!array_key_exists(aKey, _environment)) {
            _environment[aKey] = enviroment(aKey);
         }
-        return _environment[aKey] !isNull ? (string)_environment[aKey] : $default;
+        return _environment[aKey] !isNull ? (string)_environment[aKey] : default;
     }
     
     /**
@@ -1187,11 +1187,11 @@ class ServerRequest : IServerRequest {
      */
     auto withenviroment(string aKey, string avalue): static
     {
-        $new = clone this;
-        $new._environment[aKey] = aValue;
-        $new.clearDetectorCache();
+        new = clone this;
+        new._environment[aKey] = aValue;
+        new.clearDetectorCache();
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1213,14 +1213,14 @@ class ServerRequest : IServerRequest {
      */
     bool allowMethod(string[] amethods) {
          someMethods = (array) someMethods;
-        foreach ( someMethods as $method) {
-            if (this.is($method)) {
+        foreach ( someMethods as method) {
+            if (this.is(method)) {
                 return true;
             }
         }
-        $allowed = strtoupper(join(", ",  someMethods));
+        allowed = strtoupper(join(", ",  someMethods));
          anException = new MethodNotAllowedException();
-         anException.setHeader("Allow", $allowed);
+         anException.setHeader("Allow", allowed);
         throw  anException;
     }
     
@@ -1238,12 +1238,12 @@ class ServerRequest : IServerRequest {
      */
     auto withData(string aName, Json aValue): static
     {
-        $copy = clone this;
+        copy = clone this;
 
-        if (isArray($copy.data)) {
-            $copy.data = Hash.insert($copy.data, $name, aValue);
+        if (isArray(copy.data)) {
+            copy.data = Hash.insert(copy.data, name, aValue);
         }
-        return $copy;
+        return copy;
     }
     
     /**
@@ -1255,12 +1255,12 @@ class ServerRequest : IServerRequest {
      * string aName The dot separated path to remove.
      */
     static withoutData(string aName) {
-        $copy = clone this;
+        copy = clone this;
 
-        if (isArray($copy.data)) {
-            $copy.data = Hash.remove($copy.data, $name);
+        if (isArray(copy.data)) {
+            copy.data = Hash.remove(copy.data, name);
         }
-        return $copy;
+        return copy;
     }
     
     /**
@@ -1275,20 +1275,20 @@ class ServerRequest : IServerRequest {
      */
     auto withParam(string aName, Json aValue): static
     {
-        $copy = clone this;
-        $copy.params = Hash.insert($copy.params, $name, aValue);
+        copy = clone this;
+        copy.params = Hash.insert(copy.params, name, aValue);
 
-        return $copy;
+        return copy;
     }
     
     /**
      * Safely access the values in this.params.
      * Params:
      * string aName The name or dotted path to parameter.
-     * @param Json defaultValue The default value if `$name` is not set. Default `null`.
+     * @param Json defaultValue The default value if `name` is not set. Default `null`.
     */
     Json getParam(string aName, Json defaultValue = Json(null)) {
-        return Hash.get(this.params, $name, $default);
+        return Hash.get(this.params, name, default);
     }
     
     /**
@@ -1298,13 +1298,13 @@ class ServerRequest : IServerRequest {
      * @param Json aValue The value of the attribute.
      */
     static withAttribute(string aName, Json aValue) {
-        $new = clone this;
-        if (in_array($name, this.emulatedAttributes, true)) {
-            $new.{$name} = aValue;
+        new = clone this;
+        if (in_array(name, this.emulatedAttributes, true)) {
+            new.{name} = aValue;
         } else {
-            $new.attributes[$name] = aValue;
+            new.attributes[name] = aValue;
         }
-        return $new;
+        return new;
     }
     
     /**
@@ -1316,15 +1316,15 @@ class ServerRequest : IServerRequest {
      */
     auto withoutAttribute(string aName): static
     {
-        $new = clone this;
-        if (in_array($name, this.emulatedAttributes, true)) {
+        new = clone this;
+        if (in_array(name, this.emulatedAttributes, true)) {
             throw new InvalidArgumentException(
-                "You cannot unset '$name'. It is a required UIM attribute."
+                "You cannot unset 'name'. It is a required UIM attribute."
             );
         }
-        unset($new.attributes[$name]);
+        unset(new.attributes[name]);
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1334,16 +1334,16 @@ class ServerRequest : IServerRequest {
      * @param Json defaultValue The default value if the attribute has not been set.
      */
     Json getAttribute(string aName, Json defaultValue = Json(null)) {
-        if (in_array($name, this.emulatedAttributes, true)) {
-            if ($name == "here") {
+        if (in_array(name, this.emulatedAttributes, true)) {
+            if (name == "here") {
                 return this.base ~ this.uri.getPath();
             }
-            return this.{$name};
+            return this.{name};
         }
-        if (array_key_exists($name, this.attributes)) {
-            return this.attributes[$name];
+        if (array_key_exists(name, this.attributes)) {
+            return this.attributes[name];
         }
-        return $default;
+        return default;
     }
     
     /**
@@ -1352,14 +1352,14 @@ class ServerRequest : IServerRequest {
      * This will include the params, webroot, base, and here attributes that UIM provides.
      */
     IData[string] getAttributes() {
-        $emulated = [
+        emulated = [
             "params": this.params,
             "webroot": this.webroot,
             "base": this.base,
             "here": this.base ~ this.uri.getPath(),
         ];
 
-        return this.attributes + $emulated;
+        return this.attributes + emulated;
     }
     
     /**
@@ -1368,11 +1368,11 @@ class ServerRequest : IServerRequest {
      * string aPath The dot separated path to the file you want.
      */
     IUploadedFile getUploadedFile(string aPath) {
-        $file = Hash.get(this.uploadedFiles, somePath);
-        if (!cast(UploadedFile)$file) {
+        file = Hash.get(this.uploadedFiles, somePath);
+        if (!cast(UploadedFile)file) {
             return null;
         }
-        return $file;
+        return file;
     }
     
     /**
@@ -1385,29 +1385,29 @@ class ServerRequest : IServerRequest {
     /**
      * Update the request replacing the files, and creating a new instance.
      * Params:
-     * array $uploadedFiles An array of uploaded file objects.
+     * array uploadedFiles An array of uploaded file objects.
      */
-    static withUploadedFiles(array $uploadedFiles) {
-        this.validateUploadedFiles($uploadedFiles, "");
-        $new = clone this;
-        $new.uploadedFiles = $uploadedFiles;
+    static withUploadedFiles(array uploadedFiles) {
+        this.validateUploadedFiles(uploadedFiles, "");
+        new = clone this;
+        new.uploadedFiles = uploadedFiles;
 
-        return $new;
+        return new;
     }
     
     /**
      * Recursively validate uploaded file data.
      * Params:
-     * array $uploadedFiles The new files array to validate.
+     * array uploadedFiles The new files array to validate.
      * @param string aPath The path thus far.
      */
-    protected auto validateUploadedFiles(array $uploadedFiles, string aPath) {
-        foreach ($uploadedFiles as aKey: $file) {
-            if (isArray($file)) {
-                this.validateUploadedFiles($file, aKey ~ ".");
+    protected auto validateUploadedFiles(array uploadedFiles, string aPath) {
+        foreach (uploadedFiles as aKey: file) {
+            if (isArray(file)) {
+                this.validateUploadedFiles(file, aKey ~ ".");
                 continue;
             }
-            if (!$file instanceof IUploadedFile) {
+            if (!file instanceof IUploadedFile) {
                 throw new InvalidArgumentException("Invalid file at `%s%s`.".format(somePath, aKey));
             }
         }
@@ -1423,14 +1423,14 @@ class ServerRequest : IServerRequest {
     /**
      * Return an instance with the specified message body.
      * Params:
-     * \Psr\Http\Message\IStream $body The new request body
+     * \Psr\Http\Message\IStream body The new request body
      * @return static
      */
-    static withBody(IStream $body) {
-        $new = clone this;
-        $new.stream = $body;
+    static withBody(IStream body) {
+        new = clone this;
+        new.stream = body;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1447,26 +1447,26 @@ class ServerRequest : IServerRequest {
      * and `url` attributes.
      * Params:
      * \Psr\Http\Message\IUri anUri The new request uri
-     * @param bool $preserveHost Whether the host should be retained.
+     * @param bool preserveHost Whether the host should be retained.
      */
-    static withUri(IUri anUri, bool $preserveHost = false) {
-        $new = clone this;
-        $new.uri = anUri;
+    static withUri(IUri anUri, bool preserveHost = false) {
+        new = clone this;
+        new.uri = anUri;
 
-        if ($preserveHost && this.hasHeader("Host")) {
-            return $new;
+        if (preserveHost && this.hasHeader("Host")) {
+            return new;
         }
-        $host = anUri.getHost();
-        if (!$host) {
-            return $new;
+        host = anUri.getHost();
+        if (!host) {
+            return new;
         }
-        $port = anUri.getPort();
-        if ($port) {
-            $host ~= ":" ~ $port;
+        port = anUri.getPort();
+        if (port) {
+            host ~= ":" ~ port;
         }
-        $new._environment["HTTP_HOST"] = $host;
+        new._environment["HTTP_HOST"] = host;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1481,10 +1481,10 @@ class ServerRequest : IServerRequest {
      * @param string arequestTarget The request target.
      */
     static withRequestTarget(string arequestTarget) {
-        $new = clone this;
-        $new.requestTarget = $requestTarget;
+        new = clone this;
+        new.requestTarget = requestTarget;
 
-        return $new;
+        return new;
     }
     
     /**
@@ -1499,14 +1499,14 @@ class ServerRequest : IServerRequest {
         if (this.requestTarget !isNull) {
             return this.requestTarget;
         }
-        $target = this.uri.getPath();
+        target = this.uri.getPath();
         if (this.uri.getQuery()) {
-            $target ~= "?" ~ this.uri.getQuery();
+            target ~= "?" ~ this.uri.getQuery();
         }
-        if (isEmpty($target)) {
-            $target = "/";
+        if (isEmpty(target)) {
+            target = "/";
         }
-        return $target;
+        return target;
     }
     
     /**

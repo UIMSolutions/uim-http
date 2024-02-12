@@ -47,9 +47,9 @@ class Stream : IAdapter {
        _sslContextOptions = [];
        _connectionErrors = [];
 
-       _buildContext($request, options);
+       _buildContext(request, options);
 
-        return _send($request);
+        return _send(request);
     }
     
     /**
@@ -87,14 +87,14 @@ class Stream : IAdapter {
      * @param IData[string] options Additional request options.
      */
     protected void _buildContext(IRequest request, IData[string] options = null) {
-       _buildContent($request, options);
-       _buildHeaders($request, options);
-       _buildOptions($request, options);
+       _buildContent(request, options);
+       _buildHeaders(request, options);
+       _buildOptions(request, options);
 
         url = request.getUri();
-        scheme = parse_url(to!string($url, UIM_URL_SCHEME));
-        if ($scheme == "https") {
-           _buildSslContext($request, options);
+        scheme = parse_url(to!string(url, UIM_URL_SCHEME));
+        if (scheme == "https") {
+           _buildSslContext(request, options);
         }
        _context = stream_context_create([
             "http": _contextOptions,
@@ -112,8 +112,8 @@ class Stream : IAdapter {
      */
     protected void _buildHeaders(IRequest request, IData[string] options = null) {
          aHeaders = [];
-        foreach ($request.getHeaders() as name:  someValues) {
-             aHeaders ~= "%s: %s".format($name, join(", ",  someValues));
+        foreach (request.getHeaders() as name:  someValues) {
+             aHeaders ~= "%s: %s".format(name, join(", ",  someValues));
         }
        _contextOptions["header"] = join("\r\n",  aHeaders);
     }
@@ -144,13 +144,13 @@ class Stream : IAdapter {
        _contextOptions["protocol_version"] = request.getProtocolVersion();
        _contextOptions["ignore_errors"] = true;
 
-        if (isSet($options["timeout"])) {
+        if (isSet(options["timeout"])) {
            _contextOptions["timeout"] = options["timeout"];
         }
         // Redirects are handled in the client layer because of cookie handling issues.
        _contextOptions["max_redirects"] = 0;
 
-        if (isSet($options["proxy"]["proxy"])) {
+        if (isSet(options["proxy"]["proxy"])) {
            _contextOptions["request_fulluri"] = true;
            _contextOptions["proxy"] = options["proxy"]["proxy"];
         }
@@ -173,18 +173,18 @@ class Stream : IAdapter {
             "ssl_local_pk",
             "ssl_passphrase",
         ];
-        if (isEmpty($options["ssl_cafile"])) {
+        if (isEmpty(options["ssl_cafile"])) {
             options["ssl_cafile"] = CaBundle.getBundledCaBundlePath();
         }
-        if (!empty($options["ssl_verify_host"])) {
+        if (!empty(options["ssl_verify_host"])) {
             url = request.getUri();
-            host = parse_url((string)$url, UIM_URL_HOST);
+            host = parse_url((string)url, UIM_URL_HOST);
            _sslContextOptions["peer_name"] = host;
         }
-        foreach ($sslOptions as aKey) {
-            if (isSet($options[aKey])) {
+        foreach (sslOptions as aKey) {
+            if (isSet(options[aKey])) {
                 name = substr(aKey, 4);
-               _sslContextOptions[$name] = options[aKey];
+               _sslContextOptions[name] = options[aKey];
             }
         }
     }
@@ -201,20 +201,20 @@ class Stream : IAdapter {
             deadline = time() + _contextOptions["timeout"];
         }
         url = request.getUri();
-       _open(to!string($url, request));
+       _open(to!string(url, request));
         content = "";
         timedOut = false;
 
         assert(_stream !isNull, "HTTP stream failed to open");
 
         while (!feof(_stream)) {
-            if ($deadline != false) {
-                stream_set_timeout(_stream, max($deadline - time(), 1));
+            if (deadline != false) {
+                stream_set_timeout(_stream, max(deadline - time(), 1));
             }
             content ~= fread(_stream, 8192);
 
             meta = stream_get_meta_data(_stream);
-            if ($meta["timed_out"] || ($deadline != false && time() > deadline)) {
+            if (meta["timed_out"] || (deadline != false && time() > deadline)) {
                 timedOut = true;
                 break;
             }
@@ -223,7 +223,7 @@ class Stream : IAdapter {
         /** @psalm-suppress InvalidPropertyAssignmentValue */
         fclose(_stream);
 
-        if ($timedOut) {
+        if (timedOut) {
             throw new NetworkException("Connection timed out " ~ url, request);
         }
          aHeaders = meta["wrapper_data"];
@@ -253,14 +253,14 @@ class Stream : IAdapter {
         if (!(bool)ini_get("allow_url_fopen")) {
             throw new ClientException("The PHP directive `allow_url_fopen` must be enabled.");
         }
-        bool set_error_handler(function ($code, message) {
+        bool set_error_handler(function (code, message) {
            _connectionErrors ~= message;
 
             return true;
         });
         try {
-            stream = fopen($url, "rb", false, _context);
-            if ($stream == false) {
+            stream = fopen(url, "rb", false, _context);
+            if (stream == false) {
                 stream = null;
             }
            _stream = stream;
