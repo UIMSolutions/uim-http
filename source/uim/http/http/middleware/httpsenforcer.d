@@ -51,7 +51,7 @@ class HttpsEnforcerMiddleware : IMiddleware {
      * @param \Psr\Http\Server\IRequestHandler handler The request handler.
      */
     IResponse process(IServerRequest serverRequest, IRequestHandler handler) {
-        if (cast8ServerRequest)$request  && isArray(configuration.data("trustedProxies"])) {
+        if (cast8ServerRequest)request  && isArray(configuration.data("trustedProxies"])) {
             request.setTrustedProxies(configuration.data("trustedProxies"]);
         }
         if (
@@ -59,7 +59,7 @@ class HttpsEnforcerMiddleware : IMiddleware {
             || (configuration.data("disableOnDebug"]
                 && Configure.read("debug"))
         ) {
-            response = handler.handle($request);
+            response = handler.handle(request);
             if (configuration.data("hsts"]) {
                 response = this.addHsts(response);
             }

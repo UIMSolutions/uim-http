@@ -120,7 +120,7 @@ class SecurityHeadersMiddleware : IMiddleware {
             self.UNSAFE_URL,
         ];
 
-        this.checkValues($policy, available);
+        this.checkValues(policy, available);
         this.headers["referrer-policy"] = policy;
 
         return this;
@@ -134,10 +134,10 @@ class SecurityHeadersMiddleware : IMiddleware {
      * @param string url URL if mode is `allow-from`
      */
     void setXFrameOptions(string aoption = self.SAMEORIGIN, string aurl = null) {
-        this.checkValues($option, [self.DENY, self.SAMEORIGIN, self.ALLOW_FROM]);
+        this.checkValues(option, [self.DENY, self.SAMEORIGIN, self.ALLOW_FROM]);
 
-        if ($option == self.ALLOW_FROM) {
-            if (isEmpty($url)) {
+        if (option == self.ALLOW_FROM) {
+            if (isEmpty(url)) {
                 throw new InvalidArgumentException("The 2nd arg url can not be empty when `allow-from` is used");
             }
             option ~= " " ~ url;
@@ -154,10 +154,10 @@ class SecurityHeadersMiddleware : IMiddleware {
      * @param string amode Mode value. Available Values: '1", "0", "block'
      */
     void setXssProtection(string amode = self.XSS_BLOCK) {
-        if ($mode == self.XSS_BLOCK) {
+        if (mode == self.XSS_BLOCK) {
             mode = self.XSS_ENABLED_BLOCK;
         }
-        this.checkValues($mode, [self.XSS_ENABLED, self.XSS_DISABLED, self.XSS_ENABLED_BLOCK]);
+        this.checkValues(mode, [self.XSS_ENABLED, self.XSS_DISABLED, self.XSS_ENABLED_BLOCK]);
         this.headers["x-xss-protection"] = mode;
     }
     
@@ -188,7 +188,7 @@ class SecurityHeadersMiddleware : IMiddleware {
      */
     protected void checkValues(string avalue, array allowed) {
         if (!in_array(aValue, allowed, true)) {
-            array_walk($allowed, fn (&$x): x = "`$x`");
+            array_walk(allowed, fn (&x): x = "`x`");
             throw new InvalidArgumentException(
                 "Invalid arg `%s`, use one of these: %s."
                 .format(aValue,
@@ -204,7 +204,7 @@ class SecurityHeadersMiddleware : IMiddleware {
      * @param \Psr\Http\Server\IRequestHandler handler The request handler.
      */
     IResponse process(IServerRequest serverRequest, IRequestHandler handler) {
-        response = handler.handle($request);
+        response = handler.handle(request);
         this.headers.byKeyValue
             .each!(headerValue => response = response.withHeader(headerValue.key, headerValue.value));
         return response;

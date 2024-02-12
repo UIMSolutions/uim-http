@@ -31,20 +31,20 @@ class BodyParserMiddleware : IMiddleware {
      */
     this(IData[string] options = null) {
         options += ["json": true, "xml": false, "methods": null];
-        if ($options["json"]) {
+        if (options["json"]) {
             this.addParser(
                 ["application/json", "text/json"],
                 this.decodeJson(...)
             );
         }
-        if ($options["xml"]) {
+        if (options["xml"]) {
             this.addParser(
                 ["application/xml", "text/xml"],
                 this.decodeXml(...)
             );
         }
-        if ($options["methods"]) {
-            this.setMethods($options["methods"]);
+        if (options["methods"]) {
+            this.setMethods(options["methods"]);
         }
     }
     
@@ -72,8 +72,8 @@ class BodyParserMiddleware : IMiddleware {
      * An naive CSV request body parser could be built like so:
      *
      * ```
-     *  aParser.addParser(["text/csv"], auto ($body) {
-     *  return str_getcsv($body);
+     *  aParser.addParser(["text/csv"], auto (body) {
+     *  return str_getcsv(body);
      * });
      * ```
      * Params:
@@ -101,22 +101,22 @@ class BodyParserMiddleware : IMiddleware {
      * @param \Psr\Http\Server\IRequestHandler handler The request handler.
      */
     IResponse process(IServerRequest serverRequest, IRequestHandler handler) {
-        if (!in_array($request.getMethod(), this.methods, true)) {
-            return handler.handle($request);
+        if (!in_array(request.getMethod(), this.methods, true)) {
+            return handler.handle(request);
         }
-        [$type] = split(";", request.getHeaderLine("Content-Type"));
+        [type] = split(";", request.getHeaderLine("Content-Type"));
         type = type.toLower;
-        if (!this.parsers.isSet($type)) {
-            return handler.handle($request);
+        if (!this.parsers.isSet(type)) {
+            return handler.handle(request);
         }
-         aParser = this.parsers[$type];
-        result =  aParser($request.getBody().getContents());
+         aParser = this.parsers[type];
+        result =  aParser(request.getBody().getContents());
         if (!isArray(result)) {
             throw new BadRequestException();
         }
         request = request.withParsedBody(result);
 
-        return handler.handle($request);
+        return handler.handle(request);
     }
     
     /**
@@ -125,14 +125,14 @@ class BodyParserMiddleware : IMiddleware {
      * string abody The request body to decode
      */
     protected array decodeJson(string abody) {
-        if ($body.isEmpty) {
+        if (body.isEmpty) {
             return null;
         }
-        decoded = json_decode($body, true);
+        decoded = json_decode(body, true);
         if (json_last_error() != JSON_ERROR_NONE) {
             return null;
         }
-        return (array)$decoded;
+        return (array)decoded;
     }
     
     /**
@@ -142,12 +142,12 @@ class BodyParserMiddleware : IMiddleware {
      */
     protected array decodeXml(string abody) {
         try {
-            xml = Xml.build($body, ["return": "domdocument", "readFile": false]);
+            xml = Xml.build(body, ["return": "domdocument", "readFile": false]);
             // We might not get child nodes if there are nested inline entities.
             /** @var \DOMNodeList domNodeList */
             domNodeList = xml.childNodes;
-            if ((int)$domNodeList.length > 0) {
-                return Xml.toArray($xml);
+            if ((int)domNodeList.length > 0) {
+                return Xml.toArray(xml);
             }
             return null;
         } catch (XmlException) {

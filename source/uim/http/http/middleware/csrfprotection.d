@@ -77,7 +77,7 @@ class CsrfProtectionMiddleware : IMiddleware {
      */
     IResponse process(IServerRequest serverRequest, IRequestHandler handler) {
         method = request.getMethod();
-        hasData = in_array($method, ["PUT", "POST", "DELETE", "PATCH"], true)
+        hasData = in_array(method, ["PUT", "POST", "DELETE", "PATCH"], true)
             || request.getParsedBody();
 
         if (
@@ -85,11 +85,11 @@ class CsrfProtectionMiddleware : IMiddleware {
             && this.skipCheckCallback !isNull
             && call_user_func(this.skipCheckCallback, request) == true
         ) {
-            request = _unsetTokenField($request);
+            request = _unsetTokenField(request);
 
-            return handler.handle($request);
+            return handler.handle(request);
         }
-        if ($request.getAttribute("csrfToken")) {
+        if (request.getAttribute("csrfToken")) {
             throw new UimException(
                 'A CSRF token is already set in the request.' .
                 "\n" .
@@ -98,27 +98,27 @@ class CsrfProtectionMiddleware : IMiddleware {
             );
         }
         cookies = request.getCookieParams();
-        cookieData = Hash.get($cookies, configuration.data("cookieName"]);
+        cookieData = Hash.get(cookies, configuration.data("cookieName"]);
 
-        if (isString($cookieData) && !$cookieData.isEmpty) {
+        if (isString(cookieData) && !cookieData.isEmpty) {
             try {
-                request = request.withAttribute("csrfToken", this.saltToken($cookieData));
+                request = request.withAttribute("csrfToken", this.saltToken(cookieData));
             } catch (InvalidArgumentException  anException) {
                 cookieData = null;
             }
         }
-        if ($method == "GET" && cookieData.isNull) {
+        if (method == "GET" && cookieData.isNull) {
             token = this.createToken();
-            request = request.withAttribute("csrfToken", this.saltToken($token));
-            response = handler.handle($request);
+            request = request.withAttribute("csrfToken", this.saltToken(token));
+            response = handler.handle(request);
 
-            return _addTokenCookie($token, request, response);
+            return _addTokenCookie(token, request, response);
         }
-        if ($hasData) {
-           _validateToken($request);
-            request = _unsetTokenField($request);
+        if (hasData) {
+           _validateToken(request);
+            request = _unsetTokenField(request);
         }
-        return handler.handle($request);
+        return handler.handle(request);
     }
     
     /**
@@ -140,9 +140,9 @@ class CsrfProtectionMiddleware : IMiddleware {
      */
     protected IServerRequest _unsetTokenField(IServerRequest serverRequest) {
         body = request.getParsedBody();
-        if (isArray($body)) {
-            unset($body[configuration.data("field"]]);
-            request = request.withParsedBody($body);
+        if (isArray(body)) {
+            unset(body[configuration.data("field"]]);
+            request = request.withParsedBody(body);
         }
         return request;
     }
@@ -158,7 +158,7 @@ class CsrfProtectionMiddleware : IMiddleware {
      * string atoken The token to test.
      */
     protected bool isHexadecimalToken(string atoken) {
-        return preg_match("/^[a-f0-9]{" ~ TOKEN_WITH_CHECKSUM_LENGTH ~ "}$/", token) == 1;
+        return preg_match("/^[a-f0-9]{" ~ TOKEN_WITH_CHECKSUM_LENGTH ~ "}/", token) == 1;
     }
     
     /**
@@ -180,22 +180,22 @@ class CsrfProtectionMiddleware : IMiddleware {
      * string atoken The token to salt.
      */
     string saltToken(string atoken) {
-        if (this.isHexadecimalToken($token)) {
+        if (this.isHexadecimalToken(token)) {
             return token;
         }
-        decoded = base64_decode($token, true);
-        if ($decoded == false) {
+        decoded = base64_decode(token, true);
+        if (decoded == false) {
             throw new InvalidArgumentException("Invalid token data.");
         }
         length = decoded.length;
-        salt = Security.randomBytes($length);
+        salt = Security.randomBytes(length);
         
         string salted = "";
         for (anI = 0;  anI < length;  anI++) {
             // XOR the token and salt together so that we can reverse it later.
-            salted ~= chr(ord($decoded[anI]) ^ ord($salt[anI]));
+            salted ~= chr(ord(decoded[anI]) ^ ord(salt[anI]));
         }
-        return base64_encode($salted ~ salt);
+        return base64_encode(salted ~ salt);
     }
     
     /**
@@ -207,22 +207,22 @@ class CsrfProtectionMiddleware : IMiddleware {
      * string atoken The token that could be salty.
      */
     string unsaltToken(string atoken) {
-        if (this.isHexadecimalToken($token)) {
+        if (this.isHexadecimalToken(token)) {
             return token;
         }
-        decoded = base64_decode($token, true);
-        if ($decoded == false || decoded.length != TOKEN_WITH_CHECKSUM_LENGTH * 2) {
+        decoded = base64_decode(token, true);
+        if (decoded == false || decoded.length != TOKEN_WITH_CHECKSUM_LENGTH * 2) {
             return token;
         }
-        salted = substr($decoded, 0, TOKEN_WITH_CHECKSUM_LENGTH);
-        salt = substr($decoded, TOKEN_WITH_CHECKSUM_LENGTH);
+        salted = substr(decoded, 0, TOKEN_WITH_CHECKSUM_LENGTH);
+        salt = substr(decoded, TOKEN_WITH_CHECKSUM_LENGTH);
 
         string unsalted = "";
         for (anI = 0;  anI < TOKEN_WITH_CHECKSUM_LENGTH;  anI++) {
             // Reverse the XOR to desalt.
-            unsalted ~= chr(ord($salted[anI]) ^ ord($salt[anI]));
+            unsalted ~= chr(ord(salted[anI]) ^ ord(salt[anI]));
         }
-        return base64_encode($unsalted);
+        return base64_encode(unsalted);
     }
     
     // Verify that CSRF token was originally generated by the receiving application.
@@ -233,15 +233,15 @@ class CsrfProtectionMiddleware : IMiddleware {
             ? csrfToken
             : base64_decode(csrfToken, true);
 
-        if (!$decoded || decoded.length <= TOKEN_VALUE_LENGTH) {
+        if (!decoded || decoded.length <= TOKEN_VALUE_LENGTH) {
             return false;
         }
-        aKey = substr($decoded, 0, TOKEN_VALUE_LENGTH);
-        hmac = substr($decoded, TOKEN_VALUE_LENGTH);
+        aKey = substr(decoded, 0, TOKEN_VALUE_LENGTH);
+        hmac = substr(decoded, TOKEN_VALUE_LENGTH);
 
         expectedHmac = hash_hmac("sha1", aKey, Security.getSalt());
 
-        return hash_equals($hmac, expectedHmac);
+        return hash_equals(hmac, expectedHmac);
     }
     
     /**
@@ -258,7 +258,7 @@ class CsrfProtectionMiddleware : IMiddleware {
     ) {
         cookie = _createCookie(tokenToAdd, serverRequest);
         if (cast(Response)response) {
-            return response.withCookie($cookie);
+            return response.withCookie(cookie);
         }
         return response.withAddedHeader("Set-Cookie", cookie.toHeaderValue());
     }
@@ -269,12 +269,12 @@ class CsrfProtectionMiddleware : IMiddleware {
      * \Psr\Http\Message\IServerRequest serverRequest The request to validate against.
      */
     protected void _validateToken(IServerRequest serverRequest) {
-        cookie = Hash.get($request.getCookieParams(), configuration.data("cookieName"]);
+        cookie = Hash.get(request.getCookieParams(), configuration.data("cookieName"]);
 
-        if (!$cookie || !isString($cookie)) {
+        if (!cookie || !isString(cookie)) {
             throw new InvalidCsrfTokenException(__d("uim", "Missing or incorrect CSRF cookie type."));
         }
-        if (!_verifyToken($cookie)) {
+        if (!_verifyToken(cookie)) {
             exception = new InvalidCsrfTokenException(__d("uim", "Missing or invalid CSRF cookie."));
 
             expiredCookie = _createCookie("", request).withExpired();
@@ -283,10 +283,10 @@ class CsrfProtectionMiddleware : IMiddleware {
             throw exception;
         }
         body = request.getParsedBody();
-        if (isArray($body) || cast(ArrayAccess)$body) {
-            post = to!string(Hash.get($body, configuration.data("field"]));
-            post = this.unsaltToken($post);
-            if (hash_equals($post, cookie)) {
+        if (isArray(body) || cast(ArrayAccess)body) {
+            post = to!string(Hash.get(body, configuration.data("field"]));
+            post = this.unsaltToken(post);
+            if (hash_equals(post, cookie)) {
                 return;
             }
         }

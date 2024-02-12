@@ -39,8 +39,8 @@ class CspMiddleware : IMiddleware {
         }
         this.setConfig(configData);
 
-        if (!cast(CSPBuilder)$csp) {
-            csp = new CSPBuilder($csp);
+        if (!cast(CSPBuilder)csp) {
+            csp = new CSPBuilder(csp);
         }
         this.csp = csp;
     }
@@ -58,7 +58,7 @@ class CspMiddleware : IMiddleware {
         if (this.getconfig("styleNonce")) {
             request = request.withAttribute("cspStyleNonce", this.csp.nonce("style-src"));
         }
-        response = handler.handle($request);
+        response = handler.handle(request);
 
         /** @var \Psr\Http\Message\IResponse */
         return this.csp.injectCSPHeader(response);

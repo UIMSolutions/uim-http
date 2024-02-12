@@ -59,7 +59,7 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
      */
     IResponse process(IServerRequest serverRequest, IRequestHandler handler) {
         method = request.getMethod();
-        hasData = in_array($method, ["PUT", "POST", "DELETE", "PATCH"], true)
+        hasData = in_array(method, ["PUT", "POST", "DELETE", "PATCH"], true)
             || request.getParsedBody();
 
         if (
@@ -67,29 +67,29 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
             && this.skipCheckCallback !isNull
             && call_user_func(this.skipCheckCallback, request) == true
         ) {
-            request = this.unsetTokenField($request);
+            request = this.unsetTokenField(request);
 
-            return handler.handle($request);
+            return handler.handle(request);
         }
         session = request.getAttribute("session");
-        if (!$session || !(cast(Session)$session)) {
+        if (!session || !(cast(Session)session)) {
             throw new UimException("You must have a `session` attribute to use session based CSRF tokens");
         }
         token = session.read(configuration.data("key"]);
-        if ($token.isNull) {
+        if (token.isNull) {
             token = this.createToken();
             session.write(configuration.data("key"], token);
         }
-        request = request.withAttribute("csrfToken", this.saltToken($token));
+        request = request.withAttribute("csrfToken", this.saltToken(token));
 
-        if ($method == "GET") {
-            return handler.handle($request);
+        if (method == "GET") {
+            return handler.handle(request);
         }
-        if ($hasData) {
-            this.validateToken($request, session);
-            request = this.unsetTokenField($request);
+        if (hasData) {
+            this.validateToken(request, session);
+            request = this.unsetTokenField(request);
         }
-        return handler.handle($request);
+        return handler.handle(request);
     }
     
     /**
@@ -116,13 +116,13 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
     string saltToken(string tokenToSalt) {
         string decodedToken = base64_decode(tokenToSalt);
         auto tokenLength = decodedToken.length;
-        string salt = Security.randomBytes($length);
+        string salt = Security.randomBytes(length);
         string salted;
         for (anI = 0;  anI < length;  anI++) {
             // XOR the token and salt together so that we can reverse it later.
-            salted ~= chr(ord(decodedToken[anI]) ^ ord($salt[anI]));
+            salted ~= chr(ord(decodedToken[anI]) ^ ord(salt[anI]));
         }
-        return base64_encode($salted ~ salt);
+        return base64_encode(salted ~ salt);
     }
     
     /**
@@ -135,7 +135,7 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
      * string atoken The token that could be salty.
      */
     protected string unsaltToken(string atoken) {
-        string decodedToken = base64_decode($token, true);
+        string decodedToken = base64_decode(token, true);
         if (decodedToken == false || decodedToken.length != TOKEN_VALUE_LENGTH * 2) {
             return token;
         }
@@ -145,9 +145,9 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
         unsalted = "";
         for (anI = 0;  anI < TOKEN_VALUE_LENGTH;  anI++) {
             // Reverse the XOR to desalt.
-            unsalted ~= chr(ord($salted[anI]) ^ ord($salt[anI]));
+            unsalted ~= chr(ord(salted[anI]) ^ ord(salt[anI]));
         }
-        return base64_encode($unsalted);
+        return base64_encode(unsalted);
     }
     
     /**
@@ -160,9 +160,9 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
      */
     protected IServerRequest unsetTokenField(IServerRequest serverRequest) {
         body = request.getParsedBody();
-        if (isArray($body)) {
-            unset($body[configuration.data("field"]]);
-            request = request.withParsedBody($body);
+        if (isArray(body)) {
+            unset(body[configuration.data("field"]]);
+            request = request.withParsedBody(body);
         }
         return request;
     }
@@ -185,14 +185,14 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
      */
     protected void validateToken(IServerRequest serverRequest, Session session) {
         auto token = session.read(configuration.data("key"]);
-        if (!$token || !isString($token)) {
+        if (!token || !isString(token)) {
             throw new InvalidCsrfTokenException(__d("uim", "Missing or incorrect CSRF session key"));
         }
         body = request.getParsedBody();
-        if (isArray($body) || cast(ArrayAccess)$body) {
-            post = to!string(Hash.get($body, configuration.data("field"]));
-            post = this.unsaltToken($post);
-            if (hash_equals($post, token)) {
+        if (isArray(body) || cast(ArrayAccess)body) {
+            post = to!string(Hash.get(body, configuration.data("field"]));
+            post = this.unsaltToken(post);
+            if (hash_equals(post, token)) {
                 return;
             }
         }
@@ -222,6 +222,6 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
         token = middleware.createToken();
         request.getSession().write(aKey, token);
 
-        return request.withAttribute(aKey, middleware.saltToken($token));
+        return request.withAttribute(aKey, middleware.saltToken(token));
     }
 }

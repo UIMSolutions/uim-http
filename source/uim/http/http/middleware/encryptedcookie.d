@@ -80,10 +80,10 @@ class EncryptedCookieMiddleware : IMiddleware {
     protected IServerRequest decodeCookies(IServerRequest serverRequest) {
         cookies = serverRequest.getCookieParams();
         this.cookieNames
-            .filter!(cookieName => isSet($cookies[cookieName]))
-            .each!(cookieName => cookies[cookieName] = _decrypt($cookies[cookieName], this.cipherType, this.key));
+            .filter!(cookieName => isSet(cookies[cookieName]))
+            .each!(cookieName => cookies[cookieName] = _decrypt(cookies[cookieName], this.cipherType, this.key));
 
-        return serverRequest.withCookieParams($cookies);
+        return serverRequest.withCookieParams(cookies);
     }
     
     /**
@@ -108,7 +108,7 @@ class EncryptedCookieMiddleware : IMiddleware {
         auto cookies = CookieCollection.createFromHeader(response.getHeader("Set-Cookie"));
         cookies.each!((cookie) {
             if (in_array(cookie.name, this.cookieNames, true)) {
-                auto value = _encrypt($cookie.getValue(), this.cipherType);
+                auto value = _encrypt(cookie.getValue(), this.cipherType);
                 auto cookieWithValue = cookie.withValue(value);
             }
             aHeader ~= cookieWithValue.toHeaderValue();
