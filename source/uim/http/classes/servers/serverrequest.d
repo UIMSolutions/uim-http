@@ -359,9 +359,9 @@ class ServerRequest : IServerRequest {
         if (isEmpty(ref) || empty(base)) {
             return null;
         }
-        if (local && str_starts_with(ref, base)) {
+        if (local && ref.startWith(base)) {
             ref = substr(ref, base.length);
-            if (ref == "" || str_starts_with(ref, "//")) {
+            if (ref.isEmpty || ref.startWith("//")) {
                 ref = "/";
             }
             if (ref[0] != "/") {
@@ -382,7 +382,7 @@ class ServerRequest : IServerRequest {
      * @param array params Array of parameters for the method call
      */
     bool __call(string aName, array params) {
-        if (str_starts_with(name, "is")) {
+        if (name.startWith("is")) {
             type = substr(name, 2).toLower;
 
             array_unshift(params, type);
@@ -672,22 +672,23 @@ class ServerRequest : IServerRequest {
      * the headers.
      */
     STRINGAA getHeaders() {
-         aHeaders = [];
-        foreach (_environment as aKey: aValue) {
-            name = null;
-            if (str_starts_with(aKey, "HTTP_")) {
-                name = substr(aKey, 5);
+        STRINGAA result = [];
+        _environment.byKeyValue
+            .each!((kv) => {
+            string name = null;
+            if (aKey.startWith("HTTP_")) {
+                name = substr(kv.key, 5);
             }
-            if (str_starts_with(aKey, "CONTENT_")) {
-                name = aKey;
+            if (kv.key.startWith("CONTENT_")) {
+                name = kv.key;
             }
-            if (name !isNull) {
+            if (!name.isNull) {
                 name = name.toLower.replace("_", " ");
                 name = ucwords(name).replace(" ", "-");
-                 aHeaders[name] = (array)aValue;
+                result[name] = (array)kv.value;
             }
         }
-        return aHeaders;
+        return result;
     }
     
     /**
@@ -695,10 +696,9 @@ class ServerRequest : IServerRequest {
      * Params:
      * string aName The header you want to get (case-insensitive)
      */
-    bool hasHeader(string aName) {
-        name = this.normalizeHeaderName(name);
-
-        return isSet(_environment[name]);
+    bool hasHeader(string headerName) {
+        headerName = this.normalizeHeaderName(headerName);
+        return _environment.isSet(headerName);
     }
     
     /**
@@ -706,15 +706,12 @@ class ServerRequest : IServerRequest {
      *
      * Return the header value as an array. If the header
      * is not present an empty array will be returned.
-     * Params:
-     * string aName The header you want to get (case-insensitive)
      */
-    string[] getHeader(string aName) {
-        name = this.normalizeHeaderName(name);
-        if (isSet(_environment[name])) {
-            return (array)_environment[name];
-        }
-        return null;
+    string[] getHeader(string headerName) {
+        name = this.normalizeHeaderName(headerName);
+        return _environment.isSet(headerName)
+            ? (array)_environment[headerName]
+            : null;
     }
     
     /**

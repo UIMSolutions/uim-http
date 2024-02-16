@@ -128,7 +128,7 @@ class Response : Message : IResponse {
         
         auto anOffset = 0;
         // Look for gzip `signature'
-        if (str_starts_with(encodedBody, "\x1f\x8b")) {
+        if (encodedBody.startWith("\x1f\x8b")) {
              anOffset = 2;
         }
         // Check the format byte
@@ -148,7 +148,7 @@ class Response : Message : IResponse {
      */
     protected void _parseHeaders(string[] headersToParse) {
         foreach (headersToParse as aValue) {
-            if (str_starts_with(aValue, "HTTP/")) {
+            if (aValue.startWith("HTTP/")) {
                 preg_match("/HTTP\/([\d.]+) ([0-9]+)(.*)/i", aValue, matches);
                 this.protocol = matches[1];
                 this.code = to!int(matches[2]);
@@ -161,10 +161,8 @@ class Response : Message : IResponse {
             [name, aValue] = split(":", aValue, 2);
             aValue = trim(aValue);
             /** @phpstan-var non-empty-string aName */
-            name = trim(name);
-
-            normalized = name.toLower;
-
+            string name = trim(name);
+            string normalized = name.toLower;
             if (isSet(this.headers[name])) {
                 this.headers[name] ~= aValue;
             } else {

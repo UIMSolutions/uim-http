@@ -95,11 +95,11 @@ class Mock : IAdapter {
         if (requestUri == mockUri) {
             return true;
         }
-        auto starPosition = mockUri.indexOf("/%2A");
+        size_t starPosition = mockUri.indexOf("/%2A");
         if (starPosition == mockUri.length - 4) {
             mockUri = mockUri[0..starPosition];
 
-            return str_starts_with(requestUri, mockUri);
+            return requestUri.startWith(mockUri);
         }
         return false;
     }

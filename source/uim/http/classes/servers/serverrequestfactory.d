@@ -79,7 +79,7 @@ class ServerRequestFactory : ServerIRequestFactory {
 
         if (
             in_array(method, ["PUT", "DELETE", "PATCH"], true) &&
-            str_starts_with((string)request.contentType(), "application/x-www-form-urlencoded")
+            (string)request.contentType().startWith("application/x-www-form-urlencoded")
         ) {
             someData = (string)request.getBody();
             parse_str(someData, parsedBody);

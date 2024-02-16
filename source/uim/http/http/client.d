@@ -496,7 +496,7 @@ class Client : ClientInterface {
       myurl ~= myq;
       myurl ~= isString(myquery) ? myquery : http_build_query(myquery, "", "&", UIM_QUERY_RFC3986);
     }
-    if (options["protocolRelative"] && str_starts_with(myurl, "//")) {
+    if (options["protocolRelative"] && myurl.startWith("//")) {
       myurl = options["scheme"] ~ ":" ~ myurl;
     }
     if (preg_match("#^https?://#", myurl)) {

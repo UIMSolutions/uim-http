@@ -50,26 +50,26 @@ class UriFactory : IUriFactory {
      * string abase The base path to remove.
      * @param \Psr\Http\Message\IUri anUri The uri to update.
      */
-    protected static IUri updatePath(string abase, IUri anUri) {
-        somePath = anUri.getPath();
-        if (base != "" && str_starts_with(somePath, base)) {
-            somePath = substr(somePath, base.length);
+    protected static IUri updatePath(string basePath, IUri anUri) {
+        auto uriPath = anUri.getPath();
+        if (!basePath.isEmpty && uriPath.startWith(basePath)) {
+            uriPath = uriPath[0..basePath.length];
         }
-        if (somePath == "/index.d" && anUri.getQuery()) {
-            somePath = anUri.getQuery();
+        if (uriPath == "/index.d" && anUri.getQuery()) {
+            uriPath = anUri.getQuery();
         }
-        if (isEmpty(somePath) || somePath == "/" || somePath == "//" || somePath == "/index.d") {
-            somePath = "/";
+        if (isEmpty(uriPath) || uriPath == "/" || uriPath == "//" || uriPath == "/index.d") {
+            uriPath = "/";
         }
         endsWithIndex = "/" ~ (Configure.read("App.webroot") ?: "webroot") ~ "/index.d";
         endsWithLength = endsWithIndex.length;
         if (
-            somePath.length >= endsWithLength &&
-            substr(somePath, -endsWithLength) == endsWithIndex
+            uriPath.length >= endsWithLength &&
+            substr(uriPath, -endsWithLength) == endsWithIndex
         ) {
-            somePath = "/";
+            uriPath = "/";
         }
-        return anUri.withPath(somePath);
+        return anUri.withPath(uriPath);
     }
     
     /**

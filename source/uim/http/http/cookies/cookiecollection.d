@@ -223,15 +223,14 @@ class CookieCollection : IteratorAggregate, Countable {
          auto result;
         now = new DateTimeImmutable("now", new DateTimeZone("UTC"));
         foreach (this.cookies as cookie) {
-            if (scheme == "http' && cookie.isSecure()) {
+            if (scheme == "http" && cookie.isSecure()) {
                 continue;
             }
-            if (!str_starts_with(somePath, cookie.getPath())) {
+            if (!somePath.startWith(cookie.getPath())) {
                 continue;
             }
             domain = cookie.getDomain();
-            leadingDot = str_starts_with(domain, ".");
-            if (leadingDot) {
+            if (domain.startWith(".")) {
                 domain = ltrim(domain, ".");
             }
             if (cookie.isExpired(now)) {
@@ -284,7 +283,7 @@ class CookieCollection : IteratorAggregate, Countable {
             if (!cookie.isExpired(time)) {
                 continue;
             }
-            somePathMatches = str_starts_with(somePath, cookie.getPath());
+            somePathMatches = somePath.startWith(cookie.getPath());
             hostMatches = preg_match(hostPattern, cookie.getDomain());
             if (somePathMatches && hostMatches) {
                 unset(this.cookies[anI]);
