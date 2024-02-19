@@ -111,12 +111,12 @@ class Oauth
         nonce = credentials["nonce"] ?? uniqid();
         timestamp = credentials["timestamp"] ?? time();
          someValues = [
-            'oauth_version": '1.0",
-            'oauth_nonce": nonce,
-            'oauth_timestamp": timestamp,
-            'oauth_signature_method": 'HMAC-SHA1",
-            'oauth_token": credentials["token"],
-            'oauth_consumer_key": _encode(credentials["consumerKey"]),
+            "oauth_version": "1.0",
+            "oauth_nonce": nonce,
+            "oauth_timestamp": timestamp,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_token": credentials["token"],
+            "oauth_consumer_key": _encode(credentials["consumerKey"]),
         ];
         baseString = this.baseString(request,  someValues);
 
@@ -127,9 +127,9 @@ class Oauth
         if (isSet(credentials["realm"])) {
              someValues["oauth_realm"] = credentials["realm"];
         }
-        aKey = [credentials["consumerSecret"], credentials["tokenSecret"]];
+        string[] aKey = [credentials["consumerSecret"], credentials["tokenSecret"]];
         aKey = array_map(_encode(...), aKey);
-        aKey = join("&", aKey);
+        aKey = aKey.join("&");
 
          someValues["oauth_signature"] = base64_encode(
             hash_hmac("sha1", baseString, aKey, true)

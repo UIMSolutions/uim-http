@@ -1005,13 +1005,13 @@ class Response : IResponse, Stringable {
      * @param IData[string] options The LinkHeader params.
      */
     static withAddedLink(string aurl, IData[string] options = null) {
-        params = [];
+        string[] params;
         foreach (options as aKey: option) {
-            params ~= aKey ~ "="" ~ option ~ """;
+            params ~= aKey ~ "=\"" ~ option ~ "\"";
         }
-        param = "";
+        string param = "";
         if (params) {
-            param = "; " ~ join("; ", params);
+            param = "; " ~ params.join("; ");
         }
         return this.withAddedHeader("Link", "<" ~ url ~ ">" ~ param);
     }

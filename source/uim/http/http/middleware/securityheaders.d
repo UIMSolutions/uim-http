@@ -192,7 +192,7 @@ class SecurityHeadersMiddleware : IMiddleware {
             throw new InvalidArgumentException(
                 "Invalid arg `%s`, use one of these: %s."
                 .format(aValue,
-                join(", ", allowed)
+                allowed.join(", ")
             ));
         }
     }
