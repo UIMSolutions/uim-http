@@ -469,7 +469,7 @@ class ServerRequest : IServerRequest {
         // Some detectors overlap with the default browser Accept header
         // For these types we use an exclude list to refine our content type
         // detection.
-        exclude = detect["exclude"] ?? null;
+        exclude = detect.get("exclude", null);
         if (exclude) {
             options = array_merge(options, exclude);
         }

@@ -66,7 +66,7 @@ class Digest {
         algorithm = credentials.get("algorithm", self.ALGO_MD5);
         if (!isSet(self.HASH_ALGORITHMS[algorithm])) {
             throw new InvalidArgumentException("Invalid Algorithm. Valid ones are: " ~
-                join(",", array_keys(self.HASH_ALGORITHMS)));
+                join(",", self.HASH_ALGORITHMS.keys));
         }
         this.algorithm = algorithm;
         this.isSessAlgorithm = strpos(this.algorithm, "-sess") != false;
@@ -150,7 +150,7 @@ class Digest {
         }
         ha1 = hash(this.hashType, a1);
         a2 = request.getMethod() ~ ":" ~ somePath;
-        nc = "%08x".format(credentials["nc"] ?? 1);
+        nc = "%08x".format(credentials.get("nc", 1));
 
         if (isEmpty(credentials["qop"])) {
             ha2 = hash(this.hashType, a2);

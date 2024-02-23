@@ -96,7 +96,7 @@ class UriFactory : IUriFactory {
             if (phpSelf.isNull) {
                 return ["base": "", "webroot": "/"];
             }
-            base = dirname(serverData["UIM_SELF"] ?? DIRECTORY_SEPARATOR);
+            base = dirname(serverData.get("UIM_SELF", DIRECTORY_SEPARATOR));
             // Clean up additional / which cause following code to fail..
             base = (string)preg_replace("#/+#", "/", base);
 
