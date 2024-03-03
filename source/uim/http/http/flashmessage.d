@@ -23,7 +23,7 @@ class FlashMessage {
 
     protected Session _session;
 
-    this(Session session, IConfigData[string] configData = null) {
+    this(Session session, IData[string] configData = null) {
         _session = session;
         this.setConfig(configData);
     }

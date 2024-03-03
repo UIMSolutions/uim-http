@@ -139,9 +139,9 @@ class Client : ClientInterface {
      *  You can use the `type` key to define the authentication adapter classname
      *  to use. Short class names are resolved to the `Http\Client\Auth` namespace.
      * Params:
-     * IConfigData[string] configData Config options for scoped clients.
+     * IData[string] configData Config options for scoped clients.
      */
-  this(IConfigData[string] configData = null) {
+  this(IData[string] configData = null) {
     this.setConfig(configData);
 
     myadapter = configuration.data("adapter"];

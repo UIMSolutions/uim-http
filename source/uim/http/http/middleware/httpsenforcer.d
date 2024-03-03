@@ -23,7 +23,7 @@ class HttpsEnforcerMiddleware : IMiddleware {
      *       - 'includeSubDomains' - Whether to include `includeSubDomains` directive. Defaults to `false`.
      *       - 'preload' - Whether to include 'preload' directive. Defauls to `false`.
      */
-    protected IConfigData[string] configData = [
+    protected IData[string] configData = [
         "redirect": Json(true),
         "statusCode": Json(301),
         "headers": Json.emptyArray,
@@ -37,7 +37,7 @@ class HttpsEnforcerMiddleware : IMiddleware {
      * Params:
      * @see \UIM\Http\Middleware\HttpsEnforcerMiddleware.configData
      */
-    this(IConfigData[string] configData = null) {
+    this(IData[string] configData = null) {
         this.config = configData + this.config;
     }
     

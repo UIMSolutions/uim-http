@@ -65,7 +65,7 @@ class CsrfProtectionMiddleware : IMiddleware {
      */
     const int TOKEN_WITH_CHECKSUM_LENGTH = 56;
 
-    this(IConfigData[string] configData = null) {
+    this(IData[string] configData = null) {
        _config = configData + _config;
     }
     

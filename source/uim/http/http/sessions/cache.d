@@ -18,12 +18,12 @@ class CacheSession : !SessionHandler {
     /**
      * Constructor.
      * Params:
-     * IConfigData[string] configData The configuration to use for this engine
+     * IData[string] configData The configuration to use for this engine
      * It requires the key 'config' which is the name of the Cache config to use for
      * storing the session
      * @throws \InvalidArgumentException if the 'config' key is not provided
      */
-    this(IConfigData[string] configData = null) {
+    this(IData[string] configData = null) {
         if (isEmpty(configData("config"])) {
             throw new InvalidArgumentException("The cache configuration name to use is required");
         }

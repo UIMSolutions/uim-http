@@ -161,9 +161,9 @@ class Session {
      *  the configuration array for the engine. You can set the `engine` key to an already
      *  instantiated session handler object.
      * Params:
-     * IConfigData[string] configData The Configuration to apply to this session object
+     * IData[string] configData The Configuration to apply to this session object
      */
-    this(IConfigData[string] configData = null) {
+    this(IData[string] configData = null) {
         configData += [
             "timeout": null,
             "cookie": null,

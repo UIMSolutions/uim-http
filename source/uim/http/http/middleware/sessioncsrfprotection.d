@@ -47,7 +47,7 @@ class SessionCsrfProtectionMiddleware : IMiddleware {
 
     const int TOKEN_VALUE_LENGTH = 32;
 
-    this(IConfigData[string] configData = null) {
+    this(IData[string] configData = null) {
        _config = configData + _config;
     }
     

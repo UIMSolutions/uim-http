@@ -83,7 +83,7 @@ abstract class BaseApplication :
         return middleware;
     }
  
-    void addPlugin(name, IConfigData[string] configData = null) {
+    void addPlugin(name, IData[string] configData = null) {
         if (isString(name)) {
             plugin = this.plugins.create(name, configData);
         } else {
@@ -98,9 +98,9 @@ abstract class BaseApplication :
      * If it isn`t available, ignore it.
      * Params:
      * \UIM\Core\IPlugin|string aName The plugin name or plugin object.
-     * @param IConfigData[string] configData The configuration data for the plugin if using a string for name
+     * @param IData[string] configData The configuration data for the plugin if using a string for name
      */
-    void addOptionalPlugin(IPlugin|string aName, IConfigData[string] configData = null) {
+    void addOptionalPlugin(IPlugin|string aName, IData[string] configData = null) {
         try {
             this.addPlugin(name, configData);
         } catch (MissingPluginException) {
